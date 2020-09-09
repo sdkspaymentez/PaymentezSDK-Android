@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_first_title">SDK (Paso 1/4)</string>
+    <string name="first_activity_cancel_title">Cancelar Flujo</string>
+    <string name="first_activity_cancel_message">¿Seguro que desea cancelar el flujo?</string>
+    <string name="flow_back_button">Atrás</string>
+    <string name="flow_next_button">Siguiente</string>
+    <string name="flow_finish_button">Finalizar</string>
+
+
+    <string name="activity_second_title">SDK (Paso 2/4)</string>
+    <string name="activity_third_title">SDK (Paso 3/4)</string>
+    <string name="activity_fourth_title">SDK (Paso 4/4)</string>
+</resources>
