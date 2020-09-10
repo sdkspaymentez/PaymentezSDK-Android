@@ -32,6 +32,19 @@ public class PaymentezBaseActivity extends AppCompatActivity {
         }
     }
 
+    protected void changeToolbarBackground(Integer color) {
+        if(toolbar != null && color != null) {
+            toolbar.setBackgroundColor(color);
+        }
+    }
+
+    protected void changeToolbarTextColor(Integer color) {
+        TextView title = findViewById(R.id.toolbar_title);
+        if(title != null && color != null) {
+            title.setTextColor(color);
+        }
+    }
+
     protected void setToolbarTitle(String text) {
         TextView title = findViewById(R.id.toolbar_title);
         title.setText(text);

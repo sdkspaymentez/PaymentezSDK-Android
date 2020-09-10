@@ -1,6 +1,7 @@
 package ar.com.fennoma.paymentezsdk.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -30,6 +31,12 @@ public class SecondActivity extends PaymentezBaseActivity {
             text.setTextColor(PaymentezSDK.getInstance().getTextColor());
             TextView back = findViewById(R.id.back);
             back.setTextColor(PaymentezSDK.getInstance().getTextColor());
+            TextView next = findViewById(R.id.next);
+            next.setTextColor(PaymentezSDK.getInstance().getTextColor());
+            changeToolbarTextColor(PaymentezSDK.getInstance().getTextColor());
+        }
+        if(PaymentezSDK.getInstance().getButtonBackgroundColor() != null) {
+            changeToolbarBackground(PaymentezSDK.getInstance().getButtonBackgroundColor());
         }
         setButtons();
     }

@@ -34,11 +34,15 @@ public class FirstActivity extends PaymentezBaseActivity {
         if(PaymentezSDK.getInstance().getTextColor() != null) {
             TextView text = findViewById(R.id.text);
             text.setTextColor(PaymentezSDK.getInstance().getTextColor());
+            TextView next = findViewById(R.id.next);
+            next.setTextColor(PaymentezSDK.getInstance().getTextColor());
+            changeToolbarTextColor(PaymentezSDK.getInstance().getTextColor());
         }
         if(PaymentezSDK.getInstance().getButtonBackgroundColor() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 replaceRippleBackgroundColor();
             }
+            changeToolbarBackground(PaymentezSDK.getInstance().getButtonBackgroundColor());
         }
         setButtons();
     }

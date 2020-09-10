@@ -29,6 +29,12 @@ public class FourthActivity extends PaymentezBaseActivity {
             text.setTextColor(PaymentezSDK.getInstance().getTextColor());
             TextView back = findViewById(R.id.back);
             back.setTextColor(PaymentezSDK.getInstance().getTextColor());
+            TextView next = findViewById(R.id.next);
+            next.setTextColor(PaymentezSDK.getInstance().getTextColor());
+            changeToolbarTextColor(PaymentezSDK.getInstance().getTextColor());
+        }
+        if(PaymentezSDK.getInstance().getButtonBackgroundColor() != null) {
+            changeToolbarBackground(PaymentezSDK.getInstance().getButtonBackgroundColor());
         }
         setButtons();
     }
