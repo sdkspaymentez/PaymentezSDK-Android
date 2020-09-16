@@ -1,12 +1,20 @@
 package ar.com.fennoma.paymentezsdk.activities;
 
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
 
 public class PaymentezBaseActivity extends AppCompatActivity {
 
@@ -43,6 +51,10 @@ public class PaymentezBaseActivity extends AppCompatActivity {
         if(title != null && color != null) {
             title.setTextColor(color);
         }
+        if(toolbar != null && toolbar.getNavigationIcon() != null && color != null) {
+            Drawable drawable = toolbar.getNavigationIcon();
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 
     protected void setToolbarTitle(String text) {
@@ -72,4 +84,35 @@ public class PaymentezBaseActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.enter_left_to_right, R.anim.exit_left_to_right);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    protected void replaceRippleBackgroundColor() {
+        TextView next = findViewById(R.id.next);
+        RippleDrawable background = (RippleDrawable) next.getBackground();
+        Drawable drawable = background.getDrawable(0);
+        if(drawable != null) {
+            ColorStateList myColorStateList = new ColorStateList(
+                    new int[][]{
+                            new int[]{},
+                            new int[]{android.R.attr.state_pressed},
+                    },
+                    new int[] {
+                            PaymentezSDK.getInstance().getButtonBackgroundColor(),
+                            PaymentezSDK.getInstance().getButtonBackgroundColor()
+                    }
+            );
+            drawable.setTintList(myColorStateList);
+        }
+    }
+
+    protected void showLoading(){
+
+    }
+
+    protected void hideLoading() {
+
+    }
+
+    protected void onSessionExpired() {
+
+    }
 }

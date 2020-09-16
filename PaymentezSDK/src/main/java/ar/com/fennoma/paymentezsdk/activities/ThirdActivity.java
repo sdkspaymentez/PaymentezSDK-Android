@@ -1,6 +1,7 @@
 package ar.com.fennoma.paymentezsdk.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +22,10 @@ public class ThirdActivity extends PaymentezBaseActivity {
     }
 
     private void setViews() {
+        if(PaymentezSDK.getInstance().getActionBarColor() != null) {
+            changeToolbarBackground(PaymentezSDK.getInstance().getActionBarColor());
+            changeToolbarTextColor(getResources().getColor(android.R.color.white));
+        }
         if(PaymentezSDK.getInstance().getBackgroundColor() != null) {
             View background = findViewById(R.id.background);
             background.setBackgroundColor(PaymentezSDK.getInstance().getBackgroundColor());
@@ -30,12 +35,13 @@ public class ThirdActivity extends PaymentezBaseActivity {
             text.setTextColor(PaymentezSDK.getInstance().getTextColor());
             TextView back = findViewById(R.id.back);
             back.setTextColor(PaymentezSDK.getInstance().getTextColor());
-            TextView next = findViewById(R.id.next);
-            next.setTextColor(PaymentezSDK.getInstance().getTextColor());
-            changeToolbarTextColor(PaymentezSDK.getInstance().getTextColor());
         }
         if(PaymentezSDK.getInstance().getButtonBackgroundColor() != null) {
-            changeToolbarBackground(PaymentezSDK.getInstance().getButtonBackgroundColor());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                replaceRippleBackgroundColor();
+            }
+            TextView next = findViewById(R.id.next);
+            next.setTextColor(getResources().getColor(android.R.color.white));
         }
         setButtons();
     }

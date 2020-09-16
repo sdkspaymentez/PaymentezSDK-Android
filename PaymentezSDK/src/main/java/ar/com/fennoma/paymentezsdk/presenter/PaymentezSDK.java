@@ -13,7 +13,10 @@ public class PaymentezSDK {
     private IPanchoSDKListener listener;
     private Integer backgroundColor;
     private Integer textColor;
+    private Integer actionBarColor;
     private Integer buttonBackgroundColor;
+
+    private String token;
 
     public interface IPanchoSDKListener {
         void onFinishedSuccessfully();
@@ -33,6 +36,15 @@ public class PaymentezSDK {
 
     public PaymentezSDK setButtonBackgroundColor(Integer buttonBackgroundColor) {
         this.buttonBackgroundColor = buttonBackgroundColor;
+        return this;
+    }
+
+    public Integer getActionBarColor() {
+        return actionBarColor;
+    }
+
+    public PaymentezSDK setActionBarColor(Integer actionBarColor) {
+        this.actionBarColor = actionBarColor;
         return this;
     }
 
@@ -79,5 +91,13 @@ public class PaymentezSDK {
         if(listener != null) {
             listener.onFinishedSuccessfully();
         }
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
