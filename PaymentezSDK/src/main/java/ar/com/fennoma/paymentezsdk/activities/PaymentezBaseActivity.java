@@ -1,12 +1,22 @@
 package ar.com.fennoma.paymentezsdk.activities;
 
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
 
 public class PaymentezBaseActivity extends AppCompatActivity {
 
@@ -18,6 +28,12 @@ public class PaymentezBaseActivity extends AppCompatActivity {
         hideTitle();
         setToolbarTitle(text);
         setBackButton();
+    }
+
+    protected void setFullTitleWOBack(String text) {
+        setToolbar();
+        hideTitle();
+        setToolbarTitle(text);
     }
 
     protected void setToolbar() {
@@ -36,12 +52,21 @@ public class PaymentezBaseActivity extends AppCompatActivity {
         if(toolbar != null && color != null) {
             toolbar.setBackgroundColor(color);
         }
+        if (color != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+        }
     }
 
     protected void changeToolbarTextColor(Integer color) {
         TextView title = findViewById(R.id.toolbar_title);
         if(title != null && color != null) {
             title.setTextColor(color);
+        }
+        if(color != null && toolbar != null && toolbar.getNavigationIcon() != null) {
+            Drawable navigationIcon = toolbar.getNavigationIcon();
+            navigationIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -72,4 +97,22 @@ public class PaymentezBaseActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.enter_left_to_right, R.anim.exit_left_to_right);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    protected void replaceRippleBackgroundColor(View button) {
+        RippleDrawable background = (RippleDrawable) button.getBackground();
+        Drawable drawable = background.getDrawable(0);
+        if(drawable != null) {
+            ColorStateList myColorStateList = new ColorStateList(
+                    new int[][]{
+                            new int[]{},
+                            new int[]{android.R.attr.state_pressed},
+                    },
+                    new int[] {
+                            PaymentezSDK.getInstance().getButtonBackgroundColor(),
+                            PaymentezSDK.getInstance().getButtonBackgroundColor()
+                    }
+            );
+            drawable.setTintList(myColorStateList);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package ar.com.fennoma.paymentezsdk.activities;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -7,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
 
 public class FourthActivity extends PaymentezBaseActivity {
@@ -29,12 +31,18 @@ public class FourthActivity extends PaymentezBaseActivity {
             text.setTextColor(PaymentezSDK.getInstance().getTextColor());
             TextView back = findViewById(R.id.back);
             back.setTextColor(PaymentezSDK.getInstance().getTextColor());
-            TextView next = findViewById(R.id.next);
-            next.setTextColor(PaymentezSDK.getInstance().getTextColor());
-            changeToolbarTextColor(PaymentezSDK.getInstance().getTextColor());
         }
         if(PaymentezSDK.getInstance().getButtonBackgroundColor() != null) {
             changeToolbarBackground(PaymentezSDK.getInstance().getButtonBackgroundColor());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                replaceRippleBackgroundColor(findViewById(R.id.next));
+            }
+            changeToolbarBackground(PaymentezSDK.getInstance().getButtonBackgroundColor());
+        }
+        if(PaymentezSDK.getInstance().getButtonTextColor() != null) {
+            TextView next = findViewById(R.id.next);
+            next.setTextColor(PaymentezSDK.getInstance().getButtonTextColor());
+            changeToolbarTextColor(PaymentezSDK.getInstance().getButtonTextColor());
         }
         setButtons();
     }
@@ -43,6 +51,7 @@ public class FourthActivity extends PaymentezBaseActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PaymentezSDK.getInstance().setOrderResult(PmzOrder.hardcoded());
                 setResult(RESULT_OK);
                 finish();
             }

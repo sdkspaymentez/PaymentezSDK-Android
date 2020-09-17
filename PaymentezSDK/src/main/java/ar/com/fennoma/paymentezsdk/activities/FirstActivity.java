@@ -1,16 +1,12 @@
 package ar.com.fennoma.paymentezsdk.activities;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
@@ -34,37 +30,19 @@ public class FirstActivity extends PaymentezBaseActivity {
         if(PaymentezSDK.getInstance().getTextColor() != null) {
             TextView text = findViewById(R.id.text);
             text.setTextColor(PaymentezSDK.getInstance().getTextColor());
-            TextView next = findViewById(R.id.next);
-            next.setTextColor(PaymentezSDK.getInstance().getTextColor());
-            changeToolbarTextColor(PaymentezSDK.getInstance().getTextColor());
         }
         if(PaymentezSDK.getInstance().getButtonBackgroundColor() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                replaceRippleBackgroundColor();
+                replaceRippleBackgroundColor(findViewById(R.id.next));
             }
             changeToolbarBackground(PaymentezSDK.getInstance().getButtonBackgroundColor());
         }
-        setButtons();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void replaceRippleBackgroundColor() {
-        TextView next = findViewById(R.id.next);
-        RippleDrawable background = (RippleDrawable) next.getBackground();
-        Drawable drawable = background.getDrawable(0);
-        if(drawable != null) {
-            ColorStateList myColorStateList = new ColorStateList(
-                    new int[][]{
-                            new int[]{},
-                            new int[]{android.R.attr.state_pressed},
-                    },
-                    new int[] {
-                            PaymentezSDK.getInstance().getButtonBackgroundColor(),
-                            PaymentezSDK.getInstance().getButtonBackgroundColor()
-                    }
-            );
-            drawable.setTintList(myColorStateList);
+        if(PaymentezSDK.getInstance().getButtonTextColor() != null) {
+            TextView next = findViewById(R.id.next);
+            next.setTextColor(PaymentezSDK.getInstance().getButtonTextColor());
+            changeToolbarTextColor(PaymentezSDK.getInstance().getButtonTextColor());
         }
+        setButtons();
     }
 
     private void setButtons() {
@@ -82,7 +60,7 @@ public class FirstActivity extends PaymentezBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
-            PaymentezSDK.getInstance().onSuccess();
+            PaymentezSDK.getInstance().onSearchSuccess();
             finish();
         }
     }
@@ -94,7 +72,7 @@ public class FirstActivity extends PaymentezBaseActivity {
                 new DialogUtils.IDialogListener() {
                     @Override
                     public void onAccept() {
-                        PaymentezSDK.getInstance().onCancel();
+                        PaymentezSDK.getInstance().onSearchCancel();
                         FirstActivity.super.onBackPressed();
                     }
 
