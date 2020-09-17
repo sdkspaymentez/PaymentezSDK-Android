@@ -3,12 +3,13 @@
 
     <application
         android:allowBackup="true">
-        <activity android:name=".activities.FirstActivity" android:theme="@style/PaymentezAppTheme"/>
-        <activity android:name=".activities.SecondActivity" android:theme="@style/PaymentezAppTheme"/>
-        <activity android:name=".activities.ThirdActivity" android:theme="@style/PaymentezAppTheme"/>
-        <activity android:name=".activities.FourthActivity" android:theme="@style/PaymentezAppTheme"/>
-        <activity android:name=".activities.PaymentezPurchaseDetailActivity" android:theme="@style/PaymentezAppTheme"/>
-        <activity android:name=".activities.PaymentezPaymentCheckerActivity" android:theme="@style/PaymentezAppTheme"/>
+
+        <activity android:name=".controllers.FirstActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.SecondActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.ThirdActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.FourthActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.PaymentezPurchaseDetailActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.PaymentezPaymentCheckerActivity" android:theme="@style/PaymentezAppTheme"/>
     </application>
 
 </manifest>

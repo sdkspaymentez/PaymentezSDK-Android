@@ -1,4 +1,4 @@
-package ar.com.fennoma.paymentezsdk.activities;
+package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import ar.com.fennoma.paymentezsdk.R;
-import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
 
 public class PaymentezBaseActivity extends AppCompatActivity {
 
@@ -108,8 +107,8 @@ public class PaymentezBaseActivity extends AppCompatActivity {
                             new int[]{android.R.attr.state_pressed},
                     },
                     new int[] {
-                            PaymentezSDK.getInstance().getButtonBackgroundColor(),
-                            PaymentezSDK.getInstance().getButtonBackgroundColor()
+                            PmzData.getInstance().getButtonBackgroundColor(),
+                            PmzData.getInstance().getButtonBackgroundColor()
                     }
             );
             drawable.setTintList(myColorStateList);

@@ -2,7 +2,7 @@ package ar.com.fennoma.paymentezsdkholder;
 
 import android.app.Application;
 
-import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
+import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 
 public class PmzApplication extends Application {
 

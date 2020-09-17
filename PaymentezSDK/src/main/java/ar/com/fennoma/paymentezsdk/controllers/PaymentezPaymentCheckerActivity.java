@@ -1,4 +1,4 @@
-package ar.com.fennoma.paymentezsdk.activities;
+package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
-import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
 
 public class PaymentezPaymentCheckerActivity extends PaymentezBaseActivity {
 
@@ -37,37 +36,37 @@ public class PaymentezPaymentCheckerActivity extends PaymentezBaseActivity {
         } else {
             finish();
             animActivityLeftToRight();
-            PaymentezSDK.getInstance().onPaymentCheckingError(null, new PmzError(PmzError.NO_ORDER_SET_ERROR));
+            PmzData.getInstance().onPaymentCheckingError(null, new PmzError(PmzError.NO_ORDER_SET_ERROR));
         }
     }
 
     private void setViews() {
-        if(PaymentezSDK.getInstance().getBackgroundColor() != null) {
+        if(PmzData.getInstance().getBackgroundColor() != null) {
             View background = findViewById(R.id.background);
-            background.setBackgroundColor(PaymentezSDK.getInstance().getBackgroundColor());
+            background.setBackgroundColor(PmzData.getInstance().getBackgroundColor());
         }
-        if(PaymentezSDK.getInstance().getTextColor() != null) {
+        if(PmzData.getInstance().getTextColor() != null) {
             TextView text = findViewById(R.id.text);
-            text.setTextColor(PaymentezSDK.getInstance().getTextColor());
+            text.setTextColor(PmzData.getInstance().getTextColor());
             ProgressBar progress = findViewById(R.id.progress);
-            progress.getIndeterminateDrawable().setColorFilter(PaymentezSDK.getInstance().getTextColor(), PorterDuff.Mode.SRC_IN );
+            progress.getIndeterminateDrawable().setColorFilter(PmzData.getInstance().getTextColor(), PorterDuff.Mode.SRC_IN);
         }
-        if(PaymentezSDK.getInstance().getButtonBackgroundColor() != null) {
+        if(PmzData.getInstance().getButtonBackgroundColor() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 replaceRippleBackgroundColor(findViewById(R.id.payment_error));
                 replaceRippleBackgroundColor(findViewById(R.id.place_error));
                 replaceRippleBackgroundColor(findViewById(R.id.success));
             }
-            changeToolbarBackground(PaymentezSDK.getInstance().getButtonBackgroundColor());
+            changeToolbarBackground(PmzData.getInstance().getButtonBackgroundColor());
         }
-        if(PaymentezSDK.getInstance().getButtonTextColor() != null) {
+        if(PmzData.getInstance().getButtonTextColor() != null) {
             TextView paymentError = findViewById(R.id.payment_error);
-            paymentError.setTextColor(PaymentezSDK.getInstance().getButtonTextColor());
+            paymentError.setTextColor(PmzData.getInstance().getButtonTextColor());
             TextView placeError = findViewById(R.id.place_error);
-            placeError.setTextColor(PaymentezSDK.getInstance().getButtonTextColor());
+            placeError.setTextColor(PmzData.getInstance().getButtonTextColor());
             TextView success = findViewById(R.id.success);
-            success.setTextColor(PaymentezSDK.getInstance().getButtonTextColor());
-            changeToolbarTextColor(PaymentezSDK.getInstance().getButtonTextColor());
+            success.setTextColor(PmzData.getInstance().getButtonTextColor());
+            changeToolbarTextColor(PmzData.getInstance().getButtonTextColor());
         }
     }
 
@@ -86,14 +85,14 @@ public class PaymentezPaymentCheckerActivity extends PaymentezBaseActivity {
             @Override
             public void onClick(View view) {
                 finish();
-                PaymentezSDK.getInstance().onPaymentCheckingError(order, new PmzError(PmzError.PLACE_ERROR));
+                PmzData.getInstance().onPaymentCheckingError(order, new PmzError(PmzError.PLACE_ERROR));
             }
         });
         findViewById(R.id.payment_error).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
-                PaymentezSDK.getInstance().onPaymentCheckingError(order, new PmzError(PmzError.PAYMENT_ERROR));
+                PmzData.getInstance().onPaymentCheckingError(order, new PmzError(PmzError.PAYMENT_ERROR));
             }
         });
     }

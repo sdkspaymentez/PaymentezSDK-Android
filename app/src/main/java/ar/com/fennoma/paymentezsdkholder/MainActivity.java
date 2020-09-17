@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
-import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
+import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 
 public class MainActivity extends AppCompatActivity {
 
