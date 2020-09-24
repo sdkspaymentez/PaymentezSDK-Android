@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private View button;
     private View detailButton;
+    private View searchWithStoreId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,23 +32,44 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            PaymentezSDK.getInstance()
-                    .setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark))
-                    .setButtonBackgroundColor(getResources().getColor(android.R.color.holo_green_dark))
-                    .setTextColor(getResources().getColor(android.R.color.black))
-                    .setButtonTextColor(getResources().getColor(android.R.color.white))
-                    .setContext(MainActivity.this)
-                    .startSearch(new PaymentezSDK.PmzSearchListener() {
-                        @Override
-                        public void onFinishedSuccessfully(PmzOrder order) {
-                            Toast.makeText(MainActivity.this, "El flujo de compra terminó bien", Toast.LENGTH_LONG).show();
-                        }
+                PaymentezSDK.getInstance()
+                        .setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark))
+                        .setButtonBackgroundColor(getResources().getColor(android.R.color.holo_green_dark))
+                        .setTextColor(getResources().getColor(android.R.color.black))
+                        .setButtonTextColor(getResources().getColor(android.R.color.white))
+                        .startSearch(MainActivity.this, new PaymentezSDK.PmzSearchListener() {
+                            @Override
+                            public void onFinishedSuccessfully(PmzOrder order) {
+                                Toast.makeText(MainActivity.this, "El flujo de compra terminó bien", Toast.LENGTH_LONG).show();
+                            }
 
-                        @Override
-                        public void onCancel() {
-                            Toast.makeText(MainActivity.this, "El flujo de compra fue Cancelado", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                            @Override
+                            public void onCancel() {
+                                Toast.makeText(MainActivity.this, "El flujo de compra fue Cancelado", Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
+        });
+
+        searchWithStoreId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PaymentezSDK.getInstance()
+                        .setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark))
+                        .setButtonBackgroundColor(getResources().getColor(android.R.color.holo_green_dark))
+                        .setTextColor(getResources().getColor(android.R.color.black))
+                        .setButtonTextColor(getResources().getColor(android.R.color.white))
+                        .startSearch(MainActivity.this, 120L, new PaymentezSDK.PmzSearchListener() {
+                            @Override
+                            public void onFinishedSuccessfully(PmzOrder order) {
+                                Toast.makeText(MainActivity.this, "El flujo de compra terminó bien", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                Toast.makeText(MainActivity.this, "El flujo de compra fue Cancelado", Toast.LENGTH_LONG).show();
+                            }
+                        });
             }
         });
 
@@ -59,8 +81,7 @@ public class MainActivity extends AppCompatActivity {
                         .setButtonBackgroundColor(getResources().getColor(android.R.color.holo_green_dark))
                         .setTextColor(getResources().getColor(android.R.color.black))
                         .setButtonTextColor(getResources().getColor(android.R.color.white))
-                        .setContext(MainActivity.this)
-                        .startPaymentChecking(PmzOrder.hardcoded(), new PaymentezSDK.PmzPaymentCheckerListener() {
+                        .startPaymentChecking(MainActivity.this, PmzOrder.hardcoded(), new PaymentezSDK.PmzPaymentCheckerListener() {
                             @Override
                             public void onFinishedSuccessfully(PmzOrder order) {
                                 Toast.makeText(MainActivity.this, "La compra finalizó con éxito", Toast.LENGTH_LONG).show();
@@ -88,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void findViews() {
         button = findViewById(R.id.button);
+        searchWithStoreId = findViewById(R.id.search_with_store_id);
         detailButton = findViewById(R.id.detail);
     }
 }

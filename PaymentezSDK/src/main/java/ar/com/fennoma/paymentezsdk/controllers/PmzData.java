@@ -10,8 +10,6 @@ class PmzData {
 
     private static PmzData instance;
 
-    private Context context;
-
     private String secret;
     private String apiKey;
 
@@ -62,21 +60,23 @@ class PmzData {
         backgroundColor = color;
     }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
     public Integer getBackgroundColor() {
         return backgroundColor;
     }
 
-    public void startSearch(PaymentezSDK.PmzSearchListener listener) {
+    public void startSearch(Context context, Long storeId, PaymentezSDK.PmzSearchListener listener) {
         this.searchListener = listener;
-        Intent intent = new Intent(context, FirstActivity.class);
+        Intent intent;
+        if(storeId != null) {
+            intent = new Intent(context, SecondActivity.class);
+            intent.putExtra(SecondActivity.STORE_ID, storeId);
+        } else {
+            intent = new Intent(context, FirstActivity.class);
+        }
         context.startActivity(intent);
     }
 
-    public void startPaymentChecking(PmzOrder order, PaymentezSDK.PmzPaymentCheckerListener listener) {
+    public void startPaymentChecking(Context context, PmzOrder order, PaymentezSDK.PmzPaymentCheckerListener listener) {
         this.paymentChecker = listener;
         Intent intent = new Intent(context, PaymentezPaymentCheckerActivity.class);
         intent.putExtra(PaymentezPaymentCheckerActivity.PMZ_ORDER, order);
@@ -127,7 +127,4 @@ class PmzData {
         this.apiKey = apiKey;
     }
 
-    public Context getContext() {
-        return context;
-    }
 }

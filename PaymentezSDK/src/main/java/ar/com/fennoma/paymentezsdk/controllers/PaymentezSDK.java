@@ -35,31 +35,40 @@ public class PaymentezSDK {
         return instance;
     }
 
-    public void startSearch(PmzSearchListener listener) {
-        if(isInitialized() && isContextAvailable()) {
-            PmzData.getInstance().startSearch(listener);
+    public void startSearch(Context context, Long storeId, PmzSearchListener listener) {
+        if(isInitialized()) {
+            checkContext(context);
+            PmzData.getInstance().startSearch(context, storeId, listener);
+        }
+    }
+
+    public void startSearch(Context context, PmzSearchListener listener) {
+        if(isInitialized()) {
+            checkContext(context);
+            PmzData.getInstance().startSearch(context, null, listener);
         }
     }
 
     private boolean isInitialized() {
-        if(TextUtils.isEmpty(PmzData.getInstance().getApiKey()) || TextUtils.isEmpty(PmzData.getInstance().getSecret())) {
+        if (TextUtils.isEmpty(PmzData.getInstance().getApiKey()) || TextUtils.isEmpty(PmzData.getInstance().getSecret())) {
             throw new RuntimeException("PaymentezSDK not initialized");
         } else {
             return true;
         }
     }
 
-    private boolean isContextAvailable() {
-        if(PmzData.getInstance().getContext() == null) {
-            throw new RuntimeException("PaymentezSDK has no context provided");
-        } else {
-            return true;
+    public void startPaymentChecking(Context context, PmzOrder order, PmzPaymentCheckerListener listener) {
+        if(isInitialized()) {
+            checkContext(context);
+            PmzData.getInstance().startPaymentChecking(context, order, listener);
         }
     }
 
-    public void startPaymentChecking(PmzOrder order, PmzPaymentCheckerListener listener) {
-        if(isInitialized()) {
-            PmzData.getInstance().startPaymentChecking(order, listener);
+    private boolean checkContext(Context context) {
+        if(context == null) {
+            throw new RuntimeException("PaymentezSDK has no context provided");
+        } else {
+            return true;
         }
     }
 
@@ -80,11 +89,6 @@ public class PaymentezSDK {
 
     public PaymentezSDK setBackgroundColor(int color) {
         PmzData.getInstance().setBackgroundColor(color);
-        return this;
-    }
-
-    public PaymentezSDK setContext(Context context) {
-        PmzData.getInstance().setContext(context);
         return this;
     }
 

@@ -12,6 +12,8 @@ import ar.com.fennoma.paymentezsdk.R;
 
 public class SecondActivity extends PaymentezBaseActivity {
 
+    public static final String STORE_ID = "store Id";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
