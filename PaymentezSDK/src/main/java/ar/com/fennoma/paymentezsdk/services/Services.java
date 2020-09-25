@@ -17,8 +17,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 import ar.com.fennoma.paymentezsdk.models.Store;
-import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
 
 public class Services {
 

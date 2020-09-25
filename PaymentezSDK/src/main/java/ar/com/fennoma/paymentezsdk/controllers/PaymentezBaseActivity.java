@@ -1,20 +1,21 @@
-package ar.com.fennoma.paymentezsdk.activities;
+package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 
 import ar.com.fennoma.paymentezsdk.R;
-import ar.com.fennoma.paymentezsdk.presenter.PaymentezSDK;
 
 public class PaymentezBaseActivity extends AppCompatActivity {
 
@@ -26,6 +27,12 @@ public class PaymentezBaseActivity extends AppCompatActivity {
         hideTitle();
         setToolbarTitle(text);
         setBackButton();
+    }
+
+    protected void setFullTitleWOBack(String text) {
+        setToolbar();
+        hideTitle();
+        setToolbarTitle(text);
     }
 
     protected void setToolbar() {
@@ -44,6 +51,11 @@ public class PaymentezBaseActivity extends AppCompatActivity {
         if(toolbar != null && color != null) {
             toolbar.setBackgroundColor(color);
         }
+        if (color != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+        }
     }
 
     protected void changeToolbarTextColor(Integer color) {
@@ -51,9 +63,9 @@ public class PaymentezBaseActivity extends AppCompatActivity {
         if(title != null && color != null) {
             title.setTextColor(color);
         }
-        if(toolbar != null && toolbar.getNavigationIcon() != null && color != null) {
-            Drawable drawable = toolbar.getNavigationIcon();
-            drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        if(color != null && toolbar != null && toolbar.getNavigationIcon() != null) {
+            Drawable navigationIcon = toolbar.getNavigationIcon();
+            navigationIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -85,9 +97,8 @@ public class PaymentezBaseActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    protected void replaceRippleBackgroundColor() {
-        TextView next = findViewById(R.id.next);
-        RippleDrawable background = (RippleDrawable) next.getBackground();
+    protected void replaceRippleBackgroundColor(View button) {
+        RippleDrawable background = (RippleDrawable) button.getBackground();
         Drawable drawable = background.getDrawable(0);
         if(drawable != null) {
             ColorStateList myColorStateList = new ColorStateList(
@@ -96,23 +107,11 @@ public class PaymentezBaseActivity extends AppCompatActivity {
                             new int[]{android.R.attr.state_pressed},
                     },
                     new int[] {
-                            PaymentezSDK.getInstance().getButtonBackgroundColor(),
-                            PaymentezSDK.getInstance().getButtonBackgroundColor()
+                            PmzData.getInstance().getButtonBackgroundColor(),
+                            PmzData.getInstance().getButtonBackgroundColor()
                     }
             );
             drawable.setTintList(myColorStateList);
         }
-    }
-
-    protected void showLoading(){
-
-    }
-
-    protected void hideLoading() {
-
-    }
-
-    protected void onSessionExpired() {
-
     }
 }

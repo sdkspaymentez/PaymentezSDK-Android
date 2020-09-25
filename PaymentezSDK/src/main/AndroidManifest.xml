@@ -2,12 +2,14 @@
     package="ar.com.fennoma.paymentezsdk">
 
     <application
-        android:allowBackup="true"
-        android:theme="@style/PaymentezAppTheme">
-        <activity android:name=".activities.FirstActivity"/>
-        <activity android:name=".activities.SecondActivity"/>
-        <activity android:name=".activities.ThirdActivity"/>
-        <activity android:name=".activities.FourthActivity"/>
+        android:allowBackup="true">
+
+        <activity android:name=".controllers.FirstActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.SecondActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.ThirdActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.FourthActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.PaymentezPurchaseDetailActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.PaymentezPaymentCheckerActivity" android:theme="@style/PaymentezAppTheme"/>
     </application>
 
 </manifest>
