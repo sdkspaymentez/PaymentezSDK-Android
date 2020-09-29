@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                         .setButtonBackgroundColor(getResources().getColor(android.R.color.holo_green_dark))
                         .setTextColor(getResources().getColor(android.R.color.black))
                         .setButtonTextColor(getResources().getColor(android.R.color.white))
-                        .startPaymentChecking(MainActivity.this, PmzOrder.hardcoded(), new PaymentezSDK.PmzPaymentCheckerListener() {
+                        .startPayAndPlace(MainActivity.this, PmzOrder.hardcoded(), "paymentReference", new PaymentezSDK.PmzPayAndPlaceListener() {
                             @Override
                             public void onFinishedSuccessfully(PmzOrder order) {
                                 Toast.makeText(MainActivity.this, "La compra finalizó con éxito", Toast.LENGTH_LONG).show();

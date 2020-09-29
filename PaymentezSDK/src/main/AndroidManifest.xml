@@ -9,7 +9,7 @@
         <activity android:name=".controllers.PmzProductActivity" android:theme="@style/PaymentezAppTheme"/>
         <activity android:name=".controllers.PmzSummaryActivity" android:theme="@style/PaymentezAppTheme"/>
         <activity android:name=".controllers.PmzResultActivity" android:theme="@style/PaymentezAppTheme"/>
-        <activity android:name=".controllers.PmzPaymentCheckerActivity" android:theme="@style/PaymentezAppTheme"/>
+        <activity android:name=".controllers.PmzPayAndPlaceActivity" android:theme="@style/PaymentezAppTheme"/>
     </application>
 
 </manifest>

@@ -14,17 +14,19 @@ import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 
-public class PmzPaymentCheckerActivity extends PmzBaseActivity {
+public class PmzPayAndPlaceActivity extends PmzBaseActivity {
 
     public static final String PMZ_ORDER = "pmz order";
+    public static final String PMZ_PAYMENT_REFERENCE = "pmz payment reference";
 
     private PmzOrder order;
+    private String paymentReference;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pmz_payment_checker_activity);
-        setFullTitleWOBack(getString(R.string.activity_pmz_payment_checker_title));
+        setContentView(R.layout.activity_pmz_pay_and_place_activity);
+        setFullTitleWOBack(getString(R.string.activity_pmz_pay_and_place_title));
         setViews();
         handleIntent();
     }
@@ -32,6 +34,7 @@ public class PmzPaymentCheckerActivity extends PmzBaseActivity {
     private void handleIntent() {
         if(getIntent() != null && getIntent().getParcelableExtra(PMZ_ORDER) != null) {
             this.order = getIntent().getParcelableExtra(PMZ_ORDER);
+            this.paymentReference = getIntent().getStringExtra(PMZ_PAYMENT_REFERENCE);
             setButtons();
         } else {
             finish();
@@ -74,7 +77,7 @@ public class PmzPaymentCheckerActivity extends PmzBaseActivity {
         findViewById(R.id.success).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PmzPaymentCheckerActivity.this, PmzResultActivity.class);
+                Intent intent = new Intent(PmzPayAndPlaceActivity.this, PmzResultActivity.class);
                 intent.putExtra(PmzResultActivity.PMZ_ORDER, order);
                 startActivity(intent);
                 animActivityRightToLeft();

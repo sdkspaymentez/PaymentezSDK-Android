@@ -12,12 +12,12 @@
     <string name="activity_pmz_menu_title">Menú de tienda</string>
     <string name="activity_pmz_product_title">Configuración de producto</string>
     <string name="activity_pmz_summary_title">Carrito</string>
+    <string name="activity_pmz_result_title">Producto Comprado</string>
 
-    <string name="activity_pmz_result_title">Compra Finalizada</string>
     <string name="purchase_detail_content">Producto Comprado</string>
     <string name="paymentez_payment_checker_checking">Procesando…</string>
     <string name="paymentez_payment_checker_place_error_button">Error de Place</string>
     <string name="paymentez_payment_checker_success_button">Éxito</string>
     <string name="paymentez_payment_checker_payment_error">Error de Pago</string>
-    <string name="activity_pmz_payment_checker_title">Procesando pago</string>
+    <string name="activity_pmz_pay_and_place_title">Procesando pago</string>
 </resources>

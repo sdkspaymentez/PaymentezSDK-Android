@@ -14,7 +14,7 @@ class PmzData {
     private String apiKey;
 
     private PaymentezSDK.PmzSearchListener searchListener;
-    private PaymentezSDK.PmzPaymentCheckerListener paymentChecker;
+    private PaymentezSDK.PmzPayAndPlaceListener paymentChecker;
 
     private Integer backgroundColor;
     private Integer textColor;
@@ -76,10 +76,11 @@ class PmzData {
         context.startActivity(intent);
     }
 
-    public void startPaymentChecking(Context context, PmzOrder order, PaymentezSDK.PmzPaymentCheckerListener listener) {
+    public void startPayAndPlace(Context context, PmzOrder order, String paymentReference, PaymentezSDK.PmzPayAndPlaceListener listener) {
         this.paymentChecker = listener;
-        Intent intent = new Intent(context, PmzPaymentCheckerActivity.class);
-        intent.putExtra(PmzPaymentCheckerActivity.PMZ_ORDER, order);
+        Intent intent = new Intent(context, PmzPayAndPlaceActivity.class);
+        intent.putExtra(PmzPayAndPlaceActivity.PMZ_ORDER, order);
+        intent.putExtra(PmzPayAndPlaceActivity.PMZ_PAYMENT_REFERENCE, paymentReference);
         context.startActivity(intent);
     }
 

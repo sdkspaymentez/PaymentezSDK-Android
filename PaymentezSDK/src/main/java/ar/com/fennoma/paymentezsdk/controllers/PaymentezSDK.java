@@ -1,6 +1,5 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -9,7 +8,6 @@ import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 
 public class PaymentezSDK {
 
-    @SuppressLint("StaticFieldLeak")
     private static PaymentezSDK instance;
 
     public static void initialize(String apiKey, String secret) {
@@ -23,7 +21,7 @@ public class PaymentezSDK {
         void onCancel();
     }
 
-    public interface PmzPaymentCheckerListener {
+    public interface PmzPayAndPlaceListener {
         void onFinishedSuccessfully(PmzOrder order);
         void onError(PmzOrder order, PmzError error);
     }
@@ -57,10 +55,10 @@ public class PaymentezSDK {
         }
     }
 
-    public void startPaymentChecking(Context context, PmzOrder order, PmzPaymentCheckerListener listener) {
+    public void startPayAndPlace(Context context, PmzOrder order, String paymentReference, PmzPayAndPlaceListener listener) {
         if(isInitialized()) {
             checkContext(context);
-            PmzData.getInstance().startPaymentChecking(context, order, listener);
+            PmzData.getInstance().startPayAndPlace(context, order, paymentReference, listener);
         }
     }
 
