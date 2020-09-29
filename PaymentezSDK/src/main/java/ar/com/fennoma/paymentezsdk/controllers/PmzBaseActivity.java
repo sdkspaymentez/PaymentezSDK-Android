@@ -17,7 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import ar.com.fennoma.paymentezsdk.R;
 
-public class PaymentezBaseActivity extends AppCompatActivity {
+public class PmzBaseActivity extends AppCompatActivity {
 
     protected static final int MAIN_FLOW_KEY = 1001;
     private Toolbar toolbar;

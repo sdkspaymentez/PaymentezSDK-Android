@@ -10,15 +10,13 @@ import androidx.annotation.Nullable;
 
 import ar.com.fennoma.paymentezsdk.R;
 
-public class SecondActivity extends PaymentezBaseActivity {
-
-    public static final String STORE_ID = "store Id";
+public class PmzProductActivity extends PmzBaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_second);
-        setFullTitleWithBack(getString(R.string.activity_second_title));
+        setContentView(R.layout.activity_pmz_product);
+        setFullTitleWithBack(getString(R.string.activity_pmz_product_title));
         setViews();
     }
 
@@ -51,7 +49,7 @@ public class SecondActivity extends PaymentezBaseActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SecondActivity.this, ThirdActivity.class);
+                Intent intent = new Intent(PmzProductActivity.this, PmzSummaryActivity.class);
                 startActivityForResult(intent, MAIN_FLOW_KEY);
                 animActivityRightToLeft();
             }

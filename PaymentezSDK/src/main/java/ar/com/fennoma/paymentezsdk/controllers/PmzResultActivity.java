@@ -12,7 +12,7 @@ import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 
-public class PaymentezPurchaseDetailActivity extends PaymentezBaseActivity {
+public class PmzResultActivity extends PmzBaseActivity {
 
     public static final String PMZ_ORDER = "pmz order";
 
@@ -21,8 +21,8 @@ public class PaymentezPurchaseDetailActivity extends PaymentezBaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_paymentez_purchase_detail);
-        setFullTitleWithBack(getString(R.string.activity_purchase_detail_title));
+        setContentView(R.layout.activity_pmz_result_detail);
+        setFullTitleWithBack(getString(R.string.activity_pmz_result_title));
         setViews();
         handleIntent();
     }

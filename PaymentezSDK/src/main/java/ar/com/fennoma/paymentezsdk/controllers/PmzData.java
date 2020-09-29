@@ -68,18 +68,18 @@ class PmzData {
         this.searchListener = listener;
         Intent intent;
         if(storeId != null) {
-            intent = new Intent(context, SecondActivity.class);
-            intent.putExtra(SecondActivity.STORE_ID, storeId);
+            intent = new Intent(context, PmzMenuActivity.class);
+            intent.putExtra(PmzMenuActivity.STORE_ID, storeId);
         } else {
-            intent = new Intent(context, FirstActivity.class);
+            intent = new Intent(context, PmzStoresActivity.class);
         }
         context.startActivity(intent);
     }
 
     public void startPaymentChecking(Context context, PmzOrder order, PaymentezSDK.PmzPaymentCheckerListener listener) {
         this.paymentChecker = listener;
-        Intent intent = new Intent(context, PaymentezPaymentCheckerActivity.class);
-        intent.putExtra(PaymentezPaymentCheckerActivity.PMZ_ORDER, order);
+        Intent intent = new Intent(context, PmzPaymentCheckerActivity.class);
+        intent.putExtra(PmzPaymentCheckerActivity.PMZ_ORDER, order);
         context.startActivity(intent);
     }
 

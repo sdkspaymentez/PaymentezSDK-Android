@@ -1,5 +1,6 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -8,15 +9,15 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import ar.com.fennoma.paymentezsdk.R;
-import ar.com.fennoma.paymentezsdk.models.PmzOrder;
+import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
 
-public class FourthActivity extends PaymentezBaseActivity {
+public class PmzStoresActivity extends PmzBaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fourth);
-        setFullTitleWithBack(getString(R.string.activity_fourth_title));
+        setContentView(R.layout.activity_pmz_stores);
+        setFullTitleWithBack(getString(R.string.activity_pmz_stores_title));
         setViews();
     }
 
@@ -28,11 +29,8 @@ public class FourthActivity extends PaymentezBaseActivity {
         if(PmzData.getInstance().getTextColor() != null) {
             TextView text = findViewById(R.id.text);
             text.setTextColor(PmzData.getInstance().getTextColor());
-            TextView back = findViewById(R.id.back);
-            back.setTextColor(PmzData.getInstance().getTextColor());
         }
         if(PmzData.getInstance().getButtonBackgroundColor() != null) {
-            changeToolbarBackground(PmzData.getInstance().getButtonBackgroundColor());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 replaceRippleBackgroundColor(findViewById(R.id.next));
             }
@@ -50,22 +48,37 @@ public class FourthActivity extends PaymentezBaseActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PaymentezSDK.getInstance().setOrderResult(PmzOrder.hardcoded());
-                setResult(RESULT_OK);
-                finish();
-            }
-        });
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
+                Intent intent = new Intent(PmzStoresActivity.this, PmzMenuActivity.class);
+                startActivityForResult(intent, MAIN_FLOW_KEY);
+                animActivityRightToLeft();
             }
         });
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
+            PmzData.getInstance().onSearchSuccess();
+            finish();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        animActivityLeftToRight();
+        DialogUtils.showDialog(this, getString(R.string.first_activity_cancel_title),
+                getString(R.string.first_activity_cancel_message),
+                new DialogUtils.IDialogListener() {
+                    @Override
+                    public void onAccept() {
+                        PmzData.getInstance().onSearchCancel();
+                        PmzStoresActivity.super.onBackPressed();
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
     }
 }

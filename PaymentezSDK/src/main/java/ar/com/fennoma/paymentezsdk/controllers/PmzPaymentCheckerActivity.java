@@ -14,7 +14,7 @@ import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 
-public class PaymentezPaymentCheckerActivity extends PaymentezBaseActivity {
+public class PmzPaymentCheckerActivity extends PmzBaseActivity {
 
     public static final String PMZ_ORDER = "pmz order";
 
@@ -23,8 +23,8 @@ public class PaymentezPaymentCheckerActivity extends PaymentezBaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment_checker_activity);
-        setFullTitleWOBack(getString(R.string.activity_payment_checker_title));
+        setContentView(R.layout.activity_pmz_payment_checker_activity);
+        setFullTitleWOBack(getString(R.string.activity_pmz_payment_checker_title));
         setViews();
         handleIntent();
     }
@@ -74,8 +74,8 @@ public class PaymentezPaymentCheckerActivity extends PaymentezBaseActivity {
         findViewById(R.id.success).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PaymentezPaymentCheckerActivity.this, PaymentezPurchaseDetailActivity.class);
-                intent.putExtra(PaymentezPurchaseDetailActivity.PMZ_ORDER, order);
+                Intent intent = new Intent(PmzPaymentCheckerActivity.this, PmzResultActivity.class);
+                intent.putExtra(PmzResultActivity.PMZ_ORDER, order);
                 startActivity(intent);
                 animActivityRightToLeft();
                 finish();
