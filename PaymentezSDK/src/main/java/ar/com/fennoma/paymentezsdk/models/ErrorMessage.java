@@ -1,29 +1,61 @@
 package ar.com.fennoma.paymentezsdk.models;
 
-import android.text.TextUtils;
+import android.content.Context;
 
-public enum ErrorMessage {
+import ar.com.fennoma.paymentezsdk.R;
 
-    INVALID_SESSION("invalid_session"),
-    INVALID_DATA("Los datos ingresados son incorrectos."),
-    INVALID_LOGIN("El usuario o la clave son incorrectos."),
-    SINISTER_CREATE_INVALID_ZIPCODE("Debe indicar un código postal valido."),
-    UNEXPECTED("unexpected");
+public class ErrorMessage {
+
+    public enum ErrorCode {
+        INVALID_SESSION("invalid_session"),
+        INVALID_DATA("Los datos ingresados son incorrectos."),
+        INVALID_LOGIN("El usuario o la clave son incorrectos."),
+        SINISTER_CREATE_INVALID_ZIPCODE("Debe indicar un código postal valido."),
+        UNEXPECTED("unexpected");
+
+        private String errorCode;
+
+        ErrorCode(String errorCode) {
+            this.errorCode = errorCode;
+        }
+
+        public String getErrorCode() {
+            return errorCode;
+        }
+
+        public static ErrorCode getError(String errorCode) {
+            if (errorCode == null) {
+                return null;
+            }
+            for (ErrorCode key : values()) {
+                if (errorCode.equalsIgnoreCase(key.getErrorCode())) {
+                    return key;
+                }
+            }
+            return UNEXPECTED;
+        }
+
+        public boolean equals(String errorCode) {
+            return this.errorCode.equals(errorCode);
+        }
+    }
 
     public static final String GENERIC_ERROR_IDENTIFIER = "generic error";
 
-    ErrorMessage(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    private String errorCode;
+    private ErrorCode code;
     private String errorMessage;
 
-    public String getErrorCode() {
-        return errorCode;
+    public ErrorCode getErrorCode() {
+        return code;
     }
 
     public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public static ErrorMessage getError(String errorCode) {
+        ErrorMessage errorMessage = new ErrorMessage();
+        errorMessage.seterrorCode(ErrorCode.getError(errorCode));
         return errorMessage;
     }
 
@@ -31,19 +63,19 @@ public enum ErrorMessage {
         this.errorMessage = errorMessage;
     }
 
-    public static ErrorMessage getError(String errorCode) {
-        if (errorCode == null) {
-            return null;
-        }
-        for (ErrorMessage key : values()) {
-            if (errorCode.equalsIgnoreCase(key.getErrorCode())) {
-                return key;
-            }
-        }
-        return UNEXPECTED;
+    public boolean isInvalidSession() {
+        return code != null && code.equals(ErrorCode.INVALID_SESSION.errorCode);
     }
 
-    public boolean isInvalidSession() {
-        return !TextUtils.isEmpty(errorCode) && errorCode.equals(INVALID_SESSION.errorCode);
+    public String getErrorMessage(Context context) {
+        switch (code) {
+            case UNEXPECTED:
+                return context.getString(R.string.generic_error);
+        }
+        return context.getString(R.string.generic_error);
+    }
+
+    public void seterrorCode(ErrorCode code) {
+        this.code = code;
     }
 }

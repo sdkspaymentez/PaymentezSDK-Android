@@ -8,6 +8,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
+
 public class PmzOrder implements Parcelable {
 
     private Long id;
@@ -40,6 +42,11 @@ public class PmzOrder implements Parcelable {
     private String statusDescription;
     private List<PmzItem> items;
 
+    private String currency;
+    private String paymentMethodReference;
+    private String paymentReference;
+    private Integer service;
+
     public static PmzOrder hardcoded() {
         try {
             return fromJSONObject(new JSONObject(json));
@@ -49,7 +56,7 @@ public class PmzOrder implements Parcelable {
         return new PmzOrder();
     }
 
-    private static PmzOrder fromJSONObject(JSONObject json) {
+    public static PmzOrder fromJSONObject(JSONObject json) {
         PmzOrder order = new PmzOrder();
         if(json != null) {
             try {
@@ -142,6 +149,18 @@ public class PmzOrder implements Parcelable {
             }
         }
         return order;
+    }
+
+    public Object getJSONForPayment() throws JSONException {
+        JSONObject params = new JSONObject();
+        params.put("amount", totalAmount);
+        params.put("currency", currency);
+        params.put("id_order", id);
+        params.put("payment_method_reference", paymentMethodReference);
+        params.put("payment_reference", paymentReference);
+        params.put("service", service);
+        params.put("session", PaymentezSDK.getInstance().getToken());
+        return params;
     }
 
     public Long getId() {
@@ -376,34 +395,8 @@ public class PmzOrder implements Parcelable {
         this.buyerEmail = buyerEmail;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.buyerEmail);
-    }
-
     public PmzOrder() {
     }
-
-    protected PmzOrder(Parcel in) {
-        this.buyerEmail = in.readString();
-    }
-
-    public static final Creator<PmzOrder> CREATOR = new Creator<PmzOrder>() {
-        @Override
-        public PmzOrder createFromParcel(Parcel source) {
-            return new PmzOrder(source);
-        }
-
-        @Override
-        public PmzOrder[] newArray(int size) {
-            return new PmzOrder[size];
-        }
-    };
 
     private static String json = "{\n" +
             "    \"id\": 8493,\n" +
@@ -469,4 +462,126 @@ public class PmzOrder implements Parcelable {
             "    \"delivery_price\": 0,\n" +
             "    \"status_description\": null\n" +
             "  }";
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getPaymentMethodReference() {
+        return paymentMethodReference;
+    }
+
+    public void setPaymentMethodReference(String paymentMethodReference) {
+        this.paymentMethodReference = paymentMethodReference;
+    }
+
+    public String getPaymentReference() {
+        return paymentReference;
+    }
+
+    public void setPaymentReference(String paymentReference) {
+        this.paymentReference = paymentReference;
+    }
+
+    public Integer getService() {
+        return service;
+    }
+
+    public void setService(Integer service) {
+        this.service = service;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeValue(this.status);
+        dest.writeValue(this.tax);
+        dest.writeString(this.buyerEmail);
+        dest.writeString(this.buyerName);
+        dest.writeString(this.buyerPhone);
+        dest.writeString(this.buyerFiscalNumber);
+        dest.writeString(this.userReference);
+        dest.writeString(this.orderAppReference);
+        dest.writeString(this.confirmationCode);
+        dest.writeString(this.tableReference);
+        dest.writeString(this.deliveryDate);
+        dest.writeString(this.reserveCode);
+        dest.writeString(this.datePlaced);
+        dest.writeString(this.dateStarted);
+        dest.writeValue(this.orderType);
+        dest.writeValue(this.totalAmount);
+        dest.writeString(this.addressLine1);
+        dest.writeString(this.addressLine2);
+        dest.writeString(this.addressCity);
+        dest.writeString(this.addressState);
+        dest.writeString(this.addressZip);
+        dest.writeString(this.addressCountry);
+        dest.writeValue(this.addressLatitude);
+        dest.writeValue(this.addressLongitude);
+        dest.writeString(this.deliveryInstructions);
+        dest.writeValue(this.deliveryPrice);
+        dest.writeString(this.statusDescription);
+        dest.writeTypedList(this.items);
+        dest.writeString(this.currency);
+        dest.writeString(this.paymentMethodReference);
+        dest.writeString(this.paymentReference);
+        dest.writeValue(this.service);
+    }
+
+    protected PmzOrder(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.status = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.tax = (Double) in.readValue(Double.class.getClassLoader());
+        this.buyerEmail = in.readString();
+        this.buyerName = in.readString();
+        this.buyerPhone = in.readString();
+        this.buyerFiscalNumber = in.readString();
+        this.userReference = in.readString();
+        this.orderAppReference = in.readString();
+        this.confirmationCode = in.readString();
+        this.tableReference = in.readString();
+        this.deliveryDate = in.readString();
+        this.reserveCode = in.readString();
+        this.datePlaced = in.readString();
+        this.dateStarted = in.readString();
+        this.orderType = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.totalAmount = (Long) in.readValue(Long.class.getClassLoader());
+        this.addressLine1 = in.readString();
+        this.addressLine2 = in.readString();
+        this.addressCity = in.readString();
+        this.addressState = in.readString();
+        this.addressZip = in.readString();
+        this.addressCountry = in.readString();
+        this.addressLatitude = (Double) in.readValue(Double.class.getClassLoader());
+        this.addressLongitude = (Double) in.readValue(Double.class.getClassLoader());
+        this.deliveryInstructions = in.readString();
+        this.deliveryPrice = (Double) in.readValue(Double.class.getClassLoader());
+        this.statusDescription = in.readString();
+        this.items = in.createTypedArrayList(PmzItem.CREATOR);
+        this.currency = in.readString();
+        this.paymentMethodReference = in.readString();
+        this.paymentReference = in.readString();
+        this.service = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Creator<PmzOrder> CREATOR = new Creator<PmzOrder>() {
+        @Override
+        public PmzOrder createFromParcel(Parcel source) {
+            return new PmzOrder(source);
+        }
+
+        @Override
+        public PmzOrder[] newArray(int size) {
+            return new PmzOrder[size];
+        }
+    };
 }

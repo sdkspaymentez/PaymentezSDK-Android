@@ -114,4 +114,8 @@ public class PaymentezBaseActivity extends AppCompatActivity {
             drawable.setTintList(myColorStateList);
         }
     }
+
+    protected void onSessionExpired() {
+
+    }
 }

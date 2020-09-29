@@ -2,7 +2,12 @@ package ar.com.fennoma.paymentezsdk.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.widget.Toast;
+
+import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.controllers.FirstActivity;
 
 public class DialogUtils {
 
@@ -36,5 +41,13 @@ public class DialogUtils {
             }
         });
         builder.show();
+    }
+
+    public static void toast(Context context, String text){
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+    }
+
+    public static void genericError(Context context) {
+        toast(context, context.getString(R.string.generic_error));
     }
 }

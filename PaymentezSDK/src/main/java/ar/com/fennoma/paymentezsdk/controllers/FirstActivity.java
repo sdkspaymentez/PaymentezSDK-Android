@@ -8,7 +8,14 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import java.util.List;
+
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.models.ErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.OrderStarter;
+import ar.com.fennoma.paymentezsdk.models.PmzOrder;
+import ar.com.fennoma.paymentezsdk.models.Store;
+import ar.com.fennoma.paymentezsdk.services.API;
 import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
 
 public class FirstActivity extends PaymentezBaseActivity {
@@ -48,9 +55,10 @@ public class FirstActivity extends PaymentezBaseActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
+                /*Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
                 startActivityForResult(intent, MAIN_FLOW_KEY);
-                animActivityRightToLeft();
+                animActivityRightToLeft();*/
+                doThings();
             }
         });
     }
@@ -80,5 +88,83 @@ public class FirstActivity extends PaymentezBaseActivity {
 
                     }
                 });
+    }
+
+    private void doThings() {
+        API.getSession(PaymentezSDK.getInstance().getSession(), new API.ServiceCallback<String>() {
+            @Override
+            public void onSuccess(String token) {
+                PaymentezSDK.getInstance().setToken(token);
+                getStores();
+            }
+
+            @Override
+            public void onError(ErrorMessage error) {
+                DialogUtils.toast(FirstActivity.this, error.getErrorMessage());
+            }
+
+            @Override
+            public void onFailure() {
+                DialogUtils.genericError(FirstActivity.this);
+            }
+
+            @Override
+            public void sessionExpired() {
+                onSessionExpired();
+            }
+        });
+    }
+
+    private void getStores() {
+        API.getStores(new API.ServiceCallback<List<Store>>() {
+            @Override
+            public void onSuccess(List<Store> response) {
+                if(response != null) {
+
+                }
+                startOrder();
+            }
+
+            @Override
+            public void onError(ErrorMessage error) {
+                DialogUtils.toast(FirstActivity.this, error.getErrorMessage());
+            }
+
+            @Override
+            public void onFailure() {
+                DialogUtils.genericError(FirstActivity.this);
+            }
+
+            @Override
+            public void sessionExpired() {
+                onSessionExpired();
+            }
+        });
+    }
+
+    private void startOrder() {
+        API.startOrder(OrderStarter.getHardcoded(), new API.ServiceCallback<PmzOrder>() {
+            @Override
+            public void onSuccess(PmzOrder response) {
+                if(response != null) {
+
+                }
+            }
+
+            @Override
+            public void onError(ErrorMessage error) {
+                DialogUtils.toast(FirstActivity.this, error.getErrorMessage(FirstActivity.this));
+            }
+
+            @Override
+            public void onFailure() {
+                DialogUtils.genericError(FirstActivity.this);
+            }
+
+            @Override
+            public void sessionExpired() {
+                onSessionExpired();
+            }
+        });
     }
 }

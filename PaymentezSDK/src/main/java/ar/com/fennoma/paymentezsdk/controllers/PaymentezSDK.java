@@ -1,21 +1,22 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.TextUtils;
 
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
+import ar.com.fennoma.paymentezsdk.models.Session;
 
 public class PaymentezSDK {
 
-    @SuppressLint("StaticFieldLeak")
     private static PaymentezSDK instance;
 
-    public static void initialize(String apiKey, String secret) {
-        PaymentezSDK instance = getInstance();
-        instance.setApiKey(apiKey);
-        instance.setSecret(secret);
+    public static void initialize(String appCode, String appKey) {
+        Session session = new Session(appCode, appKey);
+        PmzData.getInstance().setSession(session);
+    }
+
+    public void setToken(String token) {
+        PmzData.getInstance().setToken(token);
     }
 
     public interface PmzSearchListener {
@@ -49,8 +50,16 @@ public class PaymentezSDK {
         }
     }
 
+    public Session getSession() {
+        if(isInitialized()) {
+            return PmzData.getInstance().getSession();
+        } else {
+            return null;
+        }
+    }
+
     private boolean isInitialized() {
-        if (TextUtils.isEmpty(PmzData.getInstance().getApiKey()) || TextUtils.isEmpty(PmzData.getInstance().getSecret())) {
+        if (!PmzData.getInstance().isSessionValid()) {
             throw new RuntimeException("PaymentezSDK not initialized");
         } else {
             return true;
@@ -98,13 +107,5 @@ public class PaymentezSDK {
 
     public void setOrderResult(PmzOrder order) {
         PmzData.getInstance().setOrderResult(order);
-    }
-
-    public void setSecret(String secret) {
-        PmzData.getInstance().setSecret(secret);
-    }
-
-    public void setApiKey(String apiKey) {
-        PmzData.getInstance().setApiKey(apiKey);
     }
 }

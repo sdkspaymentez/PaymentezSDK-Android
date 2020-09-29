@@ -20,4 +20,5 @@
     <string name="paymentez_payment_checker_success_button">Éxito</string>
     <string name="paymentez_payment_checker_payment_error">Error de Pago</string>
     <string name="activity_payment_checker_title">Procesando pago</string>
+    <string name="generic_error">Ha ocurrido un error inesperado.</string>
 </resources>

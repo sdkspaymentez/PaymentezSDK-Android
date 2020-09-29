@@ -2,16 +2,17 @@ package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
+import ar.com.fennoma.paymentezsdk.models.Session;
 
 class PmzData {
 
     private static PmzData instance;
 
-    private String secret;
-    private String apiKey;
+    private Session session;
     private String token;
 
     private PaymentezSDK.PmzSearchListener searchListener;
@@ -112,27 +113,26 @@ class PmzData {
         this.order = order;
     }
 
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
     public String getToken() {
         return token;
     }
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    public boolean isSessionValid() {
+        if(session != null && !TextUtils.isEmpty(session.getAppKey()) && !TextUtils.isEmpty(session.getAppCode())) {
+            return true;
+        }
+        return false;
     }
 }
