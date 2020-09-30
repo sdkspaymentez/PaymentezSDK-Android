@@ -66,6 +66,18 @@ public class PmzConfiguration implements Parcelable {
         return configuration;
     }
 
+    public static JSONArray getJSONFor(List<PmzConfiguration> configurations) throws JSONException {
+        JSONArray array = new JSONArray();
+        if(configurations != null) {
+            for(int i = 0; i < configurations.size(); i++) {
+                JSONObject json = new JSONObject();
+                json.put("id_configuration", configurations.get(i).getId());
+                array.put(json);
+            }
+        }
+        return array;
+    }
+
     public Long getId() {
         return id;
     }

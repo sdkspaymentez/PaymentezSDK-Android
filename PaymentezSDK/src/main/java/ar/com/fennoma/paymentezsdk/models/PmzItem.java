@@ -10,9 +10,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
+
 public class PmzItem implements Parcelable {
 
     private Long id;
+    private Long orderId;
     private Double tax;
     private String annotation;
     private Integer status;
@@ -170,6 +173,30 @@ public class PmzItem implements Parcelable {
         this.configurations = configurations;
     }
 
+    public PmzItem() {
+    }
+
+    public JSONObject getJSONWithConfigurations() throws JSONException {
+        JSONObject params = new JSONObject();
+        params.put("id_order", orderId);
+        params.put("id_product", productId);
+        params.put("quantity", quantity);
+        params.put("annotations", annotation);
+        if(configurations != null) {
+            params.put("configurations", PmzConfiguration.getJSONFor(configurations));
+        }
+        params.put("session", PaymentezSDK.getInstance().getToken());
+        return params;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -178,6 +205,7 @@ public class PmzItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
+        dest.writeValue(this.orderId);
         dest.writeValue(this.tax);
         dest.writeString(this.annotation);
         dest.writeValue(this.status);
@@ -190,11 +218,9 @@ public class PmzItem implements Parcelable {
         dest.writeTypedList(this.configurations);
     }
 
-    public PmzItem() {
-    }
-
     protected PmzItem(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.orderId = (Long) in.readValue(Long.class.getClassLoader());
         this.tax = (Double) in.readValue(Double.class.getClassLoader());
         this.annotation = in.readString();
         this.status = (Integer) in.readValue(Integer.class.getClassLoader());

@@ -28,11 +28,6 @@ public class PmzMenu {
         return menu;
     }
 
-    /*
-
-
-     */
-
     public Long getMenuId() {
         return menuId;
     }

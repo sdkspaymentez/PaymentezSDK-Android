@@ -82,6 +82,9 @@ public class PmzStore implements Parcelable {
                 if(json.has("country")) {
                     store.setCountry(json.getString("country"));
                 }
+                if(json.has("city")) {
+                    store.setCity(json.getString("city"));
+                }
                 if(json.has("website") && !json.isNull("website")) {
                     store.setWebsite(json.getString("website"));
                 }
@@ -143,6 +146,9 @@ public class PmzStore implements Parcelable {
                 }
                 if(json.has("max_delivery_distance") && !json.isNull("max_delivery_distance")) {
                     store.setMaxDeliveryDistance(json.getInt("max_delivery_distance"));
+                }
+                if(json.has("time_preparing") && !json.isNull("time_preparing")) {
+                    store.setTimePreparing(json.getInt("time_preparing"));
                 }
                 if(json.has("accept_delivery") && !json.isNull("accept_delivery")) {
                     store.setAcceptsDelivery(json.getBoolean("accept_delivery"));

@@ -210,7 +210,7 @@ public class Services {
         return response;
     }
 
-    public static PmzOrder addItemWithConfig(PmzOrder order) throws PmzException {
+    public static PmzOrder addItemWithConfig(PmzItem item) throws PmzException {
         HttpURLConnection urlConnection = null;
         InputStream in = null;
         PmzOrder response = null;
@@ -225,7 +225,7 @@ public class Services {
             os = new DataOutputStream(urlConnection.getOutputStream());
             writer = getBufferedWriter(os);
 
-            os.writeBytes(order.getJSONForPlacement().toString());
+            os.writeBytes(item.getJSONWithConfigurations().toString());
             writer.flush();
             if (isValidStatusLineCode(urlConnection.getResponseCode())) {
                 in = new BufferedInputStream(urlConnection.getInputStream());
