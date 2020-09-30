@@ -38,7 +38,7 @@ public class PmzItem implements Parcelable {
         return items;
     }
 
-    private static PmzItem fromJSONObject(JSONObject json) {
+    public static PmzItem fromJSONObject(JSONObject json) {
         PmzItem item = new PmzItem();
         if(json != null) {
             try {

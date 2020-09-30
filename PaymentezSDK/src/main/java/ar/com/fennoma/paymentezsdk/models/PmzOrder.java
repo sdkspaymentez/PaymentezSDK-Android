@@ -41,6 +41,13 @@ public class PmzOrder implements Parcelable {
     private Double deliveryPrice;
     private String statusDescription;
     private List<PmzItem> items;
+    private Buyer buyer;
+    private Address address;
+    private String annotations;
+    private String appOrderReference;
+    private Long storeId;
+    private String token;
+    private Integer typeOrder;
 
     private String currency;
     private String paymentMethodReference;
@@ -50,6 +57,15 @@ public class PmzOrder implements Parcelable {
     public static PmzOrder hardcoded() {
         try {
             return fromJSONObject(new JSONObject(json));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new PmzOrder();
+    }
+
+    public static PmzOrder hardcodedForOrderStart() {
+        try {
+            return fromJSONObject(new JSONObject(orderStarterJson));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -144,6 +160,23 @@ public class PmzOrder implements Parcelable {
                 if(json.has("status_description") && !json.isNull("status_description")) {
                     order.setStatusDescription(json.getString("status_description"));
                 }
+                if(json.has("delivery_instructions")) {
+                    order.setDeliveryInstructions(json.getString("delivery_instructions"));
+                }
+                if(json.has("Annotations")) {
+                    order.setAnnotations(json.getString("Annotations"));
+                }
+                if(json.has("app_order_reference")) {
+                    order.setAppOrderReference(json.getString("app_order_reference"));
+                }
+                if(json.has("id_store")) {
+                    order.setStoreId(json.getLong("id_store"));
+                }
+                if(json.has("type_order")) {
+                    order.setTypeOrder(json.getInt("type_order"));
+                }
+                order.setBuyer(Buyer.fromJSONObject(json));
+                order.setAddress(Address.fromJSONObject(json));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -151,7 +184,7 @@ public class PmzOrder implements Parcelable {
         return order;
     }
 
-    public Object getJSONForPayment() throws JSONException {
+    public JSONObject getJSONForPayment() throws JSONException {
         JSONObject params = new JSONObject();
         params.put("amount", totalAmount);
         params.put("currency", currency);
@@ -160,6 +193,32 @@ public class PmzOrder implements Parcelable {
         params.put("payment_reference", paymentReference);
         params.put("service", service);
         params.put("session", PaymentezSDK.getInstance().getToken());
+        return params;
+    }
+
+    public JSONObject getJSONForPlacement() throws JSONException {
+        JSONObject params = new JSONObject();
+        params.put("id_order", id);
+        params.put("session", PaymentezSDK.getInstance().getToken());
+        return params;
+    }
+
+    public JSONObject getJSONForOrderStart() throws JSONException {
+        JSONObject params = new JSONObject();
+        if(buyer != null) {
+            buyer.addToJSON(params);
+        }
+        if(address != null) {
+            address.addToJSON(params);
+        }
+        params.put("delivery_instructions", deliveryInstructions);
+        params.put("Annotations", annotations);
+        params.put("app_order_reference", appOrderReference);
+        params.put("id_store", storeId);
+        params.put("type_order", typeOrder);
+        if(token != null) {
+            params.put("session", token);
+        }
         return params;
     }
 
@@ -463,6 +522,28 @@ public class PmzOrder implements Parcelable {
             "    \"status_description\": null\n" +
             "  }";
 
+    private static String orderStarterJson = "{\n" +
+            "    \"address_city\": \"Bogotá\",\n" +
+            "    \"address_country\": \"Colombia\",\n" +
+            "    \"address_latitude\": 4.6568103,\n" +
+            "    \"address_line1\": \"Calle 75 20C-81\",\n" +
+            "    \"address_line2\": \"Calle 75 - 20C-81\",\n" +
+            "    \"address_longitude\": -74.0561968,\n" +
+            "    \"address_state\": \"DC\",\n" +
+            "    \"address_zip\": \"\",\n" +
+            "    \"delivery_instructions\": \"Apto 206\",\n" +
+            "    \"Annotations\": \"\",\n" +
+            "    \"buyer_email\": \"breyes@paymentez.com\",\n" +
+            "    \"buyer_fiscal_number\": \"1054092666\",\n" +
+            "    \"buyer_name\": \"Bruno Reyes\",\n" +
+            "    \"buyer_phone\": \"3212000915\",\n" +
+            "    \"buyer_user_reference\": \"f6dc275d-5e64-4127-bf5c-dbbfac02aacd\",\n" +
+            "    \"app_order_reference\": \"test-1744\",\n" +
+            "    \"id_store\":120,\n" +
+            "    \"session\": \"{{token}}\",\n" +
+            "    \"type_order\": 0\n" +
+            "}";
+
     public String getCurrency() {
         return currency;
     }
@@ -493,6 +574,22 @@ public class PmzOrder implements Parcelable {
 
     public void setService(Integer service) {
         this.service = service;
+    }
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     @Override
@@ -531,6 +628,8 @@ public class PmzOrder implements Parcelable {
         dest.writeValue(this.deliveryPrice);
         dest.writeString(this.statusDescription);
         dest.writeTypedList(this.items);
+        dest.writeParcelable(this.buyer, flags);
+        dest.writeParcelable(this.address, flags);
         dest.writeString(this.currency);
         dest.writeString(this.paymentMethodReference);
         dest.writeString(this.paymentReference);
@@ -567,6 +666,8 @@ public class PmzOrder implements Parcelable {
         this.deliveryPrice = (Double) in.readValue(Double.class.getClassLoader());
         this.statusDescription = in.readString();
         this.items = in.createTypedArrayList(PmzItem.CREATOR);
+        this.buyer = in.readParcelable(Buyer.class.getClassLoader());
+        this.address = in.readParcelable(Address.class.getClassLoader());
         this.currency = in.readString();
         this.paymentMethodReference = in.readString();
         this.paymentReference = in.readString();
@@ -584,4 +685,44 @@ public class PmzOrder implements Parcelable {
             return new PmzOrder[size];
         }
     };
+
+    public String getAnnotations() {
+        return annotations;
+    }
+
+    public void setAnnotations(String annotations) {
+        this.annotations = annotations;
+    }
+
+    public String getAppOrderReference() {
+        return appOrderReference;
+    }
+
+    public void setAppOrderReference(String appOrderReference) {
+        this.appOrderReference = appOrderReference;
+    }
+
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Integer getTypeOrder() {
+        return typeOrder;
+    }
+
+    public void setTypeOrder(Integer typeOrder) {
+        this.typeOrder = typeOrder;
+    }
 }

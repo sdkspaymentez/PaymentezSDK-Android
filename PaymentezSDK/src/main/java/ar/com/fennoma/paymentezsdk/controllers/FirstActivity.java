@@ -12,7 +12,6 @@ import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.models.ErrorMessage;
-import ar.com.fennoma.paymentezsdk.models.OrderStarter;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.Store;
 import ar.com.fennoma.paymentezsdk.services.API;
@@ -143,7 +142,7 @@ public class FirstActivity extends PaymentezBaseActivity {
     }
 
     private void startOrder() {
-        API.startOrder(OrderStarter.getHardcoded(), new API.ServiceCallback<PmzOrder>() {
+        API.startOrder(PmzOrder.hardcodedForOrderStart(), new API.ServiceCallback<PmzOrder>() {
             @Override
             public void onSuccess(PmzOrder response) {
                 if(response != null) {

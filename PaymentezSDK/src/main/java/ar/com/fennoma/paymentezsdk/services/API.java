@@ -5,7 +5,6 @@ import java.util.List;
 import ar.com.fennoma.paymentezsdk.exceptions.PmzException;
 import ar.com.fennoma.paymentezsdk.models.Capacity;
 import ar.com.fennoma.paymentezsdk.models.ErrorMessage;
-import ar.com.fennoma.paymentezsdk.models.OrderStarter;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.Session;
 import ar.com.fennoma.paymentezsdk.models.Store;
@@ -37,7 +36,7 @@ public class API {
         }).execute();
     }
 
-    public static void startOrder(final OrderStarter starter, final ServiceCallback<PmzOrder> callback) {
+    public static void startOrder(final PmzOrder starter, final ServiceCallback<PmzOrder> callback) {
         new BaseTask<>(callback, new BaseTask.IServiceCaller<PmzOrder>() {
             @Override
             public PmzOrder callService() throws PmzException {

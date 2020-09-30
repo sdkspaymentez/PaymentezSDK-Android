@@ -27,7 +27,7 @@ import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 import ar.com.fennoma.paymentezsdk.exceptions.PmzException;
 import ar.com.fennoma.paymentezsdk.models.Capacity;
 import ar.com.fennoma.paymentezsdk.models.Menu;
-import ar.com.fennoma.paymentezsdk.models.OrderStarter;
+import ar.com.fennoma.paymentezsdk.models.PmzItem;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.Session;
 import ar.com.fennoma.paymentezsdk.models.Store;
@@ -49,6 +49,9 @@ public class Services {
 
     //POSTs
     private static final String TOKEN = "start-session";
+    private static final String PAY_ORDER = "payment/pay-order";
+    private static final String PLACE_ORDER = "payment/pay-order";
+    private static final String ADD_ITEM_WITH_CONFIGURATIONS = "order/add-item-w-configuration";
 
 
     public static String getToken(Session session) throws PmzException {
@@ -90,7 +93,7 @@ public class Services {
         return response;
     }
 
-    public static PmzOrder startOrder(OrderStarter starter) throws PmzException {
+    public static PmzOrder startOrder(PmzOrder starter) throws PmzException {
         HttpURLConnection urlConnection = null;
         InputStream in = null;
         PmzOrder response = null;
@@ -105,7 +108,7 @@ public class Services {
             os = new DataOutputStream(urlConnection.getOutputStream());
             writer = getBufferedWriter(os);
 
-            os.writeBytes(starter.getJSON().toString());
+            os.writeBytes(starter.getJSONForOrderStart().toString());
             writer.flush();
             if (isValidStatusLineCode(urlConnection.getResponseCode())) {
                 in = new BufferedInputStream(urlConnection.getInputStream());
@@ -136,7 +139,7 @@ public class Services {
         DataOutputStream os = null;
         BufferedWriter writer = null;
         try {
-            urlConnection = getHttpURLConnection(TOKEN);
+            urlConnection = getHttpURLConnection(PAY_ORDER);
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("Accept","application/json");
             urlConnection.setDoInput(true);
@@ -145,6 +148,84 @@ public class Services {
             writer = getBufferedWriter(os);
 
             os.writeBytes(order.getJSONForPayment().toString());
+            writer.flush();
+            if (isValidStatusLineCode(urlConnection.getResponseCode())) {
+                in = new BufferedInputStream(urlConnection.getInputStream());
+                JSONObject json = getJsonFromResponse(in);
+                if (isResultValid(json)) {
+                    response = PmzOrder.fromJSONObject(genericJSONObjectParser(json));
+                }
+            } else {
+                throw new PmzException();
+            }
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+            throw new PmzException();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            closeWriterAndStream(os, writer);
+            closeInputStream(in);
+        }
+        return response;
+    }
+
+    public static PmzItem placeOrder(PmzOrder order) throws PmzException {
+        HttpURLConnection urlConnection = null;
+        InputStream in = null;
+        PmzItem response = null;
+        DataOutputStream os = null;
+        BufferedWriter writer = null;
+        try {
+            urlConnection = getHttpURLConnection(PLACE_ORDER);
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Accept","application/json");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            os = new DataOutputStream(urlConnection.getOutputStream());
+            writer = getBufferedWriter(os);
+
+            os.writeBytes(order.getJSONForPlacement().toString());
+            writer.flush();
+            if (isValidStatusLineCode(urlConnection.getResponseCode())) {
+                in = new BufferedInputStream(urlConnection.getInputStream());
+                JSONObject json = getJsonFromResponse(in);
+                if (isResultValid(json)) {
+                    response = PmzItem.fromJSONObject(genericJSONObjectParser(json));
+                }
+            } else {
+                throw new PmzException();
+            }
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+            throw new PmzException();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            closeWriterAndStream(os, writer);
+            closeInputStream(in);
+        }
+        return response;
+    }
+
+    public static PmzOrder addItemWithConfig(PmzOrder order) throws PmzException {
+        HttpURLConnection urlConnection = null;
+        InputStream in = null;
+        PmzOrder response = null;
+        DataOutputStream os = null;
+        BufferedWriter writer = null;
+        try {
+            urlConnection = getHttpURLConnection(ADD_ITEM_WITH_CONFIGURATIONS);
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Accept","application/json");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            os = new DataOutputStream(urlConnection.getOutputStream());
+            writer = getBufferedWriter(os);
+
+            os.writeBytes(order.getJSONForPlacement().toString());
             writer.flush();
             if (isValidStatusLineCode(urlConnection.getResponseCode())) {
                 in = new BufferedInputStream(urlConnection.getInputStream());
