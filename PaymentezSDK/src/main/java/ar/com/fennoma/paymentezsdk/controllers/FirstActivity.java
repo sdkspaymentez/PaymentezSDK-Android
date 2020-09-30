@@ -11,9 +11,9 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.R;
-import ar.com.fennoma.paymentezsdk.models.ErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
-import ar.com.fennoma.paymentezsdk.models.Store;
+import ar.com.fennoma.paymentezsdk.models.PmzStore;
 import ar.com.fennoma.paymentezsdk.services.API;
 import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
 
@@ -98,7 +98,7 @@ public class FirstActivity extends PaymentezBaseActivity {
             }
 
             @Override
-            public void onError(ErrorMessage error) {
+            public void onError(PmzErrorMessage error) {
                 DialogUtils.toast(FirstActivity.this, error.getErrorMessage());
             }
 
@@ -115,9 +115,9 @@ public class FirstActivity extends PaymentezBaseActivity {
     }
 
     private void getStores() {
-        API.getStores(new API.ServiceCallback<List<Store>>() {
+        API.getStores(new API.ServiceCallback<List<PmzStore>>() {
             @Override
-            public void onSuccess(List<Store> response) {
+            public void onSuccess(List<PmzStore> response) {
                 if(response != null) {
 
                 }
@@ -125,7 +125,7 @@ public class FirstActivity extends PaymentezBaseActivity {
             }
 
             @Override
-            public void onError(ErrorMessage error) {
+            public void onError(PmzErrorMessage error) {
                 DialogUtils.toast(FirstActivity.this, error.getErrorMessage());
             }
 
@@ -151,7 +151,7 @@ public class FirstActivity extends PaymentezBaseActivity {
             }
 
             @Override
-            public void onError(ErrorMessage error) {
+            public void onError(PmzErrorMessage error) {
                 DialogUtils.toast(FirstActivity.this, error.getErrorMessage(FirstActivity.this));
             }
 

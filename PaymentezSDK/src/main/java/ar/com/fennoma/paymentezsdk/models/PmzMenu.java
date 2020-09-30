@@ -5,20 +5,20 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class Menu {
+public class PmzMenu {
 
     private Long menuId;
-    private List<Category> categories;
+    private List<PmzCategory> categories;
 
-    public static Menu fromJSONObject(JSONObject json) {
-        Menu menu = new Menu();
+    public static PmzMenu fromJSONObject(JSONObject json) {
+        PmzMenu menu = new PmzMenu();
         if(json != null) {
             try {
                 if(json.has("menu_id")) {
                     menu.setMenuId(json.getLong("menu_id"));
                 }
                 if(json.has("categories")) {
-                    menu.setCategories(Category.fromJSONArray(json.getJSONArray("categories")));
+                    menu.setCategories(PmzCategory.fromJSONArray(json.getJSONArray("categories")));
                 }
 
             } catch (JSONException e) {
@@ -41,11 +41,11 @@ public class Menu {
         this.menuId = menuId;
     }
 
-    public List<Category> getCategories() {
+    public List<PmzCategory> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public void setCategories(List<PmzCategory> categories) {
         this.categories = categories;
     }
 }

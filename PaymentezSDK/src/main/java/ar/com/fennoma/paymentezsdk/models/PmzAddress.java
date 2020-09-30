@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Address implements Parcelable, IJsonParsingModel {
+public class PmzAddress implements Parcelable, IJsonParsingModel {
 
     private String city;
     private String country;
@@ -17,8 +17,8 @@ public class Address implements Parcelable, IJsonParsingModel {
     private String state;
     private String zipCode;
 
-    public static Address fromJSONObject(JSONObject json) {
-        Address address = new Address();
+    public static PmzAddress fromJSONObject(JSONObject json) {
+        PmzAddress address = new PmzAddress();
         if(json != null) {
             try {
                 if(json.has("address_city")) {
@@ -160,10 +160,10 @@ public class Address implements Parcelable, IJsonParsingModel {
         dest.writeString(this.zipCode);
     }
 
-    public Address() {
+    public PmzAddress() {
     }
 
-    protected Address(Parcel in) {
+    protected PmzAddress(Parcel in) {
         this.city = in.readString();
         this.country = in.readString();
         this.latitude = (Double) in.readValue(Double.class.getClassLoader());
@@ -174,15 +174,15 @@ public class Address implements Parcelable, IJsonParsingModel {
         this.zipCode = in.readString();
     }
 
-    public static final Creator<Address> CREATOR = new Creator<Address>() {
+    public static final Creator<PmzAddress> CREATOR = new Creator<PmzAddress>() {
         @Override
-        public Address createFromParcel(Parcel source) {
-            return new Address(source);
+        public PmzAddress createFromParcel(Parcel source) {
+            return new PmzAddress(source);
         }
 
         @Override
-        public Address[] newArray(int size) {
-            return new Address[size];
+        public PmzAddress[] newArray(int size) {
+            return new PmzAddress[size];
         }
     };
 }

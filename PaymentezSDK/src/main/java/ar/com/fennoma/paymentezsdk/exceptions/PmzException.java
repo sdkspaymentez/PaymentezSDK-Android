@@ -1,6 +1,6 @@
 package ar.com.fennoma.paymentezsdk.exceptions;
 
-import ar.com.fennoma.paymentezsdk.models.ErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
 
 public class PmzException extends Exception {
 
@@ -8,7 +8,7 @@ public class PmzException extends Exception {
     private String errorMessage;
 
     public PmzException() {
-        errorCode = ErrorMessage.ErrorCode.UNEXPECTED.getErrorCode();
+        errorCode = PmzErrorMessage.ErrorCode.UNEXPECTED.getErrorCode();
     }
 
     public PmzException(String errorCode) {

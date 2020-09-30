@@ -25,12 +25,12 @@ import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 import ar.com.fennoma.paymentezsdk.exceptions.PmzException;
-import ar.com.fennoma.paymentezsdk.models.Capacity;
-import ar.com.fennoma.paymentezsdk.models.Menu;
+import ar.com.fennoma.paymentezsdk.models.PmzCapacity;
+import ar.com.fennoma.paymentezsdk.models.PmzMenu;
 import ar.com.fennoma.paymentezsdk.models.PmzItem;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
-import ar.com.fennoma.paymentezsdk.models.Session;
-import ar.com.fennoma.paymentezsdk.models.Store;
+import ar.com.fennoma.paymentezsdk.models.PmzSession;
+import ar.com.fennoma.paymentezsdk.models.PmzStore;
 
 public class Services {
 
@@ -54,7 +54,7 @@ public class Services {
     private static final String ADD_ITEM_WITH_CONFIGURATIONS = "order/add-item-w-configuration";
 
 
-    public static String getToken(Session session) throws PmzException {
+    public static String getToken(PmzSession session) throws PmzException {
         HttpURLConnection urlConnection = null;
         InputStream in = null;
         String response = null;
@@ -75,7 +75,7 @@ public class Services {
                 in = new BufferedInputStream(urlConnection.getInputStream());
                 JSONObject json = getJsonFromResponse(in);
                 if (isResultValid(json)) {
-                    response = Session.getToken(json);
+                    response = PmzSession.getToken(json);
                 }
             } else {
                 throw new PmzException();
@@ -249,9 +249,9 @@ public class Services {
         return response;
     }
 
-    public static List<Store> getStores() throws PmzException {
+    public static List<PmzStore> getStores() throws PmzException {
         HttpURLConnection urlConnection = null;
-        List<Store> response = null;
+        List<PmzStore> response = null;
         InputStream in = null;
         try {
             String url = GET_STORES;
@@ -262,7 +262,7 @@ public class Services {
                 in = new BufferedInputStream(urlConnection.getInputStream());
                 JSONObject json = getJsonFromResponse(in);
                 if(isResultValid(json)) {
-                    response = Store.fromJSONArray(genericJSONArrayParser(json));
+                    response = PmzStore.fromJSONArray(genericJSONArrayParser(json));
                 }
             }
         } catch (JSONException | IOException e) {
@@ -277,9 +277,9 @@ public class Services {
         return response;
     }
 
-    public static List<Capacity> getCapacities() throws PmzException {
+    public static List<PmzCapacity> getCapacities() throws PmzException {
         HttpURLConnection urlConnection = null;
-        List<Capacity> response = null;
+        List<PmzCapacity> response = null;
         InputStream in = null;
         try {
             String url = GET_CAPACITIES;
@@ -290,7 +290,7 @@ public class Services {
                 in = new BufferedInputStream(urlConnection.getInputStream());
                 JSONObject json = getJsonFromResponse(in);
                 if(isResultValid(json)) {
-                    response = Capacity.fromJSONArray(genericJSONArrayParser(json));
+                    response = PmzCapacity.fromJSONArray(genericJSONArrayParser(json));
                 }
             }
         } catch (JSONException | IOException e) {
@@ -305,9 +305,9 @@ public class Services {
         return response;
     }
 
-    public static Menu getMenu(@NonNull Long storeId) throws PmzException {
+    public static PmzMenu getMenu(@NonNull Long storeId) throws PmzException {
         HttpURLConnection urlConnection = null;
-        Menu response = null;
+        PmzMenu response = null;
         InputStream in = null;
         try {
             String url = GET_MENU;
@@ -319,7 +319,7 @@ public class Services {
                 in = new BufferedInputStream(urlConnection.getInputStream());
                 JSONObject json = getJsonFromResponse(in);
                 if(isResultValid(json)) {
-                    response = Menu.fromJSONObject(genericJSONObjectParser(json));
+                    response = PmzMenu.fromJSONObject(genericJSONObjectParser(json));
                 }
             }
         } catch (JSONException | IOException e) {

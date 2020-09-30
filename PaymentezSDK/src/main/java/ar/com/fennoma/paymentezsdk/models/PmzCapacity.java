@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Capacity implements Parcelable {
+public class PmzCapacity implements Parcelable {
 
     private Long storeId;
     private Integer capacity;
@@ -18,8 +18,8 @@ public class Capacity implements Parcelable {
     private Boolean exceeded;
     private Long timeRemaining;
 
-    public static List<Capacity> fromJSONArray(JSONArray json) {
-        List<Capacity> capacities = new ArrayList<>();
+    public static List<PmzCapacity> fromJSONArray(JSONArray json) {
+        List<PmzCapacity> capacities = new ArrayList<>();
         if(json != null) {
             for(int i = 0; i < json.length(); i++) {
                 try {
@@ -32,8 +32,8 @@ public class Capacity implements Parcelable {
         return capacities;
     }
 
-    private static Capacity fromJSONObject(JSONObject json) {
-        Capacity capacity = new Capacity();
+    private static PmzCapacity fromJSONObject(JSONObject json) {
+        PmzCapacity capacity = new PmzCapacity();
         if(json != null) {
             try {
                 if(json.has("storeId")) {
@@ -112,10 +112,10 @@ public class Capacity implements Parcelable {
         dest.writeValue(this.timeRemaining);
     }
 
-    public Capacity() {
+    public PmzCapacity() {
     }
 
-    protected Capacity(Parcel in) {
+    protected PmzCapacity(Parcel in) {
         this.storeId = (Long) in.readValue(Long.class.getClassLoader());
         this.capacity = (Integer) in.readValue(Integer.class.getClassLoader());
         this.actual = (Integer) in.readValue(Integer.class.getClassLoader());
@@ -123,15 +123,15 @@ public class Capacity implements Parcelable {
         this.timeRemaining = (Long) in.readValue(Long.class.getClassLoader());
     }
 
-    public static final Creator<Capacity> CREATOR = new Creator<Capacity>() {
+    public static final Creator<PmzCapacity> CREATOR = new Creator<PmzCapacity>() {
         @Override
-        public Capacity createFromParcel(Parcel source) {
-            return new Capacity(source);
+        public PmzCapacity createFromParcel(Parcel source) {
+            return new PmzCapacity(source);
         }
 
         @Override
-        public Capacity[] newArray(int size) {
-            return new Capacity[size];
+        public PmzCapacity[] newArray(int size) {
+            return new PmzCapacity[size];
         }
     };
 }

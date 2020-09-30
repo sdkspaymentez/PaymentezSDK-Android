@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Buyer implements Parcelable, IJsonParsingModel {
+public class PmzBuyer implements Parcelable, IJsonParsingModel {
 
     private String name;
     private String phone;
@@ -14,8 +14,8 @@ public class Buyer implements Parcelable, IJsonParsingModel {
     private String email;
     private String fiscalNumber;
 
-    public static Buyer fromJSONObject(JSONObject json) {
-        Buyer buyer = new Buyer();
+    public static PmzBuyer fromJSONObject(JSONObject json) {
+        PmzBuyer buyer = new PmzBuyer();
         if(json != null) {
             try {
                 if(json.has("buyer_email")) {
@@ -114,10 +114,10 @@ public class Buyer implements Parcelable, IJsonParsingModel {
         dest.writeString(this.fiscalNumber);
     }
 
-    public Buyer() {
+    public PmzBuyer() {
     }
 
-    protected Buyer(Parcel in) {
+    protected PmzBuyer(Parcel in) {
         this.name = in.readString();
         this.phone = in.readString();
         this.userReference = in.readString();
@@ -125,15 +125,15 @@ public class Buyer implements Parcelable, IJsonParsingModel {
         this.fiscalNumber = in.readString();
     }
 
-    public static final Parcelable.Creator<Buyer> CREATOR = new Parcelable.Creator<Buyer>() {
+    public static final Parcelable.Creator<PmzBuyer> CREATOR = new Parcelable.Creator<PmzBuyer>() {
         @Override
-        public Buyer createFromParcel(Parcel source) {
-            return new Buyer(source);
+        public PmzBuyer createFromParcel(Parcel source) {
+            return new PmzBuyer(source);
         }
 
         @Override
-        public Buyer[] newArray(int size) {
-            return new Buyer[size];
+        public PmzBuyer[] newArray(int size) {
+            return new PmzBuyer[size];
         }
     };
 }

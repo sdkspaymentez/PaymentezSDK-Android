@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductConfiguration implements Parcelable {
+public class PmzProductConfiguration implements Parcelable {
 
     private Long id;
     private String name;
@@ -26,8 +26,8 @@ public class ProductConfiguration implements Parcelable {
     private Long subtypeDisplayOrder;
     private Boolean isDefault;
 
-    public static List<ProductConfiguration> fromJSONArray(JSONArray array) {
-        List<ProductConfiguration> result = new ArrayList<>();
+    public static List<PmzProductConfiguration> fromJSONArray(JSONArray array) {
+        List<PmzProductConfiguration> result = new ArrayList<>();
         if(array != null) {
             for(int i = 0; i < array.length(); i++) {
                 try {
@@ -40,8 +40,8 @@ public class ProductConfiguration implements Parcelable {
         return result;
     }
 
-    private static ProductConfiguration fromJSONObject(JSONObject json) {
-        ProductConfiguration config = new ProductConfiguration();
+    private static PmzProductConfiguration fromJSONObject(JSONObject json) {
+        PmzProductConfiguration config = new PmzProductConfiguration();
         if(json != null) {
             try {
                 if(json.has("id")) {
@@ -217,10 +217,10 @@ public class ProductConfiguration implements Parcelable {
         dest.writeValue(this.isDefault);
     }
 
-    public ProductConfiguration() {
+    public PmzProductConfiguration() {
     }
 
-    protected ProductConfiguration(Parcel in) {
+    protected PmzProductConfiguration(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.defaultValue = (Boolean) in.readValue(Boolean.class.getClassLoader());
@@ -236,15 +236,15 @@ public class ProductConfiguration implements Parcelable {
         this.isDefault = (Boolean) in.readValue(Boolean.class.getClassLoader());
     }
 
-    public static final Creator<ProductConfiguration> CREATOR = new Creator<ProductConfiguration>() {
+    public static final Creator<PmzProductConfiguration> CREATOR = new Creator<PmzProductConfiguration>() {
         @Override
-        public ProductConfiguration createFromParcel(Parcel source) {
-            return new ProductConfiguration(source);
+        public PmzProductConfiguration createFromParcel(Parcel source) {
+            return new PmzProductConfiguration(source);
         }
 
         @Override
-        public ProductConfiguration[] newArray(int size) {
-            return new ProductConfiguration[size];
+        public PmzProductConfiguration[] newArray(int size) {
+            return new PmzProductConfiguration[size];
         }
     };
 }

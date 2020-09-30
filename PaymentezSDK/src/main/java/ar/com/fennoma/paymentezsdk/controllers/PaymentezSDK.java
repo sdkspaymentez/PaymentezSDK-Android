@@ -4,14 +4,14 @@ import android.content.Context;
 
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
-import ar.com.fennoma.paymentezsdk.models.Session;
+import ar.com.fennoma.paymentezsdk.models.PmzSession;
 
 public class PaymentezSDK {
 
     private static PaymentezSDK instance;
 
     public static void initialize(String appCode, String appKey) {
-        Session session = new Session(appCode, appKey);
+        PmzSession session = new PmzSession(appCode, appKey);
         PmzData.getInstance().setSession(session);
     }
 
@@ -50,7 +50,7 @@ public class PaymentezSDK {
         }
     }
 
-    public Session getSession() {
+    public PmzSession getSession() {
         if(isInitialized()) {
             return PmzData.getInstance().getSession();
         } else {

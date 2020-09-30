@@ -3,31 +3,31 @@ package ar.com.fennoma.paymentezsdk.services;
 import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.exceptions.PmzException;
-import ar.com.fennoma.paymentezsdk.models.Capacity;
-import ar.com.fennoma.paymentezsdk.models.ErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.PmzCapacity;
+import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
-import ar.com.fennoma.paymentezsdk.models.Session;
-import ar.com.fennoma.paymentezsdk.models.Store;
+import ar.com.fennoma.paymentezsdk.models.PmzSession;
+import ar.com.fennoma.paymentezsdk.models.PmzStore;
 
 public class API {
 
     public interface ServiceCallback<T> {
         void onSuccess(T response);
-        void onError(ErrorMessage error);
+        void onError(PmzErrorMessage error);
         void onFailure();
         void sessionExpired();
     }
 
-    public static void getStores(final ServiceCallback<List<Store>> callback) {
-        new BaseTask<>(callback, new BaseTask.IServiceCaller<List<Store>>() {
+    public static void getStores(final ServiceCallback<List<PmzStore>> callback) {
+        new BaseTask<>(callback, new BaseTask.IServiceCaller<List<PmzStore>>() {
             @Override
-            public List<Store> callService() throws PmzException {
+            public List<PmzStore> callService() throws PmzException {
                 return Services.getStores();
             }
         }).execute();
     }
 
-    public static void getSession(final Session session, final ServiceCallback<String> callback) {
+    public static void getSession(final PmzSession session, final ServiceCallback<String> callback) {
         new BaseTask<>(callback, new BaseTask.IServiceCaller<String>() {
             @Override
             public String callService() throws PmzException {
@@ -45,10 +45,10 @@ public class API {
         }).execute();
     }
 
-    public static void getCapacities(final ServiceCallback<List<Capacity>> callback) {
-        new BaseTask<>(callback, new BaseTask.IServiceCaller<List<Capacity>>() {
+    public static void getCapacities(final ServiceCallback<List<PmzCapacity>> callback) {
+        new BaseTask<>(callback, new BaseTask.IServiceCaller<List<PmzCapacity>>() {
             @Override
-            public List<Capacity> callService() throws PmzException {
+            public List<PmzCapacity> callService() throws PmzException {
                 return Services.getCapacities();
             }
         }).execute();

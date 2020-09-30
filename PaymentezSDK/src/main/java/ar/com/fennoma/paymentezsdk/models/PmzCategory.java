@@ -10,17 +10,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Category implements Parcelable {
+public class PmzCategory implements Parcelable {
 
     private Long id;
     private String name;
     private String imageUrl;
     private Integer status;
-    private List<Product> products;
+    private List<PmzProduct> products;
     private Integer displayOrder;
 
-    public static List<Category> fromJSONArray(JSONArray json) {
-        List<Category> categories = new ArrayList<>();
+    public static List<PmzCategory> fromJSONArray(JSONArray json) {
+        List<PmzCategory> categories = new ArrayList<>();
         if(json != null) {
             for(int i = 0; i < json.length(); i++) {
                 try {
@@ -33,8 +33,8 @@ public class Category implements Parcelable {
         return categories;
     }
 
-    public static Category fromJSONObject(JSONObject json) {
-        Category category = new Category();
+    public static PmzCategory fromJSONObject(JSONObject json) {
+        PmzCategory category = new PmzCategory();
         if(json != null) {
             try {
                 if(json.has("id")) {
@@ -53,7 +53,7 @@ public class Category implements Parcelable {
                     category.setName(json.getString("image"));
                 }
                 if(json.has("products")) {
-                    category.setProducts(Product.fromJSONArray(json.getJSONArray("products")));
+                    category.setProducts(PmzProduct.fromJSONArray(json.getJSONArray("products")));
                 }
 
             } catch (JSONException e) {
@@ -95,11 +95,11 @@ public class Category implements Parcelable {
         this.status = status;
     }
 
-    public List<Product> getProducts() {
+    public List<PmzProduct> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<PmzProduct> products) {
         this.products = products;
     }
 
@@ -126,27 +126,27 @@ public class Category implements Parcelable {
         dest.writeValue(this.displayOrder);
     }
 
-    public Category() {
+    public PmzCategory() {
     }
 
-    protected Category(Parcel in) {
+    protected PmzCategory(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.imageUrl = in.readString();
         this.status = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.products = in.createTypedArrayList(Product.CREATOR);
+        this.products = in.createTypedArrayList(PmzProduct.CREATOR);
         this.displayOrder = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
-    public static final Creator<Category> CREATOR = new Creator<Category>() {
+    public static final Creator<PmzCategory> CREATOR = new Creator<PmzCategory>() {
         @Override
-        public Category createFromParcel(Parcel source) {
-            return new Category(source);
+        public PmzCategory createFromParcel(Parcel source) {
+            return new PmzCategory(source);
         }
 
         @Override
-        public Category[] newArray(int size) {
-            return new Category[size];
+        public PmzCategory[] newArray(int size) {
+            return new PmzCategory[size];
         }
     };
 }

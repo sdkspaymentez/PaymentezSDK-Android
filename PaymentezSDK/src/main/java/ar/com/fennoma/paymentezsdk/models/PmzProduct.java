@@ -10,14 +10,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Product implements Parcelable {
+public class PmzProduct implements Parcelable {
 
     private Long id;
     private String name;
     private String description;
     private String imageUrl;
     private Integer status;
-    private List<ProductConfiguration> configurations;
+    private List<PmzProductConfiguration> configurations;
     private Long listPrice;
     private Long currentPrice;
     private String appDisplayName;
@@ -25,8 +25,8 @@ public class Product implements Parcelable {
     private String coverImageUrl;
     private Boolean storeDisabled;
 
-    public static List<Product> fromJSONArray(JSONArray json) {
-        List<Product> products = new ArrayList<>();
+    public static List<PmzProduct> fromJSONArray(JSONArray json) {
+        List<PmzProduct> products = new ArrayList<>();
         if(json != null) {
             for(int i = 0; i < json.length(); i++) {
                 try {
@@ -39,8 +39,8 @@ public class Product implements Parcelable {
         return products;
     }
 
-    private static Product fromJSONObject(JSONObject json) {
-        Product product = new Product();
+    private static PmzProduct fromJSONObject(JSONObject json) {
+        PmzProduct product = new PmzProduct();
         if(json != null) {
             try {
                 if(json.has("id")) {
@@ -74,7 +74,7 @@ public class Product implements Parcelable {
                     product.setStoreDisabled(json.getBoolean("store_disabled"));
                 }
                 if(json.has("configurations")) {
-                    product.setConfigurations(ProductConfiguration.fromJSONArray(json.getJSONArray("configurations")));
+                    product.setConfigurations(PmzProductConfiguration.fromJSONArray(json.getJSONArray("configurations")));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -123,11 +123,11 @@ public class Product implements Parcelable {
         this.status = status;
     }
 
-    public List<ProductConfiguration> getConfigurations() {
+    public List<PmzProductConfiguration> getConfigurations() {
         return configurations;
     }
 
-    public void setConfigurations(List<ProductConfiguration> configurations) {
+    public void setConfigurations(List<PmzProductConfiguration> configurations) {
         this.configurations = configurations;
     }
 
@@ -200,16 +200,16 @@ public class Product implements Parcelable {
         dest.writeValue(this.storeDisabled);
     }
 
-    public Product() {
+    public PmzProduct() {
     }
 
-    protected Product(Parcel in) {
+    protected PmzProduct(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.description = in.readString();
         this.imageUrl = in.readString();
         this.status = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.configurations = in.createTypedArrayList(ProductConfiguration.CREATOR);
+        this.configurations = in.createTypedArrayList(PmzProductConfiguration.CREATOR);
         this.listPrice = (Long) in.readValue(Long.class.getClassLoader());
         this.currentPrice = (Long) in.readValue(Long.class.getClassLoader());
         this.appDisplayName = in.readString();
@@ -218,15 +218,15 @@ public class Product implements Parcelable {
         this.storeDisabled = (Boolean) in.readValue(Boolean.class.getClassLoader());
     }
 
-    public static final Creator<Product> CREATOR = new Creator<Product>() {
+    public static final Creator<PmzProduct> CREATOR = new Creator<PmzProduct>() {
         @Override
-        public Product createFromParcel(Parcel source) {
-            return new Product(source);
+        public PmzProduct createFromParcel(Parcel source) {
+            return new PmzProduct(source);
         }
 
         @Override
-        public Product[] newArray(int size) {
-            return new Product[size];
+        public PmzProduct[] newArray(int size) {
+            return new PmzProduct[size];
         }
     };
 }

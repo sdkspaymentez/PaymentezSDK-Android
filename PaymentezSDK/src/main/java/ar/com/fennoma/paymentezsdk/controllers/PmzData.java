@@ -6,13 +6,13 @@ import android.text.TextUtils;
 
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
-import ar.com.fennoma.paymentezsdk.models.Session;
+import ar.com.fennoma.paymentezsdk.models.PmzSession;
 
 class PmzData {
 
     private static PmzData instance;
 
-    private Session session;
+    private PmzSession session;
     private String token;
 
     private PaymentezSDK.PmzSearchListener searchListener;
@@ -121,11 +121,11 @@ class PmzData {
         this.token = token;
     }
 
-    public Session getSession() {
+    public PmzSession getSession() {
         return session;
     }
 
-    public void setSession(Session session) {
+    public void setSession(PmzSession session) {
         this.session = session;
     }
 

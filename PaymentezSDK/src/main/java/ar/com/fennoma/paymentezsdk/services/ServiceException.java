@@ -1,6 +1,6 @@
 package ar.com.fennoma.paymentezsdk.services;
 
-import ar.com.fennoma.paymentezsdk.models.ErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
 
 public class ServiceException extends Exception {
 
@@ -10,7 +10,7 @@ public class ServiceException extends Exception {
 
     public ServiceException() {
         super();
-        errorCode = ErrorMessage.GENERIC_ERROR_IDENTIFIER;
+        errorCode = PmzErrorMessage.GENERIC_ERROR_IDENTIFIER;
     }
 
     public ServiceException(String errorCode) {

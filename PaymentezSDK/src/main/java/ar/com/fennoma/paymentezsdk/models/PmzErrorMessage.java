@@ -4,7 +4,7 @@ import android.content.Context;
 
 import ar.com.fennoma.paymentezsdk.R;
 
-public class ErrorMessage {
+public class PmzErrorMessage {
 
     public enum ErrorCode {
         INVALID_SESSION("invalid_session"),
@@ -53,8 +53,8 @@ public class ErrorMessage {
         return errorMessage;
     }
 
-    public static ErrorMessage getError(String errorCode) {
-        ErrorMessage errorMessage = new ErrorMessage();
+    public static PmzErrorMessage getError(String errorCode) {
+        PmzErrorMessage errorMessage = new PmzErrorMessage();
         errorMessage.seterrorCode(ErrorCode.getError(errorCode));
         return errorMessage;
     }

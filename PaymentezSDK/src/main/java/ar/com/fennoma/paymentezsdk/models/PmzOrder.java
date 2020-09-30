@@ -15,11 +15,6 @@ public class PmzOrder implements Parcelable {
     private Long id;
     private Integer status;
     private Double tax;
-    private String buyerEmail;
-    private String buyerName;
-    private String buyerPhone;
-    private String buyerFiscalNumber;
-    private String userReference;
     private String orderAppReference;
     private String confirmationCode;
     private String tableReference;
@@ -29,25 +24,16 @@ public class PmzOrder implements Parcelable {
     private String dateStarted;
     private Integer orderType;
     private Long totalAmount;
-    private String addressLine1;
-    private String addressLine2;
-    private String addressCity;
-    private String addressState;
-    private String addressZip;
-    private String addressCountry;
-    private Double addressLatitude;
-    private Double addressLongitude;
     private String deliveryInstructions;
     private Double deliveryPrice;
     private String statusDescription;
-    private List<PmzItem> items;
-    private Buyer buyer;
-    private Address address;
     private String annotations;
     private String appOrderReference;
     private Long storeId;
-    private String token;
     private Integer typeOrder;
+    private List<PmzItem> items;
+    private PmzBuyer buyer;
+    private PmzAddress address;
 
     private String currency;
     private String paymentMethodReference;
@@ -88,18 +74,6 @@ public class PmzOrder implements Parcelable {
                 if(json.has("items") && !json.isNull("items")) {
                     order.setItems(PmzItem.fromJSONArray(json.getJSONArray("items")));
                 }
-                if(json.has("buyer_email")) {
-                    order.setBuyerEmail(json.getString("buyer_email"));
-                }
-                if(json.has("buyer_name")) {
-                    order.setBuyerName(json.getString("buyer_name"));
-                }
-                if(json.has("buyer_fiscal_number")) {
-                    order.setBuyerFiscalNumber(json.getString("buyer_fiscal_number"));
-                }
-                if(json.has("user_reference")) {
-                    order.setUserReference(json.getString("user_reference"));
-                }
                 if(json.has("order_app_reference")) {
                     order.setOrderAppReference(json.getString("order_app_reference"));
                 }
@@ -127,32 +101,8 @@ public class PmzOrder implements Parcelable {
                 if(json.has("total_amount")) {
                     order.setTotalAmount(json.getLong("total_amount"));
                 }
-                if(json.has("address_line1")) {
-                    order.setAddressLine1(json.getString("address_line1"));
-                }
-                if(json.has("address_line2")) {
-                    order.setAddressLine2(json.getString("address_line2"));
-                }
-                if(json.has("address_city")) {
-                    order.setAddressCity(json.getString("address_city"));
-                }
-                if(json.has("address_state")) {
-                    order.setAddressState(json.getString("address_state"));
-                }
-                if(json.has("address_zip")) {
-                    order.setAddressZip(json.getString("address_zip"));
-                }
-                if(json.has("address_country")) {
-                    order.setAddressCountry(json.getString("address_country"));
-                }
                 if(json.has("delivery_instructions")) {
                     order.setDeliveryInstructions(json.getString("delivery_instructions"));
-                }
-                if(json.has("address_latitude")) {
-                    order.setAddressLatitude(json.getDouble("address_latitude"));
-                }
-                if(json.has("address_longitude")) {
-                    order.setAddressLongitude(json.getDouble("address_longitude"));
                 }
                 if(json.has("delivery_price")) {
                     order.setDeliveryPrice(json.getDouble("delivery_price"));
@@ -175,8 +125,8 @@ public class PmzOrder implements Parcelable {
                 if(json.has("type_order")) {
                     order.setTypeOrder(json.getInt("type_order"));
                 }
-                order.setBuyer(Buyer.fromJSONObject(json));
-                order.setAddress(Address.fromJSONObject(json));
+                order.setBuyer(PmzBuyer.fromJSONObject(json));
+                order.setAddress(PmzAddress.fromJSONObject(json));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -216,9 +166,7 @@ public class PmzOrder implements Parcelable {
         params.put("app_order_reference", appOrderReference);
         params.put("id_store", storeId);
         params.put("type_order", typeOrder);
-        if(token != null) {
-            params.put("session", token);
-        }
+        params.put("session", PaymentezSDK.getInstance().getToken());
         return params;
     }
 
@@ -244,38 +192,6 @@ public class PmzOrder implements Parcelable {
 
     public void setTax(Double tax) {
         this.tax = tax;
-    }
-
-    public String getBuyerName() {
-        return buyerName;
-    }
-
-    public void setBuyerName(String buyerName) {
-        this.buyerName = buyerName;
-    }
-
-    public String getBuyerPhone() {
-        return buyerPhone;
-    }
-
-    public void setBuyerPhone(String buyerPhone) {
-        this.buyerPhone = buyerPhone;
-    }
-
-    public String getBuyerFiscalNumber() {
-        return buyerFiscalNumber;
-    }
-
-    public void setBuyerFiscalNumber(String buyerFiscalNumber) {
-        this.buyerFiscalNumber = buyerFiscalNumber;
-    }
-
-    public String getUserReference() {
-        return userReference;
-    }
-
-    public void setUserReference(String userReference) {
-        this.userReference = userReference;
     }
 
     public String getOrderAppReference() {
@@ -350,70 +266,6 @@ public class PmzOrder implements Parcelable {
         this.totalAmount = totalAmount;
     }
 
-    public String getAddressLine1() {
-        return addressLine1;
-    }
-
-    public void setAddressLine1(String addressLine1) {
-        this.addressLine1 = addressLine1;
-    }
-
-    public String getAddressLine2() {
-        return addressLine2;
-    }
-
-    public void setAddressLine2(String addressLine2) {
-        this.addressLine2 = addressLine2;
-    }
-
-    public String getAddressCity() {
-        return addressCity;
-    }
-
-    public void setAddressCity(String addressCity) {
-        this.addressCity = addressCity;
-    }
-
-    public String getAddressState() {
-        return addressState;
-    }
-
-    public void setAddressState(String addressState) {
-        this.addressState = addressState;
-    }
-
-    public String getAddressZip() {
-        return addressZip;
-    }
-
-    public void setAddressZip(String addressZip) {
-        this.addressZip = addressZip;
-    }
-
-    public String getAddressCountry() {
-        return addressCountry;
-    }
-
-    public void setAddressCountry(String addressCountry) {
-        this.addressCountry = addressCountry;
-    }
-
-    public Double getAddressLatitude() {
-        return addressLatitude;
-    }
-
-    public void setAddressLatitude(Double addressLatitude) {
-        this.addressLatitude = addressLatitude;
-    }
-
-    public Double getAddressLongitude() {
-        return addressLongitude;
-    }
-
-    public void setAddressLongitude(Double addressLongitude) {
-        this.addressLongitude = addressLongitude;
-    }
-
     public String getDeliveryInstructions() {
         return deliveryInstructions;
     }
@@ -444,14 +296,6 @@ public class PmzOrder implements Parcelable {
 
     public void setItems(List<PmzItem> items) {
         this.items = items;
-    }
-
-    public String getBuyerEmail() {
-        return buyerEmail;
-    }
-
-    public void setBuyerEmail(String buyerEmail) {
-        this.buyerEmail = buyerEmail;
     }
 
     public PmzOrder() {
@@ -576,19 +420,19 @@ public class PmzOrder implements Parcelable {
         this.service = service;
     }
 
-    public Buyer getBuyer() {
+    public PmzBuyer getBuyer() {
         return buyer;
     }
 
-    public void setBuyer(Buyer buyer) {
+    public void setBuyer(PmzBuyer buyer) {
         this.buyer = buyer;
     }
 
-    public Address getAddress() {
+    public PmzAddress getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(PmzAddress address) {
         this.address = address;
     }
 
@@ -602,11 +446,6 @@ public class PmzOrder implements Parcelable {
         dest.writeValue(this.id);
         dest.writeValue(this.status);
         dest.writeValue(this.tax);
-        dest.writeString(this.buyerEmail);
-        dest.writeString(this.buyerName);
-        dest.writeString(this.buyerPhone);
-        dest.writeString(this.buyerFiscalNumber);
-        dest.writeString(this.userReference);
         dest.writeString(this.orderAppReference);
         dest.writeString(this.confirmationCode);
         dest.writeString(this.tableReference);
@@ -616,14 +455,6 @@ public class PmzOrder implements Parcelable {
         dest.writeString(this.dateStarted);
         dest.writeValue(this.orderType);
         dest.writeValue(this.totalAmount);
-        dest.writeString(this.addressLine1);
-        dest.writeString(this.addressLine2);
-        dest.writeString(this.addressCity);
-        dest.writeString(this.addressState);
-        dest.writeString(this.addressZip);
-        dest.writeString(this.addressCountry);
-        dest.writeValue(this.addressLatitude);
-        dest.writeValue(this.addressLongitude);
         dest.writeString(this.deliveryInstructions);
         dest.writeValue(this.deliveryPrice);
         dest.writeString(this.statusDescription);
@@ -640,11 +471,6 @@ public class PmzOrder implements Parcelable {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.status = (Integer) in.readValue(Integer.class.getClassLoader());
         this.tax = (Double) in.readValue(Double.class.getClassLoader());
-        this.buyerEmail = in.readString();
-        this.buyerName = in.readString();
-        this.buyerPhone = in.readString();
-        this.buyerFiscalNumber = in.readString();
-        this.userReference = in.readString();
         this.orderAppReference = in.readString();
         this.confirmationCode = in.readString();
         this.tableReference = in.readString();
@@ -654,20 +480,12 @@ public class PmzOrder implements Parcelable {
         this.dateStarted = in.readString();
         this.orderType = (Integer) in.readValue(Integer.class.getClassLoader());
         this.totalAmount = (Long) in.readValue(Long.class.getClassLoader());
-        this.addressLine1 = in.readString();
-        this.addressLine2 = in.readString();
-        this.addressCity = in.readString();
-        this.addressState = in.readString();
-        this.addressZip = in.readString();
-        this.addressCountry = in.readString();
-        this.addressLatitude = (Double) in.readValue(Double.class.getClassLoader());
-        this.addressLongitude = (Double) in.readValue(Double.class.getClassLoader());
         this.deliveryInstructions = in.readString();
         this.deliveryPrice = (Double) in.readValue(Double.class.getClassLoader());
         this.statusDescription = in.readString();
         this.items = in.createTypedArrayList(PmzItem.CREATOR);
-        this.buyer = in.readParcelable(Buyer.class.getClassLoader());
-        this.address = in.readParcelable(Address.class.getClassLoader());
+        this.buyer = in.readParcelable(PmzBuyer.class.getClassLoader());
+        this.address = in.readParcelable(PmzAddress.class.getClassLoader());
         this.currency = in.readString();
         this.paymentMethodReference = in.readString();
         this.paymentReference = in.readString();
@@ -708,14 +526,6 @@ public class PmzOrder implements Parcelable {
 
     public void setStoreId(Long storeId) {
         this.storeId = storeId;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public Integer getTypeOrder() {

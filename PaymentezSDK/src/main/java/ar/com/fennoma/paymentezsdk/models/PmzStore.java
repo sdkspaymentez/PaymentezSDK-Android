@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Store implements Parcelable {
+public class PmzStore implements Parcelable {
 
     private Long id;
     private Long commerceId;
@@ -44,10 +44,10 @@ public class Store implements Parcelable {
     private List<String> extraPaymentCodes;
     private String serverAppCode;
     private String clientAppCode;
-    private Sponsor sponsor;
+    private PmzSponsor sponsor;
 
-    public static List<Store> fromJSONArray(JSONArray json) {
-        List<Store> store = new ArrayList<>();
+    public static List<PmzStore> fromJSONArray(JSONArray json) {
+        List<PmzStore> store = new ArrayList<>();
         if(json != null) {
             for(int i = 0; i < json.length(); i++) {
                 try {
@@ -60,8 +60,8 @@ public class Store implements Parcelable {
         return store;
     }
 
-    private static Store fromJSONObject(JSONObject json) {
-        Store store = new Store();
+    private static PmzStore fromJSONObject(JSONObject json) {
+        PmzStore store = new PmzStore();
         if(json != null) {
             try {
                 if(json.has("id")) {
@@ -159,7 +159,7 @@ public class Store implements Parcelable {
                     store.setClientAppCode(json.getString("clien_app_code"));
                 }
                 if(json.has("sponsor") && !json.isNull("sponsor")) {
-                    store.setSponsor(Sponsor.fromJSONObject(json.getJSONObject("sponsor")));
+                    store.setSponsor(PmzSponsor.fromJSONObject(json.getJSONObject("sponsor")));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -424,14 +424,14 @@ public class Store implements Parcelable {
         this.clientAppCode = clientAppCode;
     }
 
-    public Store() {
+    public PmzStore() {
     }
 
-    public Sponsor getSponsor() {
+    public PmzSponsor getSponsor() {
         return sponsor;
     }
 
-    public void setSponsor(Sponsor sponsor) {
+    public void setSponsor(PmzSponsor sponsor) {
         this.sponsor = sponsor;
     }
 
@@ -477,7 +477,7 @@ public class Store implements Parcelable {
         dest.writeParcelable(this.sponsor, flags);
     }
 
-    protected Store(Parcel in) {
+    protected PmzStore(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.commerceId = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
@@ -510,18 +510,18 @@ public class Store implements Parcelable {
         this.extraPaymentCodes = in.createStringArrayList();
         this.serverAppCode = in.readString();
         this.clientAppCode = in.readString();
-        this.sponsor = in.readParcelable(Sponsor.class.getClassLoader());
+        this.sponsor = in.readParcelable(PmzSponsor.class.getClassLoader());
     }
 
-    public static final Creator<Store> CREATOR = new Creator<Store>() {
+    public static final Creator<PmzStore> CREATOR = new Creator<PmzStore>() {
         @Override
-        public Store createFromParcel(Parcel source) {
-            return new Store(source);
+        public PmzStore createFromParcel(Parcel source) {
+            return new PmzStore(source);
         }
 
         @Override
-        public Store[] newArray(int size) {
-            return new Store[size];
+        public PmzStore[] newArray(int size) {
+            return new PmzStore[size];
         }
     };
 }

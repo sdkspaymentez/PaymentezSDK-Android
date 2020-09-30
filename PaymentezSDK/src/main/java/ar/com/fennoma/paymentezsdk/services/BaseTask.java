@@ -1,10 +1,9 @@
 package ar.com.fennoma.paymentezsdk.services;
 
 import android.os.AsyncTask;
-import android.text.TextUtils;
 
 import ar.com.fennoma.paymentezsdk.exceptions.PmzException;
-import ar.com.fennoma.paymentezsdk.models.ErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
 
 public class BaseTask<T> extends AsyncTask<Void, Void, T> {
 
@@ -48,7 +47,7 @@ public class BaseTask<T> extends AsyncTask<Void, Void, T> {
         if(response == null && exception == null) {
             callback.onFailure();
         } else if(exception != null) {
-            ErrorMessage error = ErrorMessage.getError(exception.getErrorCode());
+            PmzErrorMessage error = PmzErrorMessage.getError(exception.getErrorCode());
             if(error.isInvalidSession()) {
                 callback.sessionExpired();
             } else {

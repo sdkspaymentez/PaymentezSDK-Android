@@ -5,14 +5,14 @@ import android.text.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Session implements IJsonParsingModel {
+public class PmzSession implements IJsonParsingModel {
 
     private String appCode;
     private String appKey;
 
-    public Session(){}
+    public PmzSession(){}
 
-    public Session(String appCode, String appKey) {
+    public PmzSession(String appCode, String appKey) {
         this.appCode = appCode;
         this.appKey = appKey;
     }

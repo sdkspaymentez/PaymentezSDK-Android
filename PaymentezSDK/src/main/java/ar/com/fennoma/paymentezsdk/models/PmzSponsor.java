@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Sponsor implements Parcelable {
+public class PmzSponsor implements Parcelable {
 
     private String name;
     private String logoUrl;
@@ -18,8 +18,8 @@ public class Sponsor implements Parcelable {
     private String transactionSuccessUrl;
     private String transactionErrorUrl;
 
-    public static Sponsor fromJSONObject(JSONObject json) {
-        Sponsor sponsor = new Sponsor();
+    public static PmzSponsor fromJSONObject(JSONObject json) {
+        PmzSponsor sponsor = new PmzSponsor();
         if(json != null) {
             try {
                 if(json.has("name")) {
@@ -146,10 +146,10 @@ public class Sponsor implements Parcelable {
         dest.writeString(this.transactionErrorUrl);
     }
 
-    public Sponsor() {
+    public PmzSponsor() {
     }
 
-    protected Sponsor(Parcel in) {
+    protected PmzSponsor(Parcel in) {
         this.name = in.readString();
         this.logoUrl = in.readString();
         this.iconUrl = in.readString();
@@ -161,15 +161,15 @@ public class Sponsor implements Parcelable {
         this.transactionErrorUrl = in.readString();
     }
 
-    public static final Creator<Sponsor> CREATOR = new Creator<Sponsor>() {
+    public static final Creator<PmzSponsor> CREATOR = new Creator<PmzSponsor>() {
         @Override
-        public Sponsor createFromParcel(Parcel source) {
-            return new Sponsor(source);
+        public PmzSponsor createFromParcel(Parcel source) {
+            return new PmzSponsor(source);
         }
 
         @Override
-        public Sponsor[] newArray(int size) {
-            return new Sponsor[size];
+        public PmzSponsor[] newArray(int size) {
+            return new PmzSponsor[size];
         }
     };
 }
