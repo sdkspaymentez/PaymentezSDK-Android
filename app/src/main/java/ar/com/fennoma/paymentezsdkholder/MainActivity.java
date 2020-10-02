@@ -6,9 +6,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
+import ar.com.fennoma.paymentezsdk.models.PmzPaymentData;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setButtons() {
+        final PmzBuyer buyer = new PmzBuyer()
+                .setEmail("buyer@test.com.ar")
+                .setFiscalNumber("123456")
+                .setName("Buyer Test")
+                .setPhone("01112345678")
+                .setUserReference("user_reference");
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -37,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                         .setButtonBackgroundColor(getResources().getColor(android.R.color.holo_green_dark))
                         .setTextColor(getResources().getColor(android.R.color.black))
                         .setButtonTextColor(getResources().getColor(android.R.color.white))
-                        .startSearch(MainActivity.this, new PaymentezSDK.PmzSearchListener() {
+                        .startSearch(MainActivity.this, buyer, "appOrderReference", new PaymentezSDK.PmzSearchListener() {
                             @Override
                             public void onFinishedSuccessfully(PmzOrder order) {
                                 Toast.makeText(MainActivity.this, "El flujo de compra terminó bien", Toast.LENGTH_LONG).show();
@@ -59,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                         .setButtonBackgroundColor(getResources().getColor(android.R.color.holo_green_dark))
                         .setTextColor(getResources().getColor(android.R.color.black))
                         .setButtonTextColor(getResources().getColor(android.R.color.white))
-                        .startSearch(MainActivity.this, 120L, new PaymentezSDK.PmzSearchListener() {
+                        .startSearch(MainActivity.this, buyer, "appOrderReference", 120L, new PaymentezSDK.PmzSearchListener() {
                             @Override
                             public void onFinishedSuccessfully(PmzOrder order) {
                                 Toast.makeText(MainActivity.this, "El flujo de compra terminó bien", Toast.LENGTH_LONG).show();
@@ -73,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final PmzPaymentData paymentData = new PmzPaymentData()
+                .setPaymentMethodReference("paymentMethodReference")
+                .setPaymentReference("paymentReference")
+                .setAmount(20000L)
+                .setService(200L);
+
         detailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         .setButtonBackgroundColor(getResources().getColor(android.R.color.holo_green_dark))
                         .setTextColor(getResources().getColor(android.R.color.black))
                         .setButtonTextColor(getResources().getColor(android.R.color.white))
-                        .startPayAndPlace(MainActivity.this, PmzOrder.hardcoded(), "paymentReference", new PaymentezSDK.PmzPayAndPlaceListener() {
+                        .startPayAndPlace(MainActivity.this, PmzOrder.hardcoded(), paymentData, new PaymentezSDK.PmzPayAndPlaceListener() {
                             @Override
                             public void onFinishedSuccessfully(PmzOrder order) {
                                 Toast.makeText(MainActivity.this, "La compra finalizó con éxito", Toast.LENGTH_LONG).show();

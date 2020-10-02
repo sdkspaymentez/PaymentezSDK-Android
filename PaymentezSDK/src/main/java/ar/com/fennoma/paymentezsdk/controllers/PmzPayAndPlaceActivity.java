@@ -13,14 +13,15 @@ import androidx.annotation.Nullable;
 import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
+import ar.com.fennoma.paymentezsdk.models.PmzPaymentData;
 
 public class PmzPayAndPlaceActivity extends PmzBaseActivity {
 
     public static final String PMZ_ORDER = "pmz order";
-    public static final String PMZ_PAYMENT_REFERENCE = "pmz payment reference";
+    public static final String PMZ_PAYMENT_DATA = "pmz payment data";
 
     private PmzOrder order;
-    private String paymentReference;
+    private PmzPaymentData paymentData;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,9 +33,10 @@ public class PmzPayAndPlaceActivity extends PmzBaseActivity {
     }
 
     private void handleIntent() {
-        if(getIntent() != null && getIntent().getParcelableExtra(PMZ_ORDER) != null) {
+        if(getIntent() != null && getIntent().getParcelableExtra(PMZ_ORDER) != null
+                && getIntent().getParcelableExtra(PMZ_PAYMENT_DATA) != null) {
             this.order = getIntent().getParcelableExtra(PMZ_ORDER);
-            this.paymentReference = getIntent().getStringExtra(PMZ_PAYMENT_REFERENCE);
+            this.paymentData = getIntent().getParcelableExtra(PMZ_PAYMENT_DATA);
             setButtons();
         } else {
             finish();
