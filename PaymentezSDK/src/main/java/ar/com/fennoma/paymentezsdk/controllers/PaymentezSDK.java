@@ -51,9 +51,9 @@ public class PaymentezSDK {
 
     private boolean isAppOrderReferenceUsable(String appOrderReference) {
         if(!TextUtils.isEmpty(appOrderReference)) {
-            throw new RuntimeException("PaymentezSDK: appOrderReference is empty");
+            return true;
         }
-        return true;
+        throw new RuntimeException("PaymentezSDK: appOrderReference is empty");
     }
 
     private boolean isBuyerWellInitialized(PmzBuyer buyer) {
