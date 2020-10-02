@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzSession;
@@ -66,7 +67,7 @@ class PmzData {
         return backgroundColor;
     }
 
-    public void startSearch(Context context, Long storeId, PaymentezSDK.PmzSearchListener listener) {
+    public void startSearch(Context context, PmzBuyer buyer, String appOrderReference, Long storeId, PaymentezSDK.PmzSearchListener listener) {
         this.searchListener = listener;
         Intent intent;
         if(storeId != null) {
