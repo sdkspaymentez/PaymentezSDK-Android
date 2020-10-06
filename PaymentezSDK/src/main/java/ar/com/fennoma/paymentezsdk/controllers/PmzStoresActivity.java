@@ -13,12 +13,24 @@ import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
 
 public class PmzStoresActivity extends PmzBaseActivity {
 
+    public static final String SEARCH_STORES_FILTER = "search stores filter";
+
+
+    private String storesFilter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pmz_stores);
         setFullTitleWithBack(getString(R.string.activity_pmz_stores_title));
         setViews();
+        handleIntent();
+    }
+
+    private void handleIntent() {
+        if(getIntent() != null) {
+            storesFilter = getIntent().getStringExtra(SEARCH_STORES_FILTER);
+        }
     }
 
     private void setViews() {

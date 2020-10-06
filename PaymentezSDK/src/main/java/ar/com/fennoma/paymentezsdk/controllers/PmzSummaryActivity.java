@@ -12,12 +12,27 @@ import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 
 public class PmzSummaryActivity extends PmzBaseActivity {
 
+    public static final String SHOW_SUMMARY = "show summary";
+
+    private PmzOrder order;
+    private boolean justSummary = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pmz_summary);
         setFullTitleWithBack(getString(R.string.activity_pmz_summary_title));
         setViews();
+        handleIntent();
+    }
+
+    private void handleIntent() {
+        if(getIntent() != null) {
+            if(getIntent().getParcelableExtra(SHOW_SUMMARY) != null) {
+                order = getIntent().getParcelableExtra(SHOW_SUMMARY);
+                justSummary = true;
+            }
+        }
     }
 
     private void setViews() {
@@ -50,7 +65,11 @@ public class PmzSummaryActivity extends PmzBaseActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PaymentezSDK.getInstance().setOrderResult(PmzOrder.hardcoded());
+                if(justSummary) {
+                    PaymentezSDK.getInstance().setOrderResult(order);
+                } else {
+                    PaymentezSDK.getInstance().setOrderResult(PmzOrder.hardcoded());
+                }
                 setResult(RESULT_OK);
                 finish();
             }
@@ -66,6 +85,9 @@ public class PmzSummaryActivity extends PmzBaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(justSummary) {
+            PmzData.getInstance().onSearchCancel();
+        }
         animActivityLeftToRight();
     }
 }

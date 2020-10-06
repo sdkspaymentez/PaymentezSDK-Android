@@ -3,10 +3,13 @@ package ar.com.fennoma.paymentezsdk.controllers;
 import android.content.Context;
 import android.text.TextUtils;
 
+import java.util.List;
+
 import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzPaymentData;
+import ar.com.fennoma.paymentezsdk.models.PmzStore;
 
 public class PaymentezSDK {
 
@@ -28,6 +31,11 @@ public class PaymentezSDK {
         void onError(PmzOrder order, PmzError error);
     }
 
+    public interface PmzStoresListener {
+        void onFinishedSuccessfully(List<PmzStore> order);
+        void onError(PmzError error);
+    }
+
     public static PaymentezSDK getInstance() {
         if(instance == null) {
             instance = new PaymentezSDK();
@@ -38,7 +46,14 @@ public class PaymentezSDK {
     public void startSearch(Context context, PmzBuyer buyer, String appOrderReference, Long storeId, PmzSearchListener listener) {
         if(isInitialized() && isBuyerWellInitialized(buyer) && isAppOrderReferenceUsable(appOrderReference)) {
             checkContext(context);
-            PmzData.getInstance().startSearch(context, buyer, appOrderReference, storeId, listener);
+            PmzData.getInstance().startSearchWithStoreId(context, buyer, appOrderReference, storeId, listener);
+        }
+    }
+
+    public void startSearch(Context context, PmzBuyer buyer, String appOrderReference, String searchStoresFilter, PmzSearchListener listener) {
+        if(isInitialized() && isBuyerWellInitialized(buyer) && isAppOrderReferenceUsable(appOrderReference)) {
+            checkContext(context);
+            PmzData.getInstance().startSearch(context, buyer, appOrderReference, searchStoresFilter, listener);
         }
     }
 
@@ -46,6 +61,13 @@ public class PaymentezSDK {
         if(isInitialized() && isBuyerWellInitialized(buyer) && isAppOrderReferenceUsable(appOrderReference)) {
             checkContext(context);
             PmzData.getInstance().startSearch(context, buyer, appOrderReference, null, listener);
+        }
+    }
+
+    public void showSummary(Context context, String appOrderReference, PmzOrder order, PmzSearchListener listener) {
+        if(isInitialized() && isAppOrderReferenceUsable(appOrderReference)) {
+            checkContext(context);
+            PmzData.getInstance().showSummary(context, appOrderReference, order, listener);
         }
     }
 
@@ -78,7 +100,40 @@ public class PaymentezSDK {
     public void startPayAndPlace(Context context, PmzOrder order, PmzPaymentData paymentData, PmzPayAndPlaceListener listener) {
         if(isInitialized() && isPaymentDataUsable(paymentData)) {
             checkContext(context);
-            PmzData.getInstance().startPayAndPlace(context, order, paymentData, listener);
+            PmzData.getInstance().startPayAndPlace(context, order, paymentData, false, listener);
+        }
+    }
+
+    public void startPayAndPlace(Context context, PmzOrder order, PmzPaymentData paymentData, boolean skipSummary, PmzPayAndPlaceListener listener) {
+        if(isInitialized() && isPaymentDataUsable(paymentData)) {
+            checkContext(context);
+            PmzData.getInstance().startPayAndPlace(context, order, paymentData, skipSummary, listener);
+        }
+    }
+
+    public void startPayAndPlace(Context context, List<PmzOrder> orders, PmzPaymentData paymentData, PmzPayAndPlaceListener listener) {
+        if(isInitialized() && isPaymentDataUsable(paymentData)) {
+            checkContext(context);
+            PmzData.getInstance().startPayAndPlace(context, orders, paymentData, false, listener);
+        }
+    }
+
+    public void startPayAndPlace(Context context, List<PmzOrder> orders, PmzPaymentData paymentData, boolean skipSummary, PmzPayAndPlaceListener listener) {
+        if(isInitialized() && isPaymentDataUsable(paymentData)) {
+            checkContext(context);
+            PmzData.getInstance().startPayAndPlace(context, orders, paymentData, skipSummary, listener);
+        }
+    }
+
+    public void getStores(PmzStoresListener listener) {
+        if(isInitialized()) {
+            PmzData.getInstance().getStores(null, listener);
+        }
+    }
+
+    public void getStores(String searchStoresFilter, PmzStoresListener listener) {
+        if(isInitialized()) {
+            PmzData.getInstance().getStores(searchStoresFilter, listener);
         }
     }
 

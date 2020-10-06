@@ -2,11 +2,16 @@ package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzPaymentData;
+import ar.com.fennoma.paymentezsdk.models.PmzStore;
 
 class PmzData {
 
@@ -66,7 +71,7 @@ class PmzData {
         return backgroundColor;
     }
 
-    public void startSearch(Context context, PmzBuyer buyer, String appOrderReference, Long storeId, PaymentezSDK.PmzSearchListener listener) {
+    public void startSearchWithStoreId(Context context, PmzBuyer buyer, String appOrderReference, Long storeId, PaymentezSDK.PmzSearchListener listener) {
         this.searchListener = listener;
         Intent intent;
         if(storeId != null) {
@@ -78,12 +83,42 @@ class PmzData {
         context.startActivity(intent);
     }
 
-    public void startPayAndPlace(Context context, PmzOrder order, PmzPaymentData paymentData, PaymentezSDK.PmzPayAndPlaceListener listener) {
+    public void startSearch(Context context, PmzBuyer buyer, String appOrderReference, String searchStoresFilter, PaymentezSDK.PmzSearchListener listener) {
+        this.searchListener = listener;
+        Intent intent = new Intent(context, PmzStoresActivity.class);
+        if(!TextUtils.isEmpty(searchStoresFilter)) {
+            intent.putExtra(PmzStoresActivity.SEARCH_STORES_FILTER, searchStoresFilter);
+        }
+        context.startActivity(intent);
+    }
+
+    public void showSummary(Context context, String appOrderReference, PmzOrder order, PaymentezSDK.PmzSearchListener listener) {
+        this.searchListener = listener;
+        Intent intent = new Intent(context, PmzSummaryActivity.class);
+        intent.putExtra(PmzSummaryActivity.SHOW_SUMMARY, order);
+        context.startActivity(intent);
+    }
+
+    public void startPayAndPlace(Context context, PmzOrder order, PmzPaymentData paymentData, boolean skipSummary, PaymentezSDK.PmzPayAndPlaceListener listener) {
         this.paymentChecker = listener;
         Intent intent = new Intent(context, PmzPayAndPlaceActivity.class);
         intent.putExtra(PmzPayAndPlaceActivity.PMZ_ORDER, order);
+        intent.putExtra(PmzPayAndPlaceActivity.SKIP_SUMMARY, skipSummary);
         intent.putExtra(PmzPayAndPlaceActivity.PMZ_PAYMENT_DATA, paymentData);
         context.startActivity(intent);
+    }
+
+    public void startPayAndPlace(Context context, List<PmzOrder> orders, PmzPaymentData paymentData, boolean skipSummary, PaymentezSDK.PmzPayAndPlaceListener listener) {
+        this.paymentChecker = listener;
+        Intent intent = new Intent(context, PmzPayAndPlaceActivity.class);
+        intent.putExtra(PmzPayAndPlaceActivity.PMZ_ORDERS, new ArrayList<>(orders));
+        intent.putExtra(PmzPayAndPlaceActivity.SKIP_SUMMARY, skipSummary);
+        intent.putExtra(PmzPayAndPlaceActivity.PMZ_PAYMENT_DATA, paymentData);
+        context.startActivity(intent);
+    }
+
+    public void getStores(String filter, PaymentezSDK.PmzStoresListener listener) {
+        listener.onFinishedSuccessfully(PmzStore.getHardcoded());
     }
 
     public void onSearchCancel() {
@@ -129,5 +164,4 @@ class PmzData {
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
     }
-
 }
