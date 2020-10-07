@@ -7,14 +7,18 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import java.util.List;
+
 import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 
 public class PmzSummaryActivity extends PmzBaseActivity {
 
     public static final String SHOW_SUMMARY = "show summary";
+    public static final String PMZ_ORDER = "order key";
 
     private PmzOrder order;
+    private List<PmzOrder> orderList;
     private boolean justSummary = false;
 
     @Override
@@ -28,10 +32,9 @@ public class PmzSummaryActivity extends PmzBaseActivity {
 
     private void handleIntent() {
         if(getIntent() != null) {
-            if(getIntent().getParcelableExtra(SHOW_SUMMARY) != null) {
-                order = getIntent().getParcelableExtra(SHOW_SUMMARY);
-                justSummary = true;
-            }
+            justSummary = getIntent().getBooleanExtra(SHOW_SUMMARY, false);
+            order = getIntent().getParcelableExtra(PMZ_ORDER);
+            orderList = getIntent().getParcelableArrayListExtra(PMZ_ORDER);
         }
     }
 
@@ -66,7 +69,11 @@ public class PmzSummaryActivity extends PmzBaseActivity {
             @Override
             public void onClick(View view) {
                 if(justSummary) {
-                    PaymentezSDK.getInstance().setOrderResult(order);
+                    if(order != null) {
+                        PaymentezSDK.getInstance().setOrderResult(order);
+                    } else if(orderList != null) {
+                        PaymentezSDK.getInstance().setOrderResult(orderList);
+                    }
                 } else {
                     PaymentezSDK.getInstance().setOrderResult(PmzOrder.hardcoded());
                 }

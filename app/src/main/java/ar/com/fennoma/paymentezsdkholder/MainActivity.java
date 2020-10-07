@@ -221,7 +221,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(View view) {
                 PaymentezSDK.getInstance().getStores(new PaymentezSDK.PmzStoresListener() {
                     @Override
-                    public void onFinishedSuccessfully(List<PmzStore> order) {
+                    public void onFinishedSuccessfully(List<PmzStore> stores) {
                         Toast.makeText(MainActivity.this, R.string.main_get_stores_got_stores, Toast.LENGTH_LONG).show();
                     }
 

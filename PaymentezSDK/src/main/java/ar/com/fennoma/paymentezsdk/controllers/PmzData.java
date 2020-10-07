@@ -22,6 +22,7 @@ class PmzData {
 
     private PaymentezSDK.PmzSearchListener searchListener;
     private PaymentezSDK.PmzPayAndPlaceListener paymentChecker;
+    private PaymentezSDK.PmzPayAndPlaceMultipleOrderListener paymentMultipleOrdersChecker;
 
     private Integer backgroundColor;
     private Integer textColor;
@@ -29,6 +30,7 @@ class PmzData {
     private Integer buttonTextColor;
 
     private PmzOrder order;
+    private List<PmzOrder> orders;
 
     public static PmzData getInstance() {
         if(instance == null) {
@@ -95,7 +97,8 @@ class PmzData {
     public void showSummary(Context context, String appOrderReference, PmzOrder order, PaymentezSDK.PmzSearchListener listener) {
         this.searchListener = listener;
         Intent intent = new Intent(context, PmzSummaryActivity.class);
-        intent.putExtra(PmzSummaryActivity.SHOW_SUMMARY, order);
+        intent.putExtra(PmzSummaryActivity.SHOW_SUMMARY, true);
+        intent.putExtra(PmzSummaryActivity.PMZ_ORDER, order);
         context.startActivity(intent);
     }
 
@@ -139,14 +142,30 @@ class PmzData {
         }
     }
 
+    public void onPaymentMultipleOrdersCheckingError(List<PmzOrder> orders, PmzError error) {
+        if(paymentMultipleOrdersChecker != null) {
+            paymentMultipleOrdersChecker.onError(orders, error);
+        }
+    }
+
     public void onPaymentCheckingSuccess(PmzOrder order) {
         if(paymentChecker != null) {
             paymentChecker.onFinishedSuccessfully(order);
         }
     }
 
+    public void onPaymentCheckingSuccess(List<PmzOrder> orders) {
+        if(paymentMultipleOrdersChecker != null) {
+            paymentMultipleOrdersChecker.onFinishedSuccessfully(orders);
+        }
+    }
+
     public void setOrderResult(PmzOrder order) {
         this.order = order;
+    }
+
+    public void setOrderResult(List<PmzOrder> orders) {
+        this.orders = orders;
     }
 
     public String getSecret() {

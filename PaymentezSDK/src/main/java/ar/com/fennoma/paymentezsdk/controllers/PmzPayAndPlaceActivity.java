@@ -90,7 +90,11 @@ public class PmzPayAndPlaceActivity extends PmzBaseActivity {
             public void onClick(View view) {
                 if(skipSummary) {
                     finish();
-                    PmzData.getInstance().onPaymentCheckingSuccess(order);
+                    if(order != null) {
+                        PmzData.getInstance().onPaymentCheckingSuccess(order);
+                    } else if(orderList != null) {
+                        PmzData.getInstance().onPaymentCheckingSuccess(orderList);
+                    }
                 } else {
                     Intent intent = new Intent(PmzPayAndPlaceActivity.this, PmzResultActivity.class);
                     intent.putExtra(PmzResultActivity.PMZ_ORDER, order);
@@ -104,14 +108,22 @@ public class PmzPayAndPlaceActivity extends PmzBaseActivity {
             @Override
             public void onClick(View view) {
                 finish();
-                PmzData.getInstance().onPaymentCheckingError(order, new PmzError(PmzError.PLACE_ERROR));
+                if(order != null) {
+                    PmzData.getInstance().onPaymentCheckingError(order, new PmzError(PmzError.PLACE_ERROR));
+                } else if(orderList != null) {
+                    PmzData.getInstance().onPaymentMultipleOrdersCheckingError(orderList, new PmzError(PmzError.PLACE_ERROR));
+                }
             }
         });
         findViewById(R.id.payment_error).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
-                PmzData.getInstance().onPaymentCheckingError(order, new PmzError(PmzError.PAYMENT_ERROR));
+                if(order != null) {
+                    PmzData.getInstance().onPaymentCheckingError(order, new PmzError(PmzError.PAYMENT_ERROR));
+                } else if(orderList != null) {
+                    PmzData.getInstance().onPaymentMultipleOrdersCheckingError(orderList, new PmzError(PmzError.PAYMENT_ERROR));
+                }
             }
         });
     }

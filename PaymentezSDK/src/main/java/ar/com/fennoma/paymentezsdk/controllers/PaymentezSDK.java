@@ -31,8 +31,13 @@ public class PaymentezSDK {
         void onError(PmzOrder order, PmzError error);
     }
 
+    public interface PmzPayAndPlaceMultipleOrderListener {
+        void onFinishedSuccessfully(List<PmzOrder> orders);
+        void onError(List<PmzOrder> orders, PmzError error);
+    }
+
     public interface PmzStoresListener {
-        void onFinishedSuccessfully(List<PmzStore> order);
+        void onFinishedSuccessfully(List<PmzStore> storesc);
         void onError(PmzError error);
     }
 
@@ -177,6 +182,10 @@ public class PaymentezSDK {
 
     public void setOrderResult(PmzOrder order) {
         PmzData.getInstance().setOrderResult(order);
+    }
+
+    public void setOrderResult(List<PmzOrder> orders) {
+        PmzData.getInstance().setOrderResult(orders);
     }
 
     public void setSecret(String secret) {

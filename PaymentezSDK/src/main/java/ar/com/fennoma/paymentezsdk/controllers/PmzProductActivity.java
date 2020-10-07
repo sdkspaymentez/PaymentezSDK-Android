@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 
 public class PmzProductActivity extends PmzBaseActivity {
 
@@ -50,6 +51,7 @@ public class PmzProductActivity extends PmzBaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PmzProductActivity.this, PmzSummaryActivity.class);
+                intent.putExtra(PmzSummaryActivity.SHOW_SUMMARY, PmzOrder.hardcoded());
                 startActivityForResult(intent, MAIN_FLOW_KEY);
                 animActivityRightToLeft();
             }
