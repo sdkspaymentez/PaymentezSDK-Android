@@ -79,6 +79,7 @@ class PmzData {
         if(storeId != null) {
             intent = new Intent(context, PmzMenuActivity.class);
             intent.putExtra(PmzMenuActivity.STORE_ID, storeId);
+            intent.putExtra(PmzMenuActivity.FORCED_ID, true);
         } else {
             intent = new Intent(context, PmzStoresActivity.class);
         }

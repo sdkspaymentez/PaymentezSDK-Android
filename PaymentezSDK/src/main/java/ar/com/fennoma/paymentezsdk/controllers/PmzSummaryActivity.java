@@ -74,10 +74,11 @@ public class PmzSummaryActivity extends PmzBaseActivity {
                     } else if(orderList != null) {
                         PaymentezSDK.getInstance().setOrderResult(orderList);
                     }
+                    PmzData.getInstance().onSearchSuccess();
                 } else {
                     PaymentezSDK.getInstance().setOrderResult(PmzOrder.hardcoded());
+                    setResult(RESULT_OK);
                 }
-                setResult(RESULT_OK);
                 finish();
             }
         });

@@ -15,7 +15,6 @@ public class PmzStoresActivity extends PmzBaseActivity {
 
     public static final String SEARCH_STORES_FILTER = "search stores filter";
 
-
     private String storesFilter;
 
     @Override

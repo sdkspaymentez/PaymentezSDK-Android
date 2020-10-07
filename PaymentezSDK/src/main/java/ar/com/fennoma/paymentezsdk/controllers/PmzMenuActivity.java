@@ -13,6 +13,10 @@ import ar.com.fennoma.paymentezsdk.R;
 public class PmzMenuActivity extends PmzBaseActivity {
 
     public static final String STORE_ID = "store Id";
+    public static final String FORCED_ID = "forced Id";
+
+    private Long storeId;
+    private boolean forcedId = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -20,6 +24,14 @@ public class PmzMenuActivity extends PmzBaseActivity {
         setContentView(R.layout.activity_pmz_menu);
         setFullTitleWithBack(getString(R.string.activity_pmz_menu_title));
         setViews();
+        handleIntent();
+    }
+
+    private void handleIntent() {
+        if(getIntent() != null) {
+            storeId = getIntent().getLongExtra(STORE_ID, -1);
+            forcedId = getIntent().getBooleanExtra(FORCED_ID, false);
+        }
     }
 
     private void setViews() {
@@ -68,7 +80,11 @@ public class PmzMenuActivity extends PmzBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
-            setResult(RESULT_OK);
+            if(forcedId) {
+                PmzData.getInstance().onSearchSuccess();
+            } else {
+                setResult(RESULT_OK);
+            }
             finish();
         }
     }

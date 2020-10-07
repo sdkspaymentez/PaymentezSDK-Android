@@ -37,7 +37,7 @@ public class PaymentezSDK {
     }
 
     public interface PmzStoresListener {
-        void onFinishedSuccessfully(List<PmzStore> storesc);
+        void onFinishedSuccessfully(List<PmzStore> stores);
         void onError(PmzError error);
     }
 
