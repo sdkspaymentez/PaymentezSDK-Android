@@ -1,6 +1,5 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -8,18 +7,35 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import java.util.List;
+
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 
-public class SecondActivity extends PaymentezBaseActivity {
+public class PmzSummaryActivity extends PmzBaseActivity {
 
-    public static final String STORE_ID = "store Id";
+    public static final String SHOW_SUMMARY = "show summary";
+    public static final String PMZ_ORDER = "order key";
+
+    private PmzOrder order;
+    private List<PmzOrder> orderList;
+    private boolean justSummary = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_second);
-        setFullTitleWithBack(getString(R.string.activity_second_title));
+        setContentView(R.layout.activity_pmz_summary);
+        setFullTitleWithBack(getString(R.string.activity_pmz_summary_title));
         setViews();
+        handleIntent();
+    }
+
+    private void handleIntent() {
+        if(getIntent() != null) {
+            justSummary = getIntent().getBooleanExtra(SHOW_SUMMARY, false);
+            order = getIntent().getParcelableExtra(PMZ_ORDER);
+            orderList = getIntent().getParcelableArrayListExtra(PMZ_ORDER);
+        }
     }
 
     private void setViews() {
@@ -34,6 +50,7 @@ public class SecondActivity extends PaymentezBaseActivity {
             back.setTextColor(PmzData.getInstance().getTextColor());
         }
         if(PmzData.getInstance().getButtonBackgroundColor() != null) {
+            changeToolbarBackground(PmzData.getInstance().getButtonBackgroundColor());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 replaceRippleBackgroundColor(findViewById(R.id.next));
             }
@@ -51,9 +68,18 @@ public class SecondActivity extends PaymentezBaseActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SecondActivity.this, ThirdActivity.class);
-                startActivityForResult(intent, MAIN_FLOW_KEY);
-                animActivityRightToLeft();
+                if(justSummary) {
+                    if(order != null) {
+                        PaymentezSDK.getInstance().setOrderResult(order);
+                    } else if(orderList != null) {
+                        PaymentezSDK.getInstance().setOrderResult(orderList);
+                    }
+                    PmzData.getInstance().onSearchSuccess();
+                } else {
+                    PaymentezSDK.getInstance().setOrderResult(PmzOrder.hardcoded());
+                    setResult(RESULT_OK);
+                }
+                finish();
             }
         });
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
@@ -65,17 +91,11 @@ public class SecondActivity extends PaymentezBaseActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
-            setResult(RESULT_OK);
-            finish();
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(justSummary) {
+            PmzData.getInstance().onSearchCancel();
+        }
         animActivityLeftToRight();
     }
 }

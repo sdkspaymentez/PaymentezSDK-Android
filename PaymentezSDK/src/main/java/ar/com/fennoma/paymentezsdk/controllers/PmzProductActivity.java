@@ -9,14 +9,15 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 
-public class ThirdActivity extends PaymentezBaseActivity {
+public class PmzProductActivity extends PmzBaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_third);
-        setFullTitleWithBack(getString(R.string.activity_third_title));
+        setContentView(R.layout.activity_pmz_product);
+        setFullTitleWithBack(getString(R.string.activity_pmz_product_title));
         setViews();
     }
 
@@ -49,7 +50,8 @@ public class ThirdActivity extends PaymentezBaseActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ThirdActivity.this, FourthActivity.class);
+                Intent intent = new Intent(PmzProductActivity.this, PmzSummaryActivity.class);
+                intent.putExtra(PmzSummaryActivity.SHOW_SUMMARY, PmzOrder.hardcoded());
                 startActivityForResult(intent, MAIN_FLOW_KEY);
                 animActivityRightToLeft();
             }

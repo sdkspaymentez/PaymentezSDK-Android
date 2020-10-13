@@ -40,7 +40,6 @@ public class PmzBuyer implements Parcelable, IJsonParsingModel {
         return buyer;
     }
 
-    @Override
     public JSONObject getJSON() throws JSONException {
         JSONObject params = new JSONObject();
         params.put("buyer_email", email);
@@ -64,40 +63,45 @@ public class PmzBuyer implements Parcelable, IJsonParsingModel {
         return name;
     }
 
-    public void setName(String name) {
+    public PmzBuyer setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public PmzBuyer setPhone(String phone) {
         this.phone = phone;
+        return this;
     }
 
     public String getUserReference() {
         return userReference;
     }
 
-    public void setUserReference(String userReference) {
+    public PmzBuyer setUserReference(String userReference) {
         this.userReference = userReference;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public PmzBuyer setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public String getFiscalNumber() {
         return fiscalNumber;
     }
 
-    public void setFiscalNumber(String fiscalNumber) {
+    public PmzBuyer setFiscalNumber(String fiscalNumber) {
         this.fiscalNumber = fiscalNumber;
+        return this;
     }
 
     @Override

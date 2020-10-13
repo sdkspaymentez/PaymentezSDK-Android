@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
+import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdkholder.R;
 import ar.com.fennoma.paymentezsdkholder.models.Color;
@@ -61,6 +62,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setButton() {
+        final PmzBuyer buyer = new PmzBuyer().setName("Pepe").setPhone("123123123").setFiscalNumber("fiscalNumber")
+                .setUserReference("userReference").setEmail("pepe@test.com.ar");
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,7 +73,7 @@ public class MainActivity extends BaseActivity {
                         .setButtonBackgroundColor(buttonColorSelected.getColorRes())
                         .setButtonTextColor(buttonTextColorSelected.getColorRes())
                         .setTextColor(textColorSelected.getColorRes())
-                        .startSearch(MainActivity.this, new PaymentezSDK.PmzSearchListener() {
+                        .startSearch(MainActivity.this, buyer, "appReference", new PaymentezSDK.PmzSearchListener() {
                             @Override
                             public void onFinishedSuccessfully(PmzOrder order) {
                                 Toast.makeText(MainActivity.this, getString(R.string.home_flow_success), Toast.LENGTH_LONG).show();

@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.widget.Toast;
 
 import ar.com.fennoma.paymentezsdk.R;
-import ar.com.fennoma.paymentezsdk.controllers.FirstActivity;
 
 public class DialogUtils {
 
