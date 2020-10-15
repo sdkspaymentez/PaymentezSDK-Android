@@ -1,14 +1,20 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.adapters.PmzStoresAdapter;
+import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.PmzStore;
+import ar.com.fennoma.paymentezsdk.services.API;
 import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
 
 public class PmzStoresActivity extends PmzBaseActivity {
@@ -16,6 +22,7 @@ public class PmzStoresActivity extends PmzBaseActivity {
     public static final String SEARCH_STORES_FILTER = "search stores filter";
 
     private String storesFilter;
+    private PmzStoresAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +37,64 @@ public class PmzStoresActivity extends PmzBaseActivity {
         if(getIntent() != null) {
             storesFilter = getIntent().getStringExtra(SEARCH_STORES_FILTER);
         }
+        getToken();
+    }
+
+    private void getToken() {
+        showLoading();
+        API.getSession(PmzData.getInstance().getSession(), new API.ServiceCallback<String>() {
+            @Override
+            public void onSuccess(String response) {
+                PmzData.getInstance().setToken(response);
+                getData();
+            }
+
+            @Override
+            public void onError(PmzErrorMessage error) {
+                hideLoading();
+                DialogUtils.toast(PmzStoresActivity.this, error.getErrorMessage());
+            }
+
+            @Override
+            public void onFailure() {
+                hideLoading();
+                DialogUtils.genericError(PmzStoresActivity.this);
+            }
+
+            @Override
+            public void sessionExpired() {
+                hideLoading();
+                onSessionExpired();
+            }
+        });
+    }
+
+    private void getData() {
+        API.getStores(new API.ServiceCallback<List<PmzStore>>() {
+            @Override
+            public void onSuccess(List<PmzStore> response) {
+                hideLoading();
+                adapter.setStores(response);
+            }
+
+            @Override
+            public void onError(PmzErrorMessage error) {
+                hideLoading();
+                DialogUtils.toast(PmzStoresActivity.this, error.getErrorMessage());
+            }
+
+            @Override
+            public void onFailure() {
+                hideLoading();
+                DialogUtils.genericError(PmzStoresActivity.this);
+            }
+
+            @Override
+            public void sessionExpired() {
+                hideLoading();
+                onSessionExpired();
+            }
+        });
     }
 
     private void setViews() {
@@ -37,33 +102,29 @@ public class PmzStoresActivity extends PmzBaseActivity {
             View background = findViewById(R.id.background);
             background.setBackgroundColor(PmzData.getInstance().getBackgroundColor());
         }
-        if(PmzData.getInstance().getTextColor() != null) {
-            TextView text = findViewById(R.id.text);
-            text.setTextColor(PmzData.getInstance().getTextColor());
-        }
         if(PmzData.getInstance().getButtonBackgroundColor() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                replaceRippleBackgroundColor(findViewById(R.id.next));
-            }
             changeToolbarBackground(PmzData.getInstance().getButtonBackgroundColor());
         }
         if(PmzData.getInstance().getButtonTextColor() != null) {
-            TextView next = findViewById(R.id.next);
-            next.setTextColor(PmzData.getInstance().getButtonTextColor());
             changeToolbarTextColor(PmzData.getInstance().getButtonTextColor());
         }
-        setButtons();
+        setRecyclerView();
     }
 
-    private void setButtons() {
-        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+    private void setRecyclerView() {
+        RecyclerView recycler = findViewById(R.id.recycler);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new PmzStoresAdapter(this, new PmzStoresAdapter.PmzStoreItemListener() {
             @Override
-            public void onClick(View view) {
+            public void onStoreClicked(PmzStore store) {
                 Intent intent = new Intent(PmzStoresActivity.this, PmzMenuActivity.class);
-                startActivityForResult(intent, MAIN_FLOW_KEY);
+                intent.putExtra(PmzMenuActivity.STORE_KEY, store);
+                startActivity(intent);
                 animActivityRightToLeft();
             }
         });
+        adapter.setTextColor(PmzData.getInstance().getTextColor());
+        recycler.setAdapter(adapter);
     }
 
     @Override

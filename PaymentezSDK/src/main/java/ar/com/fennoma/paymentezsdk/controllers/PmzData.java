@@ -11,14 +11,12 @@ import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzPaymentData;
-import ar.com.fennoma.paymentezsdk.models.PmzStore;
+import ar.com.fennoma.paymentezsdk.models.PmzSession;
 
 class PmzData {
 
     private static PmzData instance;
-
-    private String secret;
-    private String apiKey;
+    private PmzSession session;
 
     private PaymentezSDK.PmzSearchListener searchListener;
     private PaymentezSDK.PmzPayAndPlaceListener paymentChecker;
@@ -79,7 +77,7 @@ class PmzData {
         Intent intent;
         if(storeId != null) {
             intent = new Intent(context, PmzMenuActivity.class);
-            intent.putExtra(PmzMenuActivity.STORE_ID, storeId);
+            intent.putExtra(PmzMenuActivity.STORE_KEY, storeId);
             intent.putExtra(PmzMenuActivity.FORCED_ID, true);
         } else {
             intent = new Intent(context, PmzStoresActivity.class);
@@ -170,23 +168,23 @@ class PmzData {
         this.orders = orders;
     }
 
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
     public String getToken() {
         return token;
+    }
+
+    public PmzSession getSession() {
+        return session;
+    }
+
+    public void setSession(PmzSession session) {
+        this.session = session;
+    }
+
+    public boolean isInitialized() {
+        return session != null && session.isInitialized();
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

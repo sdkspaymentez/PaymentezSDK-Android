@@ -54,4 +54,8 @@ public class PmzSession implements IJsonParsingModel {
     public void setAppKey(String appKey) {
         this.appKey = appKey;
     }
+
+    public boolean isInitialized() {
+        return !TextUtils.isEmpty(getAppCode()) && !TextUtils.isEmpty(getAppKey());
+    }
 }

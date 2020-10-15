@@ -1,5 +1,6 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
+import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -21,6 +22,7 @@ public class PmzBaseActivity extends AppCompatActivity {
 
     protected static final int MAIN_FLOW_KEY = 1001;
     private Toolbar toolbar;
+    private Dialog loadingDialog;
 
     protected void setFullTitleWithBack(String text) {
         setToolbar();
@@ -117,5 +119,34 @@ public class PmzBaseActivity extends AppCompatActivity {
 
     protected void onSessionExpired() {
 
+    }
+
+    public void showLoading() {
+        if(isActivityAlive()) {
+            hideLoading();
+            loadingDialog = new Dialog(PmzBaseActivity.this, R.style.CustomAlertDialog);
+            loadingDialog.setContentView(R.layout.dialog_loading);
+            loadingDialog.setCancelable(false);
+            loadingDialog.show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        hideLoading();
+        super.onDestroy();
+    }
+
+    public void hideLoading() {
+        if (isActivityAlive()) {
+            if (loadingDialog != null) {
+                loadingDialog.dismiss();
+                loadingDialog = null;
+            }
+        }
+    }
+
+    private boolean isActivityAlive() {
+        return !isFinishing();
     }
 }

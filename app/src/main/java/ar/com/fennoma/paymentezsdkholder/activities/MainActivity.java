@@ -24,6 +24,7 @@ public class MainActivity extends BaseActivity {
     private TextView bgColor;
     private TextView textColor;
     private TextView buttonColor;
+    private TextView buttonTextColor;
 
     private Color bgColorSelected;
     private Color textColorSelected;
@@ -33,6 +34,7 @@ public class MainActivity extends BaseActivity {
     private View bgColorShower;
     private View textColorShower;
     private View buttonColorShower;
+    private View buttonTextColorShower;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,24 +43,24 @@ public class MainActivity extends BaseActivity {
         colors = Color.getColorList(this);
         findViews();
         setViews();
-        selectRandomColors();
+        selectLifeMilesColors();
     }
 
     private void setViews() {
         setButton();
         setRandomizeButton();
-        /*setBgSpinner();
+        setBgSpinner();
         setTextSpinner();
-        setButtonSpinner();*/
+        setButtonSpinner();
     }
 
     private void setRandomizeButton() {
-        /*findViewById(R.id.randomize).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.randomize).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectRandomColors();
             }
-        });*/
+        });
     }
 
     private void setButton() {
@@ -88,7 +90,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    /*private void setBgSpinner() {
+    private void setBgSpinner() {
         View bgArea = findViewById(R.id.bg_color_area);
         Spinner bgSpinner = findViewById(R.id.bg_color_spinner);
 
@@ -98,7 +100,7 @@ public class MainActivity extends BaseActivity {
         setSpinner(strings, bgArea, bgSpinner, bgColor, new ISpinnerListener() {
             @Override
             public void onSpinnerItemClicked(int position) {
-                setBgSelection(position);
+                setBgSelection(colors.get(position));
             }
         });
     }
@@ -113,7 +115,7 @@ public class MainActivity extends BaseActivity {
         setSpinner(strings, textArea, textSpinner, textColor, new ISpinnerListener() {
             @Override
             public void onSpinnerItemClicked(int position) {
-                setTextSelection(position);
+                setTextSelection(colors.get(position));
             }
         });
     }
@@ -128,52 +130,61 @@ public class MainActivity extends BaseActivity {
         setSpinner(strings, buttonArea, buttonSpinner, buttonColor, new ISpinnerListener() {
             @Override
             public void onSpinnerItemClicked(int position) {
-                setButtonSelection(position);
+                setButtonSelection(colors.get(position));
             }
         });
-    }*/
-
-    private void setTextSelection(int position) {
-        textColorSelected = colors.get(position);
-        /*textColorShower.setBackgroundColor(textColorSelected.getColorRes());
-        textColor.setText(textColorSelected.getColorName());*/
     }
 
-    private void setBgSelection(int position) {
-        bgColorSelected = colors.get(position);
-        /*bgColorShower.setBackgroundColor(bgColorSelected.getColorRes());
-        bgColor.setText(bgColorSelected.getColorName());*/
+    private void setTextSelection(Color color) {
+        textColorSelected = color;
+        textColorShower.setBackgroundColor(textColorSelected.getColorRes());
+        textColor.setText(textColorSelected.getColorName());
     }
 
-    private void setButtonSelection(int position) {
-        buttonColorSelected = colors.get(position);
-        /*buttonColorShower.setBackgroundColor(buttonColorSelected.getColorRes());
-        buttonColor.setText(buttonColorSelected.getColorName());*/
+    private void setBgSelection(Color color) {
+        bgColorSelected = color;
+        bgColorShower.setBackgroundColor(bgColorSelected.getColorRes());
+        bgColor.setText(bgColorSelected.getColorName());
     }
 
-    private void setButtonTextColorSelection(int position) {
-        buttonTextColorSelected = colors.get(position);
-        /*buttonColorShower.setBackgroundColor(buttonColorSelected.getColorRes());
-        buttonColor.setText(buttonColorSelected.getColorName());*/
+    private void setButtonSelection(Color color) {
+        buttonColorSelected = color;
+        buttonColorShower.setBackgroundColor(buttonColorSelected.getColorRes());
+        buttonColor.setText(buttonColorSelected.getColorName());
+    }
+
+    private void setButtonTextColorSelection(Color color) {
+        buttonTextColorSelected = color;
+        buttonTextColorShower.setBackgroundColor(buttonTextColorSelected.getColorRes());
+        buttonTextColor.setText(buttonTextColorSelected.getColorName());
     }
 
     private void findViews() {
         button = findViewById(R.id.button);
 
-        /*bgColor = findViewById(R.id.bg_color);
+        bgColor = findViewById(R.id.bg_color);
         textColor = findViewById(R.id.text_color);
         buttonColor = findViewById(R.id.button_color);
+        buttonTextColor = findViewById(R.id.button_text_color);
 
         bgColorShower = findViewById(R.id.bg_color_shower);
         textColorShower = findViewById(R.id.text_color_shower);
-        buttonColorShower = findViewById(R.id.button_color_shower);*/
+        buttonColorShower = findViewById(R.id.button_color_shower);
+        buttonTextColorShower = findViewById(R.id.button_text_color_shower);
     }
 
     private void selectRandomColors() {
-        setBgSelection(getRandomTill(colors.size()));
-        setTextSelection(getRandomTill(colors.size()));
-        setButtonSelection(getRandomTill(colors.size()));
-        setButtonTextColorSelection(getRandomTill(colors.size()));
+        setBgSelection(colors.get(getRandomTill(colors.size())));
+        setTextSelection(colors.get(getRandomTill(colors.size())));
+        setButtonSelection(colors.get(getRandomTill(colors.size())));
+        setButtonTextColorSelection(colors.get(getRandomTill(colors.size())));
+    }
+
+    private void selectLifeMilesColors() {
+        setBgSelection(new Color("Blanco", getResources().getColor(R.color.sdk_white)));
+        setTextSelection(new Color("LM Negro", getResources().getColor(R.color.lm_black)));
+        setButtonSelection(new Color("LM Color Principal", getResources().getColor(R.color.lm_main_color)));
+        setButtonTextColorSelection(new Color("Blanco", getResources().getColor(R.color.sdk_white)));
     }
 
     private int getRandomTill(int max) {

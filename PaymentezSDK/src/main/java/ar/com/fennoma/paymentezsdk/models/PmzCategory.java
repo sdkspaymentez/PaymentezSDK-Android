@@ -50,7 +50,7 @@ public class PmzCategory implements Parcelable {
                     category.setName(json.getString("name"));
                 }
                 if(json.has("image")) {
-                    category.setName(json.getString("image"));
+                    category.setImageUrl(json.getString("image"));
                 }
                 if(json.has("products")) {
                     category.setProducts(PmzProduct.fromJSONArray(json.getJSONArray("products")));

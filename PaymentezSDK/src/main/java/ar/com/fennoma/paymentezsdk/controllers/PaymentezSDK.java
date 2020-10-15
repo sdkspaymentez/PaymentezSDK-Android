@@ -9,16 +9,17 @@ import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzPaymentData;
+import ar.com.fennoma.paymentezsdk.models.PmzSession;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
 
 public class PaymentezSDK {
 
     private static PaymentezSDK instance;
 
-    public static void initialize(String apiKey, String secret) {
-        PaymentezSDK instance = getInstance();
-        instance.setApiKey(apiKey);
-        instance.setSecret(secret);
+    public static void initialize(String appCode, String appKey) {
+        getInstance();
+        PmzData instance = PmzData.getInstance();
+        instance.setSession(new PmzSession(appCode, appKey));
     }
 
     public String getToken() {
@@ -99,7 +100,7 @@ public class PaymentezSDK {
     }
 
     private boolean isInitialized() {
-        if (TextUtils.isEmpty(PmzData.getInstance().getApiKey()) || TextUtils.isEmpty(PmzData.getInstance().getSecret())) {
+        if(!PmzData.getInstance().isInitialized()) {
             throw new RuntimeException("PaymentezSDK not initialized");
         } else {
             return true;
@@ -190,13 +191,5 @@ public class PaymentezSDK {
 
     public void setOrderResult(List<PmzOrder> orders) {
         PmzData.getInstance().setOrderResult(orders);
-    }
-
-    public void setSecret(String secret) {
-        PmzData.getInstance().setSecret(secret);
-    }
-
-    public void setApiKey(String apiKey) {
-        PmzData.getInstance().setApiKey(apiKey);
     }
 }

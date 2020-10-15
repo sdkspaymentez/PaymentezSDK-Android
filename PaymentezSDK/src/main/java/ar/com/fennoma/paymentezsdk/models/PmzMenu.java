@@ -1,11 +1,15 @@
 package ar.com.fennoma.paymentezsdk.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
 
-public class PmzMenu {
+public class PmzMenu implements Parcelable {
 
     private Long menuId;
     private List<PmzCategory> categories;
@@ -43,4 +47,35 @@ public class PmzMenu {
     public void setCategories(List<PmzCategory> categories) {
         this.categories = categories;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.menuId);
+        dest.writeTypedList(this.categories);
+    }
+
+    public PmzMenu() {
+    }
+
+    protected PmzMenu(Parcel in) {
+        this.menuId = (Long) in.readValue(Long.class.getClassLoader());
+        this.categories = in.createTypedArrayList(PmzCategory.CREATOR);
+    }
+
+    public static final Creator<PmzMenu> CREATOR = new Creator<PmzMenu>() {
+        @Override
+        public PmzMenu createFromParcel(Parcel source) {
+            return new PmzMenu(source);
+        }
+
+        @Override
+        public PmzMenu[] newArray(int size) {
+            return new PmzMenu[size];
+        }
+    };
 }

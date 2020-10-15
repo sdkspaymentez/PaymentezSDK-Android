@@ -4,7 +4,9 @@ import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.exceptions.PmzException;
 import ar.com.fennoma.paymentezsdk.models.PmzCapacity;
+import ar.com.fennoma.paymentezsdk.models.PmzCategory;
 import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.PmzMenu;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzSession;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
@@ -32,6 +34,15 @@ public class API {
             @Override
             public String callService() throws PmzException {
                 return Services.getToken(session);
+            }
+        }).execute();
+    }
+
+    public static void getMenu(final Long storeId, ServiceCallback<PmzMenu> callback) {
+        new BaseTask<>(callback, new BaseTask.IServiceCaller<PmzMenu>() {
+            @Override
+            public PmzMenu callService() throws PmzException {
+                return Services.getMenu(storeId);
             }
         }).execute();
     }
