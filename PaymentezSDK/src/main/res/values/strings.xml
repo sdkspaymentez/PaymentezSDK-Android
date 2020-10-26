@@ -10,7 +10,7 @@
     <!-- Activity titles -->
     <string name="activity_pmz_stores_title">Comercios</string>
     <string name="activity_pmz_menu_title">Menú</string>
-    <string name="activity_pmz_product_title">Configuración de producto</string>
+    <string name="activity_pmz_product_title">Detalle del producto</string>
     <string name="activity_pmz_summary_title">Carrito</string>
     <string name="activity_pmz_result_title">Producto Comprado</string>
 
@@ -25,4 +25,7 @@
     <!-- Menu -->
     <string name="pmz_menu_chart_button">Ir al carrito</string>
     <string name="pmz_menu_item_add_button">Agregar</string>
+    <string name="activity_pmz_product_button">Agregar al carrito</string>
+    <string name="pmz_product_quantity_title">Cantidad</string>
+    <string name="pmz_product_total_price_title">Total</string>
 </resources>

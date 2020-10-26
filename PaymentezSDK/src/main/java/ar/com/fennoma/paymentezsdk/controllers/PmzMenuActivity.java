@@ -18,8 +18,11 @@ import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.adapters.MenuPagerAdapter;
 import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
 import ar.com.fennoma.paymentezsdk.models.PmzMenu;
+import ar.com.fennoma.paymentezsdk.models.PmzOrder;
+import ar.com.fennoma.paymentezsdk.models.PmzProduct;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
 import ar.com.fennoma.paymentezsdk.services.API;
+import ar.com.fennoma.paymentezsdk.utils.ColorHelper;
 import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
 
 public class PmzMenuActivity extends PmzBaseActivity {
@@ -118,26 +121,25 @@ public class PmzMenuActivity extends PmzBaseActivity {
 
     private void setDataIntoViews(PmzMenu menu) {
         adapter.setMenu(menu);
-
     }
 
     private void setViews() {
-        if(PmzData.getInstance().getBackgroundColor() != null) {
+        if(PaymentezSDK.getInstance().getStyle().getBackgroundColor() != null) {
             View background = findViewById(R.id.background);
-            background.setBackgroundColor(PmzData.getInstance().getBackgroundColor());
+            background.setBackgroundColor(PaymentezSDK.getInstance().getStyle().getBackgroundColor());
         }
-        if(PmzData.getInstance().getTextColor() != null) {
+        if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
         }
-        if(PmzData.getInstance().getButtonBackgroundColor() != null) {
+        if(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor() != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                replaceRippleBackgroundColor(findViewById(R.id.chart_button));
+                ColorHelper.replaceButtonBackground(findViewById(R.id.chart_button), PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
             }
-            changeToolbarBackground(PmzData.getInstance().getButtonBackgroundColor());
+            changeToolbarBackground(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
         }
-        if(PmzData.getInstance().getButtonTextColor() != null) {
+        if(PaymentezSDK.getInstance().getStyle().getButtonTextColor() != null) {
             TextView next = findViewById(R.id.chart_button);
-            next.setTextColor(PmzData.getInstance().getButtonTextColor());
-            changeToolbarTextColor(PmzData.getInstance().getButtonTextColor());
+            next.setTextColor(PaymentezSDK.getInstance().getStyle().getButtonTextColor());
+            changeToolbarTextColor(PaymentezSDK.getInstance().getStyle().getButtonTextColor());
         }
         setButtons();
         setPager();
@@ -162,8 +164,9 @@ public class PmzMenuActivity extends PmzBaseActivity {
                 LinearLayout container = (LinearLayout)((ViewGroup) tabLayout.getChildAt(0)).getChildAt(tab.getPosition());
                 TextView tabTextView = (TextView) container.getChildAt(1);
                 tabTextView.setTypeface(robotoCondensedBold, Typeface.BOLD);
-                if(PmzData.getInstance().getTextColor() != null) {
-                    tabTextView.setTextColor(PmzData.getInstance().getTextColor());
+                tabTextView.setAllCaps(false);
+                if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
+                    tabTextView.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
                 } else {
                     tabTextView.setTextColor(getResources().getColor(android.R.color.black));
                 }
@@ -173,9 +176,10 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void onTabUnselected(TabLayout.Tab tab) {
                 LinearLayout container = (LinearLayout)((ViewGroup) tabLayout.getChildAt(0)).getChildAt(tab.getPosition());
                 TextView tabTextView = (TextView) container.getChildAt(1);
+                tabTextView.setAllCaps(false);
                 tabTextView.setTypeface(robotoCondensedRegular, Typeface.NORMAL);
-                if(PmzData.getInstance().getTextColor() != null) {
-                    tabTextView.setTextColor(PmzData.getInstance().getTextColor());
+                if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
+                    tabTextView.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
                 } else {
                     tabTextView.setTextColor(getResources().getColor(android.R.color.black));
                 }
@@ -184,17 +188,14 @@ public class PmzMenuActivity extends PmzBaseActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) { }
         });
-        //LinearLayout container = (LinearLayout)((ViewGroup) tabLayout.getChildAt(0)).getChildAt(0);
-        //TextView tabTextView = (TextView) container.getChildAt(1);
-        //tabTextView.setTypeface(robotoCondensedBold, Typeface.BOLD);
-        //tabTextView.setTextColor(getResources().getColor(R.color.orange));
     }
 
     private void setButtons() {
         findViewById(R.id.chart_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PmzMenuActivity.this, PmzProductActivity.class);
+                Intent intent = new Intent(PmzMenuActivity.this, PmzSummaryActivity.class);
+                intent.putExtra(PmzSummaryActivity.PMZ_ORDER, PmzOrder.hardcoded());
                 startActivityForResult(intent, MAIN_FLOW_KEY);
                 animActivityRightToLeft();
             }
@@ -218,5 +219,12 @@ public class PmzMenuActivity extends PmzBaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         animActivityLeftToRight();
+    }
+
+    public void addProduct(PmzProduct product) {
+        Intent intent = new Intent(this, PmzProductActivity.class);
+        intent.putExtra(PmzProductActivity.PRODUCT_KEY, product);
+        startActivity(intent);
+        animActivityRightToLeft();
     }
 }

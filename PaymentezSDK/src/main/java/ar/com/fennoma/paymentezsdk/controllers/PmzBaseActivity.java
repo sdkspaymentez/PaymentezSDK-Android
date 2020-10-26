@@ -98,25 +98,6 @@ public class PmzBaseActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.enter_left_to_right, R.anim.exit_left_to_right);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    protected void replaceRippleBackgroundColor(View button) {
-        RippleDrawable background = (RippleDrawable) button.getBackground();
-        Drawable drawable = background.getDrawable(0);
-        if(drawable != null) {
-            ColorStateList myColorStateList = new ColorStateList(
-                    new int[][]{
-                            new int[]{},
-                            new int[]{android.R.attr.state_pressed},
-                    },
-                    new int[] {
-                            PmzData.getInstance().getButtonBackgroundColor(),
-                            PmzData.getInstance().getButtonBackgroundColor()
-                    }
-            );
-            drawable.setTintList(myColorStateList);
-        }
-    }
-
     protected void onSessionExpired() {
 
     }

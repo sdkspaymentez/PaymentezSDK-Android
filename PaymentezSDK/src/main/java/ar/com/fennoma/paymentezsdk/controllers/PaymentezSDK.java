@@ -11,6 +11,7 @@ import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzPaymentData;
 import ar.com.fennoma.paymentezsdk.models.PmzSession;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
+import ar.com.fennoma.paymentezsdk.styles.PmzStyle;
 
 public class PaymentezSDK {
 
@@ -24,6 +25,10 @@ public class PaymentezSDK {
 
     public String getToken() {
         return PmzData.getInstance().getToken();
+    }
+
+    public PmzStyle getStyle() {
+        return PmzData.getInstance().getStyle();
     }
 
     public interface PmzSearchListener {
@@ -165,23 +170,8 @@ public class PaymentezSDK {
         }
     }
 
-    public PaymentezSDK setButtonBackgroundColor(Integer buttonBackgroundColor) {
-        PmzData.getInstance().setButtonBackgroundColor(buttonBackgroundColor);
-        return this;
-    }
-
-    public PaymentezSDK setButtonTextColor(Integer buttonTextColor) {
-        PmzData.getInstance().setButtonTextColor(buttonTextColor);
-        return this;
-    }
-
-    public PaymentezSDK setTextColor(Integer textColor) {
-        PmzData.getInstance().setTextColor(textColor);
-        return this;
-    }
-
-    public PaymentezSDK setBackgroundColor(int color) {
-        PmzData.getInstance().setBackgroundColor(color);
+    public PaymentezSDK setStyle(PmzStyle style) {
+        PmzData.getInstance().setStyle(style);
         return this;
     }
 

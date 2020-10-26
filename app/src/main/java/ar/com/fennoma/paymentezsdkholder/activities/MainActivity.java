@@ -12,6 +12,7 @@ import java.util.Random;
 import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
+import ar.com.fennoma.paymentezsdk.styles.PmzStyle;
 import ar.com.fennoma.paymentezsdkholder.R;
 import ar.com.fennoma.paymentezsdkholder.models.Color;
 
@@ -70,11 +71,13 @@ public class MainActivity extends BaseActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PaymentezSDK.getInstance()
-                        .setBackgroundColor(bgColorSelected.getColorRes())
+                PmzStyle style = new PmzStyle().setBackgroundColor(bgColorSelected.getColorRes())
                         .setButtonBackgroundColor(buttonColorSelected.getColorRes())
-                        .setButtonTextColor(buttonTextColorSelected.getColorRes())
                         .setTextColor(textColorSelected.getColorRes())
+                        .setButtonTextColor(buttonTextColorSelected.getColorRes());
+
+                PaymentezSDK.getInstance()
+                        .setStyle(style)
                         .startSearch(MainActivity.this, buyer, "appReference", new PaymentezSDK.PmzSearchListener() {
                             @Override
                             public void onFinishedSuccessfully(PmzOrder order) {

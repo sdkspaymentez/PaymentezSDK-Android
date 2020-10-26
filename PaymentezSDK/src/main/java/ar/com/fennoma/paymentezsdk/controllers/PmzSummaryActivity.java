@@ -11,6 +11,7 @@ import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
+import ar.com.fennoma.paymentezsdk.utils.ColorHelper;
 
 public class PmzSummaryActivity extends PmzBaseActivity {
 
@@ -39,27 +40,28 @@ public class PmzSummaryActivity extends PmzBaseActivity {
     }
 
     private void setViews() {
-        if(PmzData.getInstance().getBackgroundColor() != null) {
+        if(PaymentezSDK.getInstance().getStyle().getBackgroundColor() != null) {
             View background = findViewById(R.id.background);
-            background.setBackgroundColor(PmzData.getInstance().getBackgroundColor());
+            background.setBackgroundColor(PaymentezSDK.getInstance().getStyle().getBackgroundColor());
         }
-        if(PmzData.getInstance().getTextColor() != null) {
+        if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
             TextView text = findViewById(R.id.text);
-            text.setTextColor(PmzData.getInstance().getTextColor());
+            text.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
             TextView back = findViewById(R.id.back);
-            back.setTextColor(PmzData.getInstance().getTextColor());
+            back.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
         }
-        if(PmzData.getInstance().getButtonBackgroundColor() != null) {
-            changeToolbarBackground(PmzData.getInstance().getButtonBackgroundColor());
+        if(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor() != null) {
+            changeToolbarBackground(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                replaceRippleBackgroundColor(findViewById(R.id.next));
+                ColorHelper.replaceButtonBackground(findViewById(R.id.next),
+                        PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
             }
-            changeToolbarBackground(PmzData.getInstance().getButtonBackgroundColor());
+            changeToolbarBackground(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
         }
-        if(PmzData.getInstance().getButtonTextColor() != null) {
+        if(PaymentezSDK.getInstance().getStyle().getButtonTextColor() != null) {
             TextView next = findViewById(R.id.next);
-            next.setTextColor(PmzData.getInstance().getButtonTextColor());
-            changeToolbarTextColor(PmzData.getInstance().getButtonTextColor());
+            next.setTextColor(PaymentezSDK.getInstance().getStyle().getButtonTextColor());
+            changeToolbarTextColor(PaymentezSDK.getInstance().getStyle().getButtonTextColor());
         }
         setButtons();
     }

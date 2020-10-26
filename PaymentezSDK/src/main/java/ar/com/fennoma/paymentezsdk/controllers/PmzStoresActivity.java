@@ -98,15 +98,15 @@ public class PmzStoresActivity extends PmzBaseActivity {
     }
 
     private void setViews() {
-        if(PmzData.getInstance().getBackgroundColor() != null) {
+        if(PaymentezSDK.getInstance().getStyle().getBackgroundColor() != null) {
             View background = findViewById(R.id.background);
-            background.setBackgroundColor(PmzData.getInstance().getBackgroundColor());
+            background.setBackgroundColor(PaymentezSDK.getInstance().getStyle().getBackgroundColor());
         }
-        if(PmzData.getInstance().getButtonBackgroundColor() != null) {
-            changeToolbarBackground(PmzData.getInstance().getButtonBackgroundColor());
+        if(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor() != null) {
+            changeToolbarBackground(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
         }
-        if(PmzData.getInstance().getButtonTextColor() != null) {
-            changeToolbarTextColor(PmzData.getInstance().getButtonTextColor());
+        if(PaymentezSDK.getInstance().getStyle().getButtonTextColor() != null) {
+            changeToolbarTextColor(PaymentezSDK.getInstance().getStyle().getButtonTextColor());
         }
         setRecyclerView();
     }
@@ -123,7 +123,6 @@ public class PmzStoresActivity extends PmzBaseActivity {
                 animActivityRightToLeft();
             }
         });
-        adapter.setTextColor(PmzData.getInstance().getTextColor());
         recycler.setAdapter(adapter);
     }
 

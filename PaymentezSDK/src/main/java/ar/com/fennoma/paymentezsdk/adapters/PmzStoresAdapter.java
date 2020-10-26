@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
 import ar.com.fennoma.paymentezsdk.utils.ImageUtils;
 
@@ -22,8 +23,6 @@ public class PmzStoresAdapter extends RecyclerView.Adapter<PmzStoresAdapter.PmzS
     private final PmzStoreItemListener listener;
     private List<PmzStore> stores;
 
-    private Integer textColor;
-
     public interface PmzStoreItemListener {
         void onStoreClicked(PmzStore store);
     }
@@ -32,10 +31,6 @@ public class PmzStoresAdapter extends RecyclerView.Adapter<PmzStoresAdapter.PmzS
         this.activity = activity;
         this.listener = listener;
         stores = new ArrayList<>();
-    }
-
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
     }
 
     @NonNull
@@ -52,9 +47,9 @@ public class PmzStoresAdapter extends RecyclerView.Adapter<PmzStoresAdapter.PmzS
         holder.title.setText(store.getName());
         holder.description.setText(store.getCommerceName());
 
-        if(textColor != null) {
-            holder.title.setTextColor(textColor);
-            holder.description.setTextColor(textColor);
+        if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
+            holder.title.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
+            holder.description.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
         }
 
         holder.container.setOnClickListener(new View.OnClickListener() {

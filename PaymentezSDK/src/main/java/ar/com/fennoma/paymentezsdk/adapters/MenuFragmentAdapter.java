@@ -7,14 +7,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.R;
-import ar.com.fennoma.paymentezsdk.models.PmzCategory;
+import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 import ar.com.fennoma.paymentezsdk.models.PmzProduct;
+import ar.com.fennoma.paymentezsdk.utils.ColorHelper;
 import ar.com.fennoma.paymentezsdk.utils.ImageUtils;
 
 public class MenuFragmentAdapter extends RecyclerView.Adapter<MenuFragmentAdapter.MenuFragmentHolder> {
@@ -53,6 +53,17 @@ public class MenuFragmentAdapter extends RecyclerView.Adapter<MenuFragmentAdapte
                 listener.onProductAdded(products.get(holder.getAdapterPosition()));
             }
         });
+
+        if(PaymentezSDK.getInstance().getStyle().getButtonTextColor() != null) {
+            holder.addButton.setTextColor(PaymentezSDK.getInstance().getStyle().getButtonTextColor());
+        }
+        if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
+            holder.title.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
+            holder.price.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
+        }
+        if(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor() != null) {
+            ColorHelper.replaceButtonBackground(holder.addButton, PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
+        }
     }
 
     @Override
@@ -65,7 +76,7 @@ public class MenuFragmentAdapter extends RecyclerView.Adapter<MenuFragmentAdapte
         protected ImageView image;
         protected TextView title;
         protected TextView price;
-        protected View addButton;
+        protected TextView addButton;
 
         public MenuFragmentHolder(@NonNull View itemView) {
             super(itemView);
