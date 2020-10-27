@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("ar.com.fennoma.paymentezsdk.test", appContext.getPackageName());
+        assertEquals("com.paymentez.plazez.sdk.test", appContext.getPackageName());
     }
 }
