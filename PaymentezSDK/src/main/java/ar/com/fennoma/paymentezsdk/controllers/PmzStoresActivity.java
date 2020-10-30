@@ -118,7 +118,7 @@ public class PmzStoresActivity extends PmzBaseActivity {
             @Override
             public void onStoreClicked(PmzStore store) {
                 Intent intent = new Intent(PmzStoresActivity.this, PmzMenuActivity.class);
-                intent.putExtra(PmzMenuActivity.STORE_KEY, store);
+                intent.putExtra(PmzMenuActivity.PMZ_STORE, store);
                 startActivity(intent);
                 animActivityRightToLeft();
             }

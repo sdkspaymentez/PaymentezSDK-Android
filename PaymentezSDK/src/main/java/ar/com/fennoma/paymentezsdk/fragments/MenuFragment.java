@@ -40,9 +40,9 @@ public class MenuFragment extends Fragment {
         TextView title = view.findViewById(R.id.title);
         if (category != null && !TextUtils.isEmpty(category.getName())) {
             title.setText(category.getName());
-            title.setVisibility(View.VISIBLE);
+            //title.setVisibility(View.VISIBLE);
         } else {
-            title.setVisibility(View.GONE);
+            //title.setVisibility(View.GONE);
         }
     }
 

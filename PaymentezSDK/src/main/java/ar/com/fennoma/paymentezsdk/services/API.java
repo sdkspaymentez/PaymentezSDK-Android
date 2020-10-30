@@ -6,6 +6,7 @@ import ar.com.fennoma.paymentezsdk.exceptions.PmzException;
 import ar.com.fennoma.paymentezsdk.models.PmzCapacity;
 import ar.com.fennoma.paymentezsdk.models.PmzCategory;
 import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.PmzItem;
 import ar.com.fennoma.paymentezsdk.models.PmzMenu;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzSession;
@@ -70,6 +71,15 @@ public class API {
             @Override
             public PmzOrder callService() throws PmzException {
                 return Services.getOrder(orderId);
+            }
+        }).execute();
+    }
+
+    public static void addItemWithConfigurations(final PmzItem orderId, final ServiceCallback<PmzOrder> callback) {
+        new BaseTask<>(callback, new BaseTask.IServiceCaller<PmzOrder>() {
+            @Override
+            public PmzOrder callService() throws PmzException {
+                return Services.addItemWithConfig(orderId);
             }
         }).execute();
     }

@@ -52,6 +52,7 @@ public class Services {
     private static final String PAY_ORDER = "payment/pay-order";
     private static final String PLACE_ORDER = "payment/pay-order";
     private static final String ADD_ITEM_WITH_CONFIGURATIONS = "order/add-item-w-configuration";
+    private static final String START_ORDER = "order/start-order";
 
 
     public static String getToken(PmzSession session) throws PmzException {
@@ -100,7 +101,7 @@ public class Services {
         DataOutputStream os = null;
         BufferedWriter writer = null;
         try {
-            urlConnection = getHttpURLConnection(TOKEN);
+            urlConnection = getHttpURLConnection(START_ORDER);
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("Accept","application/json");
             urlConnection.setDoInput(true);
@@ -220,6 +221,7 @@ public class Services {
             urlConnection = getHttpURLConnection(ADD_ITEM_WITH_CONFIGURATIONS);
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("Accept","application/json");
+            urlConnection.setRequestMethod("POST");
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
             os = new DataOutputStream(urlConnection.getOutputStream());

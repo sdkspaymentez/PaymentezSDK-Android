@@ -27,6 +27,18 @@ public class PmzItem implements Parcelable {
     private Double discount;
     private List<PmzConfiguration> configurations;
 
+    public PmzItem(PmzProduct product, Long orderId) {
+        if(product != null) {
+            this.orderId = orderId;
+            this.productId = product.getId();
+            this.annotation = product.getDescription();
+            this.productName = product.getName();
+            this.quantity = 1;
+        }
+    }
+
+    public PmzItem(){}
+
     public static List<PmzItem> fromJSONArray(JSONArray json) {
         List<PmzItem> items = new ArrayList<>();
         if(json != null) {
@@ -65,6 +77,11 @@ public class PmzItem implements Parcelable {
                 }
                 if(json.has("product_id")) {
                     item.setProductId(json.getLong("product_id"));
+                } else if (json.has("id_product")) {
+                    item.setProductId(json.getLong("id_product"));
+                }
+                if(json.has("id_order")) {
+                    item.setOrderId(json.getLong("id_order"));
                 }
                 if(json.has("quantity")) {
                     item.setQuantity(json.getInt("quantity"));
@@ -83,6 +100,15 @@ public class PmzItem implements Parcelable {
             }
         }
         return item;
+    }
+
+    public static PmzItem hardcoded() {
+        try {
+            return PmzItem.fromJSONObject(new JSONObject(json));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Long getId() {
@@ -173,9 +199,6 @@ public class PmzItem implements Parcelable {
         this.configurations = configurations;
     }
 
-    public PmzItem() {
-    }
-
     public JSONObject getJSONWithConfigurations() throws JSONException {
         JSONObject params = new JSONObject();
         params.put("id_order", orderId);
@@ -218,7 +241,7 @@ public class PmzItem implements Parcelable {
         dest.writeTypedList(this.configurations);
     }
 
-    protected PmzItem(Parcel in) {
+    public PmzItem(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.orderId = (Long) in.readValue(Long.class.getClassLoader());
         this.tax = (Double) in.readValue(Double.class.getClassLoader());
@@ -244,4 +267,24 @@ public class PmzItem implements Parcelable {
             return new PmzItem[size];
         }
     };
+
+    public void setWith(PmzProduct product) {
+
+    }
+
+    private static String json = "{\n" +
+            "  \"annotations\": \"sin servilletas\",\n" +
+            "  \"configurations\": [\n" +
+            "    {\n" +
+            "      \"id_configuration\": 11520\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"id_configuration\": 11494\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"id_order\": 8493,\n" +
+            "  \"id_product\": 7351,\n" +
+            "  \"quantity\": 1,\n" +
+            "  \"session\": \"{{token}}\"\n" +
+            "}\n";
 }

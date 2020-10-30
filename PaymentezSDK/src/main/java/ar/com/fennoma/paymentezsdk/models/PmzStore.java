@@ -73,10 +73,10 @@ public class PmzStore implements Parcelable {
                 if(json.has("address")) {
                     store.setAddress(json.getString("address"));
                 }
-                if(json.has("lat")) {
+                if(json.has("lat") && !json.isNull("lat")) {
                     store.setLatitude(json.getDouble("lat"));
                 }
-                if(json.has("lon")) {
+                if(json.has("lon") && !json.isNull("lon")) {
                     store.setLongitude(json.getDouble("lon"));
                 }
                 if(json.has("country")) {

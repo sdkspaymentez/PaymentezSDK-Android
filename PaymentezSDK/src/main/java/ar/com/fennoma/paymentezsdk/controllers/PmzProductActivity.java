@@ -1,18 +1,23 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.adapters.PmzProductAdapter;
 import ar.com.fennoma.paymentezsdk.controls.QuantitySelector;
+import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
+import ar.com.fennoma.paymentezsdk.models.PmzItem;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzProduct;
+import ar.com.fennoma.paymentezsdk.services.API;
 import ar.com.fennoma.paymentezsdk.utils.ColorHelper;
 import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
 import ar.com.fennoma.paymentezsdk.utils.ImageUtils;
@@ -21,7 +26,11 @@ public class PmzProductActivity extends PmzBaseActivity {
 
     public static final String PRODUCT_KEY = "product key";
 
+    private PmzProductAdapter adapter;
+
     private PmzProduct product;
+    private Long orderId;
+    private PmzItem item;
 
     private ImageView image;
     private TextView title;
@@ -39,7 +48,16 @@ public class PmzProductActivity extends PmzBaseActivity {
         setFullTitleWithBack(getString(R.string.activity_pmz_product_title));
         findViews();
         setViews();
+        setRecycler();
         handleIntent();
+        item = new PmzItem(product, orderId);
+    }
+
+    private void setRecycler() {
+        RecyclerView recycler = findViewById(R.id.recycler);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new PmzProductAdapter(this);
+        recycler.setAdapter(adapter);
     }
 
     private void findViews() {
@@ -51,10 +69,29 @@ public class PmzProductActivity extends PmzBaseActivity {
         totalTitle = findViewById(R.id.total_title);
         quantitySelector = findViewById(R.id.quantity_selector);
         totalPrice = findViewById(R.id.total_price);
+        quantitySelector.setListener(new QuantitySelector.PmzIQuantitySelectorListener() {
+            @Override
+            public void onQuantityChanged(int quantity) {
+                item.setQuantity(quantity);
+                refreshPrice(quantity);
+            }
+        });
+    }
+
+    private void refreshPrice(int quantity) {
+        if(product != null && product.getListPrice() != null) {
+            Long listPrice = product.getListPrice();
+            if(adapter != null) {
+                listPrice += adapter.getExtras();
+            }
+            totalPrice.setText("$".concat(String.valueOf(listPrice * quantity)));
+
+        }
     }
 
     private void handleIntent() {
         if(getIntent() != null && getIntent().getParcelableExtra(PRODUCT_KEY) != null) {
+            orderId = getIntent().getLongExtra(PMZ_ORDER_ID, 0L);
             product = getIntent().getParcelableExtra(PRODUCT_KEY);
             setDataIntoViews();
         } else {
@@ -67,8 +104,9 @@ public class PmzProductActivity extends PmzBaseActivity {
         ImageUtils.loadProductImage(this, image, product.getImageUrl());
         title.setText(product.getName());
         description.setText(product.getDescription());
-        price.setText("$".concat(String.valueOf(product.getListPrice())));
-        totalPrice.setText("$".concat(String.valueOf(product.getListPrice())));
+        price.setText("$".concat(String.valueOf(product.getCurrentPrice())));
+        refreshPrice(1);
+        adapter.setProduct(product);
     }
 
     private void setViews() {
@@ -77,9 +115,7 @@ public class PmzProductActivity extends PmzBaseActivity {
             background.setBackgroundColor(PaymentezSDK.getInstance().getStyle().getBackgroundColor());
         }
         if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
-            TextView back = findViewById(R.id.back);
             Integer textColor = PaymentezSDK.getInstance().getStyle().getTextColor();
-            back.setTextColor(textColor);
             title.setTextColor(textColor);
             description.setTextColor(textColor);
             price.setTextColor(textColor);
@@ -104,27 +140,43 @@ public class PmzProductActivity extends PmzBaseActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PmzProductActivity.this, PmzSummaryActivity.class);
-                intent.putExtra(PmzSummaryActivity.SHOW_SUMMARY, PmzOrder.hardcoded());
-                startActivityForResult(intent, MAIN_FLOW_KEY);
-                animActivityRightToLeft();
-            }
-        });
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
+                showLoading();
+                //API.addItemWithConfigurations(item, new API.ServiceCallback<PmzOrder>() {
+                API.addItemWithConfigurations(PmzItem.hardcoded(), new API.ServiceCallback<PmzOrder>() {
+                    @Override
+                    public void onSuccess(PmzOrder response) {
+                        hideLoading();
+                        sendBackOrder(response);
+                    }
+
+                    @Override
+                    public void onError(PmzErrorMessage error) {
+                        hideLoading();
+                        DialogUtils.toast(PmzProductActivity.this, error.getErrorMessage());
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        hideLoading();
+                        DialogUtils.genericError(PmzProductActivity.this);
+                    }
+
+                    @Override
+                    public void sessionExpired() {
+                        hideLoading();
+                        onSessionExpired();
+                    }
+                });
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
-            setResult(RESULT_OK);
-            finish();
-        }
+    private void sendBackOrder(PmzOrder order) {
+        Intent intent = new Intent();
+        intent.putExtra(PMZ_ORDER, order);
+        setResult(RESULT_OK, intent);
+        finish();
+        animActivityLeftToRight();
     }
 
     @Override

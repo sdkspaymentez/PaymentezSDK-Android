@@ -4,7 +4,7 @@
     <string name="first_activity_cancel_message">¿Seguro que desea cancelar el flujo?</string>
     <string name="flow_back_button">Atrás</string>
     <string name="flow_next_button">Siguiente</string>
-    <string name="flow_finish_button">Finalizar</string>
+    <string name="flow_finish_button">Ir a pagar</string>
     <string name="accept_button">Aceptar</string>
 
     <!-- Activity titles -->
@@ -28,4 +28,10 @@
     <string name="activity_pmz_product_button">Agregar al carrito</string>
     <string name="pmz_product_quantity_title">Cantidad</string>
     <string name="pmz_product_total_price_title">Total</string>
+    <string name="summary_your_order_title">Tu pedido</string>
+    <string name="summary_comment_hint">Agregar comentarios del pedido</string>
+    <string name="summary_total_price_title">Total a pagar</string>
+    <string name="summary_keep_buying_button">Seguir comprando</string>
+    <string name="swipe_to_delete_undo_button">DESHACER</string>
+    <string name="swipe_to_delete_favorite_warn">Borraste un item</string>
 </resources>

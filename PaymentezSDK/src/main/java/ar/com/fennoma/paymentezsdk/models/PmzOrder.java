@@ -1,5 +1,6 @@
 package ar.com.fennoma.paymentezsdk.models;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -161,9 +162,9 @@ public class PmzOrder implements Parcelable {
         if(address != null) {
             address.addToJSON(params);
         }
-        params.put("delivery_instructions", deliveryInstructions);
-        params.put("Annotations", annotations);
-        params.put("app_order_reference", appOrderReference);
+        params.put("delivery_instructions", Uri.encode(deliveryInstructions, "UTF-8"));
+        params.put("Annotations", Uri.encode(annotations, "UTF-8"));
+        params.put("app_order_reference", Uri.encode(appOrderReference, "UTF-8"));
         params.put("id_store", storeId);
         params.put("type_order", typeOrder);
         params.put("session", PaymentezSDK.getInstance().getToken());

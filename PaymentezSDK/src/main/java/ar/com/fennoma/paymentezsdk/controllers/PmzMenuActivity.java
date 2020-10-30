@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,16 +25,18 @@ import ar.com.fennoma.paymentezsdk.models.PmzStore;
 import ar.com.fennoma.paymentezsdk.services.API;
 import ar.com.fennoma.paymentezsdk.utils.ColorHelper;
 import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
+import ar.com.fennoma.paymentezsdk.utils.ImageUtils;
 
 public class PmzMenuActivity extends PmzBaseActivity {
 
-    public static final String STORE_KEY = "store Id";
     public static final String FORCED_ID = "forced Id";
+    private static final int ADD_PRODUCT_REQUEST = 1002;
 
     private PmzStore store;
     private boolean forcedId = false;
     private MenuPagerAdapter adapter;
     private TabLayout tabLayout;
+    private PmzOrder order;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,9 +48,10 @@ public class PmzMenuActivity extends PmzBaseActivity {
     }
 
     private void handleIntent() {
-        if(getIntent() != null && getIntent().getParcelableExtra(STORE_KEY) != null) {
-            store = getIntent().getParcelableExtra(STORE_KEY);
+        if(getIntent() != null && getIntent().getParcelableExtra(PMZ_STORE) != null) {
+            store = getIntent().getParcelableExtra(PMZ_STORE);
             forcedId = getIntent().getBooleanExtra(FORCED_ID, false);
+            setStoreData();
             if(forcedId) {
                 getToken();
             } else {
@@ -59,6 +63,25 @@ public class PmzMenuActivity extends PmzBaseActivity {
         }
     }
 
+    private void setStoreData() {
+        ImageView image = findViewById(R.id.image);
+        ImageView icon = findViewById(R.id.icon);
+        TextView title = findViewById(R.id.title);
+        TextView description = findViewById(R.id.description);
+        TextView distance = findViewById(R.id.distance);
+
+        ImageUtils.loadStoreImage(this, image, store.getImageUrl());
+        ImageUtils.loadStoreImage(this, icon, store.getImageUrl());
+
+        title.setText(store.getName());
+        description.setText(store.getCommerceName());
+
+        if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
+            title.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
+            description.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
+        }
+    }
+
     private void getToken() {
         showLoading();
         API.getSession(PmzData.getInstance().getSession(), new API.ServiceCallback<String>() {
@@ -66,6 +89,41 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void onSuccess(String response) {
                 PmzData.getInstance().setToken(response);
                 getData(false);
+            }
+
+            @Override
+            public void onError(PmzErrorMessage error) {
+                hideLoading();
+                DialogUtils.toast(PmzMenuActivity.this, error.getErrorMessage());
+                finish();
+                animActivityLeftToRight();
+            }
+
+            @Override
+            public void onFailure() {
+                hideLoading();
+                DialogUtils.genericError(PmzMenuActivity.this);
+                finish();
+                animActivityLeftToRight();
+            }
+
+            @Override
+            public void sessionExpired() {
+                hideLoading();
+                onSessionExpired();
+            }
+        });
+    }
+
+    private void getData(boolean showLoading) {
+        if(showLoading) {
+            showLoading();
+        }
+        API.getMenu(store.getId(), new API.ServiceCallback<PmzMenu>() {
+            @Override
+            public void onSuccess(PmzMenu response) {
+                setDataIntoViews(response);
+                startOrder();
             }
 
             @Override
@@ -88,15 +146,12 @@ public class PmzMenuActivity extends PmzBaseActivity {
         });
     }
 
-    private void getData(boolean showLoading) {
-        if(showLoading) {
-            showLoading();
-        }
-        API.getMenu(store.getId(), new API.ServiceCallback<PmzMenu>() {
+    private void startOrder() {
+        API.startOrder(PmzOrder.hardcodedForOrderStart(), new API.ServiceCallback<PmzOrder>() {
             @Override
-            public void onSuccess(PmzMenu response) {
+            public void onSuccess(PmzOrder response) {
                 hideLoading();
-                setDataIntoViews(response);
+                order = response;
             }
 
             @Override
@@ -195,7 +250,12 @@ public class PmzMenuActivity extends PmzBaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PmzMenuActivity.this, PmzSummaryActivity.class);
-                intent.putExtra(PmzSummaryActivity.PMZ_ORDER, PmzOrder.hardcoded());
+                if(order != null) {
+                    intent.putExtra(PMZ_ORDER, order);
+                }
+                if(store != null) {
+                    intent.putExtra(PMZ_STORE, store);
+                }
                 startActivityForResult(intent, MAIN_FLOW_KEY);
                 animActivityRightToLeft();
             }
@@ -205,6 +265,10 @@ public class PmzMenuActivity extends PmzBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ADD_PRODUCT_REQUEST && resultCode == RESULT_OK && data != null
+                && data.getParcelableExtra(PMZ_ORDER) != null) {
+            this.order = data.getParcelableExtra(PMZ_ORDER);
+        }
         if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
             if(forcedId) {
                 PmzData.getInstance().onSearchSuccess();
@@ -224,7 +288,8 @@ public class PmzMenuActivity extends PmzBaseActivity {
     public void addProduct(PmzProduct product) {
         Intent intent = new Intent(this, PmzProductActivity.class);
         intent.putExtra(PmzProductActivity.PRODUCT_KEY, product);
-        startActivity(intent);
+        intent.putExtra(PMZ_ORDER_ID, order.getId());
+        startActivityForResult(intent, ADD_PRODUCT_REQUEST);
         animActivityRightToLeft();
     }
 }

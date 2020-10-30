@@ -17,13 +17,13 @@ public class PmzProduct implements Parcelable {
     private String description;
     private String imageUrl;
     private Integer status;
-    private List<PmzProductConfiguration> configurations;
     private Long listPrice;
     private Long currentPrice;
     private String appDisplayName;
     private Long displayOrder;
     private String coverImageUrl;
     private Boolean storeDisabled;
+    private List<PmzProductConfiguration> configurations;
 
     public static List<PmzProduct> fromJSONArray(JSONArray json) {
         List<PmzProduct> products = new ArrayList<>();
@@ -70,7 +70,7 @@ public class PmzProduct implements Parcelable {
                 if(json.has("display_order")) {
                     product.setDisplayOrder(json.getLong("display_order"));
                 }
-                if(json.has("store_disabled")) {
+                if(json.has("store_disabled") && !json.isNull("store_disabled")) {
                     product.setStoreDisabled(json.getBoolean("store_disabled"));
                 }
                 if(json.has("configurations")) {

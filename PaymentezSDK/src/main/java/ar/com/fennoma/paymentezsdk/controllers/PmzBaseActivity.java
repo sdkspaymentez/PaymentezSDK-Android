@@ -21,6 +21,9 @@ import ar.com.fennoma.paymentezsdk.R;
 public class PmzBaseActivity extends AppCompatActivity {
 
     protected static final int MAIN_FLOW_KEY = 1001;
+    public static final String PMZ_STORE = "store Id";
+    public static final String PMZ_ORDER_ID = "order id key";
+    public static final String PMZ_ORDER = "order key";
     private Toolbar toolbar;
     private Dialog loadingDialog;
 
