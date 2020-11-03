@@ -289,6 +289,9 @@ public class PmzMenuActivity extends PmzBaseActivity {
         Intent intent = new Intent(this, PmzProductActivity.class);
         intent.putExtra(PmzProductActivity.PRODUCT_KEY, product);
         intent.putExtra(PMZ_ORDER_ID, order.getId());
+        if(order != null) {
+            intent.putExtra(PMZ_ORDER, order);
+        }
         startActivityForResult(intent, ADD_PRODUCT_REQUEST);
         animActivityRightToLeft();
     }

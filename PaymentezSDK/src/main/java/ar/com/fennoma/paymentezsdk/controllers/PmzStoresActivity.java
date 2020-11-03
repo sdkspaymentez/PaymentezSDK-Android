@@ -119,7 +119,7 @@ public class PmzStoresActivity extends PmzBaseActivity {
             public void onStoreClicked(PmzStore store) {
                 Intent intent = new Intent(PmzStoresActivity.this, PmzMenuActivity.class);
                 intent.putExtra(PmzMenuActivity.PMZ_STORE, store);
-                startActivity(intent);
+                startActivityForResult(intent, MAIN_FLOW_KEY);
                 animActivityRightToLeft();
             }
         });

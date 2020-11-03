@@ -20,6 +20,10 @@ public class PmzConfiguration implements Parcelable {
     private Long configurationId;
     private Double discount;
 
+    public PmzConfiguration(Long id) {
+        this.configurationId = id;
+    }
+
     public static List<PmzConfiguration> fromJSONArray(JSONArray json) {
         List<PmzConfiguration> configurations = new ArrayList<>();
         if(json != null) {

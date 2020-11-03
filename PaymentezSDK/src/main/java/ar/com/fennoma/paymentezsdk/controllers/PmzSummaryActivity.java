@@ -11,7 +11,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.R;
@@ -20,8 +19,10 @@ import ar.com.fennoma.paymentezsdk.adapters.SwiperAdapter;
 import ar.com.fennoma.paymentezsdk.models.PmzItem;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
+import ar.com.fennoma.paymentezsdk.styles.PmzStyle;
 import ar.com.fennoma.paymentezsdk.utils.ColorHelper;
 import ar.com.fennoma.paymentezsdk.utils.ImageUtils;
+import ar.com.fennoma.paymentezsdk.utils.PmzCurrencyUtils;
 
 public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem, PmzSummaryAdapter.PmzSummaryHolder> {
 
@@ -35,6 +36,8 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
 
     private RecyclerView recycler;
     private PmzSummaryAdapter adapter;
+
+    private TextView price;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,16 +58,13 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
             if(order == null) {
                 order = new PmzOrder();
             }
-            order.setItems(new ArrayList<PmzItem>());
-            order.getItems().add(new PmzItem());
-            order.getItems().add(new PmzItem());
-            order.getItems().add(new PmzItem());
             setDataIntoViews();
         }
     }
 
     private void setDataIntoViews() {
         setStoreData();
+        recalculatePrice();
         setDataIntoRecycler();
     }
 
@@ -94,24 +94,31 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
     }
 
     private void setViews() {
-        if(PaymentezSDK.getInstance().getStyle().getBackgroundColor() != null) {
-            View background = findViewById(R.id.background);
-            background.setBackgroundColor(PaymentezSDK.getInstance().getStyle().getBackgroundColor());
-        }
-        if(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor() != null) {
-            changeToolbarBackground(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ColorHelper.replaceButtonBackground(findViewById(R.id.next),
-                        PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
+        PmzStyle style = PaymentezSDK.getInstance().getStyle();
+        if(style != null) {
+            if (style.getTextColor() != null) {
+                price = findViewById(R.id.price);
+                price.setTextColor(style.getTextColor());
             }
-            changeToolbarBackground(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
-        }
-        if(PaymentezSDK.getInstance().getStyle().getButtonTextColor() != null) {
-            TextView next = findViewById(R.id.next);
-            TextView keepBuying = findViewById(R.id.keep_buying);
-            next.setTextColor(PaymentezSDK.getInstance().getStyle().getButtonTextColor());
-            keepBuying.setTextColor(PaymentezSDK.getInstance().getStyle().getButtonTextColor());
-            changeToolbarTextColor(PaymentezSDK.getInstance().getStyle().getButtonTextColor());
+            if (style.getBackgroundColor() != null) {
+                View background = findViewById(R.id.background);
+                background.setBackgroundColor(style.getBackgroundColor());
+            }
+            if (style.getButtonBackgroundColor() != null) {
+                changeToolbarBackground(style.getButtonBackgroundColor());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ColorHelper.replaceButtonBackground(findViewById(R.id.next),
+                            style.getButtonBackgroundColor());
+                }
+                changeToolbarBackground(style.getButtonBackgroundColor());
+            }
+            if (style.getButtonTextColor() != null) {
+                TextView next = findViewById(R.id.next);
+                TextView keepBuying = findViewById(R.id.keep_buying);
+                next.setTextColor(style.getButtonTextColor());
+                keepBuying.setTextColor(style.getButtonTextColor());
+                changeToolbarTextColor(style.getButtonTextColor());
+            }
         }
         setRecycler();
         setButtons();
@@ -122,18 +129,37 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
         recycler.setLayoutManager(new LinearLayoutManager(this));
         adapter = new PmzSummaryAdapter(this, new PmzSummaryAdapter.IPmzSummaryAdapterListener() {
             @Override
-            public void onItemRemoved(PmzItem item) {
-
+            public void onItemRemoved(PmzItem item, int position) {
+                /*itemRemoved = item;
+                positionRemoved = position;
+                order.removeItem(item);*/
+                recalculatePrice();
             }
 
             @Override
             public void onItemRestored(PmzItem item) {
+                /*if(itemRemoved != null) {
+                    order.addItem(itemRemoved, positionRemoved);
+                }*/
+                recalculatePrice();
+            }
+
+            @Override
+            public void onEditItem(PmzItem item) {
 
             }
         });
         recycler.setAdapter(adapter);
         recycler.setNestedScrollingEnabled(false);
         setRecyclerItemTouchHelper(recycler);
+    }
+
+    private void recalculatePrice() {
+        if(order != null) {
+            price.setText(PmzCurrencyUtils.formatPrice(order.getFullPrice()));
+        } else {
+            price.setText(PmzCurrencyUtils.formatPrice(0L));
+        }
     }
 
     private void setButtons() {
@@ -148,7 +174,7 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
                     }
                     PmzData.getInstance().onSearchSuccess();
                 } else {
-                    PaymentezSDK.getInstance().setOrderResult(PmzOrder.hardcoded());
+                    PaymentezSDK.getInstance().setOrderResult(order);
                     setResult(RESULT_OK);
                 }
                 finish();

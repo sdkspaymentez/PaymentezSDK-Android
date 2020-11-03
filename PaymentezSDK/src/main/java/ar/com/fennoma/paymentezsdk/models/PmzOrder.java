@@ -536,4 +536,32 @@ public class PmzOrder implements Parcelable {
     public void setTypeOrder(Integer typeOrder) {
         this.typeOrder = typeOrder;
     }
+
+    public Long getFullPrice() {
+        long result = 0;
+        if(items != null) {
+            for(PmzItem item: items) {
+                if(item != null) {
+                    result += item.getPrice();
+                }
+            }
+        }
+        return result;
+    }
+
+    public void removeItem(PmzItem item) {
+        if(items != null) {
+            items.remove(item);
+        }
+    }
+
+    public void addItem(PmzItem itemRemoved, int positionRemoved) {
+        if(items != null) {
+            if(positionRemoved < items.size()) {
+                items.add(positionRemoved, itemRemoved);
+            } else {
+                items.add(itemRemoved);
+            }
+        }
+    }
 }

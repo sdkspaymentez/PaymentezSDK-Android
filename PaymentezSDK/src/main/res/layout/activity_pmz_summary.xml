@@ -15,11 +15,12 @@
             android:id="@+id/toolbar"
             layout="@layout/white_centered_title_toolbar" />
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_below="@id/toolbar"
             android:layout_above="@id/buttons_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -203,7 +204,7 @@
 
             </LinearLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <LinearLayout
             android:id="@+id/buttons_container"
