@@ -13,7 +13,10 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.adapters.MenuPagerAdapter;
@@ -37,6 +40,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
     private MenuPagerAdapter adapter;
     private TabLayout tabLayout;
     private PmzOrder order;
+    private long storeId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,14 +52,21 @@ public class PmzMenuActivity extends PmzBaseActivity {
     }
 
     private void handleIntent() {
-        if(getIntent() != null && getIntent().getParcelableExtra(PMZ_STORE) != null) {
-            store = getIntent().getParcelableExtra(PMZ_STORE);
-            forcedId = getIntent().getBooleanExtra(FORCED_ID, false);
-            setStoreData();
-            if(forcedId) {
+        if(getIntent() != null) {
+            if(getIntent().getBooleanExtra(FORCED_ID, false)) {
+                storeId = getIntent().getLongExtra(PMZ_STORE, 0L);
+                forcedId = getIntent().getBooleanExtra(FORCED_ID, false);
                 getToken();
-            } else {
+            } else if(getIntent().getParcelableExtra(PMZ_STORE) != null) {
+                store = getIntent().getParcelableExtra(PMZ_STORE);
+                if(store != null && store.getId() != null) {
+                    storeId = store.getId();
+                }
+                setStoreData();
                 getData(true);
+            } else {
+                DialogUtils.genericError(this);
+                onBackPressed();
             }
         } else {
             DialogUtils.genericError(this);
@@ -88,7 +99,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
             @Override
             public void onSuccess(String response) {
                 PmzData.getInstance().setToken(response);
-                getData(false);
+                getStore();
             }
 
             @Override
@@ -115,11 +126,50 @@ public class PmzMenuActivity extends PmzBaseActivity {
         });
     }
 
+    private void getStore() {
+        API.getStores(new API.ServiceCallback<List<PmzStore>>() {
+            @Override
+            public void onSuccess(List<PmzStore> response) {
+                findStore(response);
+                setStoreData();
+                getData(false);
+            }
+
+            @Override
+            public void onError(PmzErrorMessage error) {
+                hideLoading();
+                DialogUtils.toast(PmzMenuActivity.this, error.getErrorMessage());
+            }
+
+            @Override
+            public void onFailure() {
+                hideLoading();
+                DialogUtils.genericError(PmzMenuActivity.this);
+            }
+
+            @Override
+            public void sessionExpired() {
+                hideLoading();
+                onSessionExpired();
+            }
+        });
+    }
+
+    private void findStore(List<PmzStore> stores) {
+        if(stores != null) {
+            for(PmzStore store: stores) {
+                if(store != null && store.getId() != null && store.getId().equals(storeId)) {
+                    PmzMenuActivity.this.store = store;
+                }
+            }
+        }
+    }
+
     private void getData(boolean showLoading) {
         if(showLoading) {
             showLoading();
         }
-        API.getMenu(store.getId(), new API.ServiceCallback<PmzMenu>() {
+        API.getMenu(storeId, new API.ServiceCallback<PmzMenu>() {
             @Override
             public void onSuccess(PmzMenu response) {
                 setDataIntoViews(response);
@@ -180,16 +230,22 @@ public class PmzMenuActivity extends PmzBaseActivity {
 
     private void setViews() {
         if(PaymentezSDK.getInstance().getStyle().getBackgroundColor() != null) {
-            View background = findViewById(R.id.background);
+            View background = findViewById(R.id.main_content);
             background.setBackgroundColor(PaymentezSDK.getInstance().getStyle().getBackgroundColor());
+            findViewById(R.id.collapsing_toolbar).setBackgroundColor(PaymentezSDK.getInstance().getStyle().getBackgroundColor());
         }
         if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
+            TabLayout tab = findViewById(R.id.tab);
+            tab.setTabTextColors(PaymentezSDK.getInstance().getStyle().getTextColor(), PaymentezSDK.getInstance().getStyle().getTextColor());
         }
-        if(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor() != null) {
+        Integer buttonBackgroundColor = PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor();
+        if(buttonBackgroundColor != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ColorHelper.replaceButtonBackground(findViewById(R.id.chart_button), PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
+                ColorHelper.replaceButtonBackground(findViewById(R.id.chart_button), buttonBackgroundColor);
             }
-            changeToolbarBackground(PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor());
+            changeToolbarBackground(buttonBackgroundColor);
+            CollapsingToolbarLayout collapsing = findViewById(R.id.collapsing_toolbar);
+            collapsing.setContentScrimColor(buttonBackgroundColor);
         }
         if(PaymentezSDK.getInstance().getStyle().getButtonTextColor() != null) {
             TextView next = findViewById(R.id.chart_button);

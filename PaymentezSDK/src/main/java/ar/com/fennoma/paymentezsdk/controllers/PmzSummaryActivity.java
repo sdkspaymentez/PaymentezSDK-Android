@@ -82,10 +82,12 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
         TextView title = findViewById(R.id.title);
         TextView description = findViewById(R.id.description);
 
-        ImageUtils.loadStoreImage(this, icon, store.getImageUrl());
+        if(store != null) {
+            ImageUtils.loadStoreImage(this, icon, store.getImageUrl());
 
-        title.setText(store.getName());
-        description.setText(store.getCommerceName());
+            title.setText(store.getName());
+            description.setText(store.getCommerceName());
+        }
 
         if(PaymentezSDK.getInstance().getStyle().getTextColor() != null) {
             title.setTextColor(PaymentezSDK.getInstance().getStyle().getTextColor());
