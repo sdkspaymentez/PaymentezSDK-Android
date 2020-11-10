@@ -382,6 +382,9 @@ public class PmzMenuActivity extends PmzBaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(forcedId) {
+            PmzData.getInstance().onSearchCancel();
+        }
         animActivityLeftToRight();
     }
 
