@@ -138,6 +138,7 @@
                     app:layout_collapseMode="pin"
                     android:layout_gravity="bottom"
                     android:layout_marginBottom="1dp"
+                    android:background="@android:color/white"
                     android:theme="@style/MyCustomTabLayout"/>
 
                 <View
