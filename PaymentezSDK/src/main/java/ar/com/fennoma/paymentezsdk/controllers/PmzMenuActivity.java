@@ -320,7 +320,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
 
     private void goToCart() {
         if(order != null && order.getItems() != null && order.getItems().size() > 0) {
-            Intent intent = new Intent(PmzMenuActivity.this, PmzSummaryActivity.class);
+            Intent intent = new Intent(PmzMenuActivity.this, PmzCartActivity.class);
             if(order != null) {
                 intent.putExtra(PMZ_ORDER, order);
             }
@@ -343,7 +343,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
             enableCartButton();
         }
         if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
-            if(data != null && data.getBooleanExtra(PmzSummaryActivity.ORDER_MODIFIED, false) &&
+            if(data != null && data.getBooleanExtra(PmzCartActivity.ORDER_MODIFIED, false) &&
                     data.getParcelableExtra(PMZ_ORDER) != null) {
                 order = data.getParcelableExtra(PMZ_ORDER);
                 if(order != null && (order.getItems() == null || order.getItems().size() == 0)) {

@@ -1,6 +1,5 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -8,40 +7,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.adapters.PmzSummaryAdapter;
-import ar.com.fennoma.paymentezsdk.adapters.SwiperAdapter;
-import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
-import ar.com.fennoma.paymentezsdk.models.PmzItem;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
-import ar.com.fennoma.paymentezsdk.services.API;
 import ar.com.fennoma.paymentezsdk.styles.PmzStyle;
 import ar.com.fennoma.paymentezsdk.utils.ColorHelper;
-import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
 import ar.com.fennoma.paymentezsdk.utils.ImageUtils;
 import ar.com.fennoma.paymentezsdk.utils.PmzCurrencyUtils;
 
-public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem, PmzSummaryAdapter.PmzSummaryHolder> {
+public class PmzSummaryActivity extends PmzBaseActivity {
 
-    public static final String SHOW_SUMMARY = "show summary";
-    public static final String ORDER_MODIFIED = "order modified";
+    public static final String JUST_SUMMARY = "just summary";
 
-    private boolean orderModified = false;
-    private boolean justSummary = false;
-
-    private PmzOrder order;
-    private List<PmzOrder> orders;
-    private PmzStore store;
-
-    private RecyclerView recycler;
     private PmzSummaryAdapter adapter;
+
+    private boolean justCart;
+    private PmzOrder order;
+    private PmzStore store;
 
     private TextView price;
 
@@ -56,10 +42,12 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
 
     private void handleIntent() {
         if(getIntent() != null) {
-            justSummary = getIntent().getBooleanExtra(SHOW_SUMMARY, false);
+            justCart = getIntent().getBooleanExtra(JUST_SUMMARY, false);
             order = getIntent().getParcelableExtra(PMZ_ORDER);
-            orders = getIntent().getParcelableArrayListExtra(PMZ_ORDER);
-            store = getIntent().getParcelableExtra(PMZ_STORE);
+            //orders = getIntent().getParcelableArrayListExtra(PMZ_ORDER);
+            if(order != null) {
+                store = order.getStore();
+            }
 
             if(order == null) {
                 order = new PmzOrder();
@@ -70,25 +58,18 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
 
     private void setDataIntoViews() {
         setStoreData();
-        recalculatePrice();
+        calculatePrice();
         setDataIntoRecycler();
     }
 
-    private void setDataIntoRecycler() {
-        if(order == null || order.getItems() == null || order.getItems().size() == 0) {
-            recycler.setVisibility(View.GONE);
-        } else {
-            recycler.setVisibility(View.VISIBLE);
-            adapter.setItems(order.getItems());
-        }
-    }
-
     private void setStoreData() {
+        ImageView image = findViewById(R.id.image);
         ImageView icon = findViewById(R.id.icon);
         TextView title = findViewById(R.id.title);
         TextView description = findViewById(R.id.description);
 
         if(store != null) {
+            ImageUtils.loadStoreImage(this, image, store.getImageUrl());
             ImageUtils.loadStoreImage(this, icon, store.getImageUrl());
 
             title.setText(store.getName());
@@ -122,9 +103,7 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
             }
             if (style.getButtonTextColor() != null) {
                 TextView next = findViewById(R.id.next);
-                TextView keepBuying = findViewById(R.id.keep_buying);
                 next.setTextColor(style.getButtonTextColor());
-                keepBuying.setTextColor(style.getButtonTextColor());
                 changeToolbarTextColor(style.getButtonTextColor());
             }
         }
@@ -132,70 +111,13 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
         setButtons();
     }
 
-    private void setRecycler() {
-        recycler = findViewById(R.id.recycler);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PmzSummaryAdapter(this, new PmzSummaryAdapter.IPmzSummaryAdapterListener() {
-            @Override
-            public void onItemRemoved(PmzItem item, int position) {
-                recalculatePrice();
-                deleteItem(item);
-            }
-
-            @Override
-            public void onItemRestored(PmzItem item) {
-                /*if(itemRemoved != null) {
-                    order.addItem(itemRemoved, positionRemoved);
-                }*/
-                recalculatePrice();
-            }
-
-            @Override
-            public void onEditItem(PmzItem item) {
-
-            }
-        });
-        recycler.setAdapter(adapter);
-        recycler.setNestedScrollingEnabled(false);
-        setRecyclerItemTouchHelper(recycler);
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        PmzData.getInstance().onSearchCancel();
     }
 
-    private void deleteItem(PmzItem item) {
-        showLoading();
-        API.deleteItem(item, new API.ServiceCallback<PmzOrder>() {
-            @Override
-            public void onSuccess(PmzOrder response) {
-                hideLoading();
-                orderModified = true;
-                response.mergeData(order);
-                PmzSummaryActivity.this.order = response;
-                if(order.getItems() == null || order.getItems().size() == 0) {
-                    DialogUtils.toast(PmzSummaryActivity.this, getString(R.string.summary_no_items_to_show));
-                    onBackPressed();
-                }
-            }
-
-            @Override
-            public void onError(PmzErrorMessage error) {
-                hideLoading();
-                DialogUtils.toast(PmzSummaryActivity.this, error.getErrorMessage());
-            }
-
-            @Override
-            public void onFailure() {
-                hideLoading();
-                DialogUtils.genericError(PmzSummaryActivity.this);
-            }
-
-            @Override
-            public void sessionExpired() {
-                hideLoading();
-                onSessionExpired();
-            }
-        });
-    }
-
-    private void recalculatePrice() {
+    private void calculatePrice() {
         if(order != null) {
             price.setText(PmzCurrencyUtils.formatPrice(order.getFullPrice()));
         } else {
@@ -203,70 +125,26 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
         }
     }
 
+    private void setRecycler() {
+        RecyclerView recycler = findViewById(R.id.recycler);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new PmzSummaryAdapter(this);
+        recycler.setAdapter(adapter);
+        recycler.setNestedScrollingEnabled(false);
+    }
+
+    private void setDataIntoRecycler() {
+        adapter.setItems(order.getItems());
+    }
+
     private void setButtons() {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(justSummary) {
-                    if(order != null) {
-                        PaymentezSDK.getInstance().setOrderResult(order);
-                    } else if(orders != null) {
-                        PaymentezSDK.getInstance().setOrderResult(orders);
-                    }
-                    PmzData.getInstance().onSearchSuccess();
-                } else {
-                    PaymentezSDK.getInstance().setOrderResult(order);
-                    setResult(RESULT_OK);
-                }
+                PmzData.getInstance().onSearchSuccess();
                 finish();
+
             }
         });
-        findViewById(R.id.keep_buying).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(justSummary) {
-            super.onBackPressed();
-            PmzData.getInstance().onSearchCancel();
-        } else if(orderModified) {
-            sendBackOrder();
-            super.onBackPressed();
-        } else {
-            super.onBackPressed();
-        }
-        animActivityLeftToRight();
-    }
-
-    private void sendBackOrder() {
-        Intent intent = new Intent();
-        intent.putExtra(ORDER_MODIFIED, true);
-        intent.putExtra(PMZ_ORDER, order);
-        setResult(RESULT_OK, intent);
-    }
-
-    @Override
-    protected String getDeletedLabelWarning() {
-        return getString(R.string.swipe_to_delete_favorite_warn);
-    }
-
-    @Override
-    protected CoordinatorLayout getCoordinatorLayout() {
-        return findViewById(R.id.coordinator);
-    }
-
-    @Override
-    protected SwiperAdapter<PmzItem, PmzSummaryAdapter.PmzSummaryHolder> getAdapter() {
-        return adapter;
-    }
-
-    @Override
-    protected List<PmzItem> getItems() {
-        return order.getItems();
     }
 }

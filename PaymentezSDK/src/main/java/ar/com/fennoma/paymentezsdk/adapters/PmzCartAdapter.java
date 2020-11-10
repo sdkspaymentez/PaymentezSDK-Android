@@ -21,24 +21,32 @@ import ar.com.fennoma.paymentezsdk.styles.PmzStyle;
 import ar.com.fennoma.paymentezsdk.utils.ImageUtils;
 import ar.com.fennoma.paymentezsdk.utils.PmzCurrencyUtils;
 
-public class PmzSummaryAdapter extends RecyclerView.Adapter<PmzSummaryAdapter.PmzSummaryHolder> {
+public class PmzCartAdapter extends SwiperAdapter<PmzItem, PmzCartAdapter.PmzCartHolder> {
+
+    public interface IPmzCartAdapterListener {
+        void onItemRemoved(PmzItem item, int position);
+        void onItemRestored(PmzItem item);
+        void onEditItem(PmzItem item);
+    }
 
     private final PmzBaseActivity activity;
     private List<PmzItem> items;
+    private final IPmzCartAdapterListener listener;
 
-    public PmzSummaryAdapter(PmzBaseActivity activity) {
+    public PmzCartAdapter(PmzBaseActivity activity, IPmzCartAdapterListener listener) {
         this.activity = activity;
         this.items = new ArrayList<>();
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public PmzSummaryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PmzSummaryHolder(activity.getLayoutInflater().inflate(R.layout.activity_pmz_summary_item, parent, false));
+    public PmzCartHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new PmzCartHolder(activity.getLayoutInflater().inflate(R.layout.activity_pmz_cart_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final PmzSummaryHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final PmzCartHolder holder, int position) {
         PmzItem item = items.get(position);
         holder.title.setText(item.getProductName());
         holder.price.setText(PmzCurrencyUtils.formatPrice(item.getPrice()));
@@ -51,10 +59,18 @@ public class PmzSummaryAdapter extends RecyclerView.Adapter<PmzSummaryAdapter.Pm
         } else {
             holder.description.setVisibility(View.GONE);
         }
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(listener != null) {
+                    listener.onEditItem(items.get(holder.getAdapterPosition()));
+                }
+            }
+        });
         setStyles(holder);
     }
 
-    private void setStyles(PmzSummaryHolder holder) {
+    private void setStyles(PmzCartHolder holder) {
         PmzStyle style = PaymentezSDK.getInstance().getStyle();
         if(style != null) {
             if(style.getTextColor() != null) {
@@ -87,16 +103,37 @@ public class PmzSummaryAdapter extends RecyclerView.Adapter<PmzSummaryAdapter.Pm
         notifyDataSetChanged();
     }
 
-    public static class PmzSummaryHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void removeItem(int position) {
+        PmzItem pmzItem = items.get(position);
+        items.remove(position);
+        notifyItemRemoved(position);
+        listener.onItemRemoved(pmzItem, position);
+    }
 
+    @Override
+    public void restoreItem(PmzItem item, int position) {
+        if(position == items.size()) {
+            items.add(item);
+        } else {
+            items.add(position, item);
+        }
+        notifyItemInserted(position);
+        listener.onItemRestored(item);
+    }
+
+    public static class PmzCartHolder extends RecyclerView.ViewHolder {
+
+        public View container;
         protected TextView title;
         protected TextView description;
         protected TextView price;
         protected ImageView image;
         protected View editButton;
 
-        public PmzSummaryHolder(@NonNull View itemView) {
+        public PmzCartHolder(@NonNull View itemView) {
             super(itemView);
+            container = itemView.findViewById(R.id.container);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
             price = itemView.findViewById(R.id.price);

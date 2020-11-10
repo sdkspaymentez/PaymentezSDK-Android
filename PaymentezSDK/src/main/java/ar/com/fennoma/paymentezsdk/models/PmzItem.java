@@ -94,6 +94,9 @@ public class PmzItem extends PmzModel implements Parcelable {
                 if(json.has("discount") && !json.isNull("discount")) {
                     item.setDiscount(json.getDouble("discount"));
                 }
+                if(json.has("image")) {
+                    item.setImageUrl(json.getString("image"));
+                }
                 if(json.has("configurations") && !json.isNull("configurations")) {
                     item.setConfigurations(PmzConfiguration.fromJSONArray(json.getJSONArray("configurations")));
                 }
