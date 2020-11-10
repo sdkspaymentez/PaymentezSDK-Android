@@ -1,16 +1,23 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -41,6 +48,11 @@ public class PmzMenuActivity extends PmzBaseActivity {
     private TabLayout tabLayout;
     private PmzOrder order;
     private long storeId;
+
+    private SearchView searchView;
+    private ViewPager pager;
+
+    private View chartButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -257,7 +269,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
     }
 
     private void setPager() {
-        ViewPager pager = findViewById(R.id.pager);
+        pager = findViewById(R.id.pager);
         adapter = new MenuPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
 
@@ -302,20 +314,24 @@ public class PmzMenuActivity extends PmzBaseActivity {
     }
 
     private void setButtons() {
-        findViewById(R.id.chart_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PmzMenuActivity.this, PmzSummaryActivity.class);
-                if(order != null) {
-                    intent.putExtra(PMZ_ORDER, order);
-                }
-                if(store != null) {
-                    intent.putExtra(PMZ_STORE, store);
-                }
-                startActivityForResult(intent, MAIN_FLOW_KEY);
-                animActivityRightToLeft();
+        chartButton = findViewById(R.id.chart_button);
+        disableCartButton();
+    }
+
+    private void goToCart() {
+        if(order != null && order.getItems() != null && order.getItems().size() > 0) {
+            Intent intent = new Intent(PmzMenuActivity.this, PmzSummaryActivity.class);
+            if(order != null) {
+                intent.putExtra(PMZ_ORDER, order);
             }
-        });
+            if(store != null) {
+                intent.putExtra(PMZ_STORE, store);
+            }
+            startActivityForResult(intent, MAIN_FLOW_KEY);
+            animActivityRightToLeft();
+        } else {
+            DialogUtils.toast(this, getString(R.string.no_items_on_cart));
+        }
     }
 
     @Override
@@ -324,15 +340,43 @@ public class PmzMenuActivity extends PmzBaseActivity {
         if(requestCode == ADD_PRODUCT_REQUEST && resultCode == RESULT_OK && data != null
                 && data.getParcelableExtra(PMZ_ORDER) != null) {
             this.order = data.getParcelableExtra(PMZ_ORDER);
+            enableCartButton();
         }
         if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
-            if(forcedId) {
-                PmzData.getInstance().onSearchSuccess();
+            if(data != null && data.getBooleanExtra(PmzSummaryActivity.ORDER_MODIFIED, false) &&
+                    data.getParcelableExtra(PMZ_ORDER) != null) {
+                order = data.getParcelableExtra(PMZ_ORDER);
+                if(order != null && (order.getItems() == null || order.getItems().size() == 0)) {
+                    disableCartButton();
+                }
             } else {
-                setResult(RESULT_OK);
+                if (forcedId) {
+                    PmzData.getInstance().onSearchSuccess();
+                } else {
+                    setResult(RESULT_OK);
+                }
+                finish();
             }
-            finish();
         }
+    }
+
+    private void disableCartButton() {
+        chartButton.setOnClickListener(null);
+        chartButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.disabled_button_rounded_background, getTheme()));
+    }
+
+    private void enableCartButton() {
+        chartButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.orange_rounded_button_selector, getTheme()));
+        Integer buttonBackgroundColor = PaymentezSDK.getInstance().getStyle().getButtonBackgroundColor();
+        if (buttonBackgroundColor != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ColorHelper.replaceButtonBackground(findViewById(R.id.chart_button), buttonBackgroundColor);
+        }
+        chartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToCart();
+            }
+        });
     }
 
     @Override
@@ -350,5 +394,41 @@ public class PmzMenuActivity extends PmzBaseActivity {
         }
         startActivityForResult(intent, ADD_PRODUCT_REQUEST);
         animActivityRightToLeft();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_menu, menu);
+
+        final MenuItem myActionMenuItem = menu.findItem( R.id.search);
+        searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                myActionMenuItem.collapseActionView();
+                adapter.setFilter(query);
+                //pager.setCurrentItem(0);
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.setFilter(s);
+                //pager.setCurrentItem(0);
+                return false;
+            }
+        });
+        EditText editText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        editText.setTextColor(Color.WHITE);
+        editText.setHintTextColor(Color.WHITE);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.cart) {
+            goToCart();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -3,6 +3,7 @@ package ar.com.fennoma.paymentezsdk.models;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,8 +11,9 @@ import org.json.JSONObject;
 import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
+import ar.com.fennoma.paymentezsdk.controllers.PmzProductActivity;
 
-public class PmzOrder implements Parcelable {
+public class PmzOrder extends PmzModel implements Parcelable {
 
     private Long id;
     private Integer status;
@@ -103,7 +105,7 @@ public class PmzOrder implements Parcelable {
                     order.setTotalAmount(json.getLong("total_amount"));
                 }
                 if(json.has("delivery_instructions")) {
-                    order.setDeliveryInstructions(json.getString("delivery_instructions"));
+                    order.setDeliveryInstructions(decode(json.getString("delivery_instructions")));
                 }
                 if(json.has("delivery_price")) {
                     order.setDeliveryPrice(json.getDouble("delivery_price"));
@@ -115,10 +117,10 @@ public class PmzOrder implements Parcelable {
                     order.setDeliveryInstructions(json.getString("delivery_instructions"));
                 }
                 if(json.has("Annotations")) {
-                    order.setAnnotations(json.getString("Annotations"));
+                    order.setAnnotations(decode(json.getString("Annotations")));
                 }
                 if(json.has("app_order_reference")) {
-                    order.setAppOrderReference(json.getString("app_order_reference"));
+                    order.setAppOrderReference(decode(json.getString("app_order_reference")));
                 }
                 if(json.has("id_store")) {
                     order.setStoreId(json.getLong("id_store"));
@@ -162,9 +164,9 @@ public class PmzOrder implements Parcelable {
         if(address != null) {
             address.addToJSON(params);
         }
-        params.put("delivery_instructions", Uri.encode(deliveryInstructions, "UTF-8"));
-        params.put("Annotations", Uri.encode(annotations, "UTF-8"));
-        params.put("app_order_reference", Uri.encode(appOrderReference, "UTF-8"));
+        params.put("delivery_instructions", encode(deliveryInstructions));
+        params.put("Annotations", encode(annotations));
+        params.put("app_order_reference", encode(appOrderReference));
         params.put("id_store", storeId);
         params.put("type_order", typeOrder);
         params.put("session", PaymentezSDK.getInstance().getToken());
@@ -561,6 +563,18 @@ public class PmzOrder implements Parcelable {
                 items.add(positionRemoved, itemRemoved);
             } else {
                 items.add(itemRemoved);
+            }
+        }
+    }
+
+    public void mergeData(PmzOrder oldOrder) {
+        if(getItems() != null && oldOrder != null && oldOrder.getItems() != null) {
+            for(PmzItem oldItem: oldOrder.getItems()) {
+                for(PmzItem newItem: getItems()) {
+                    if(newItem.getProductId().equals(oldItem.getProductId()) && !TextUtils.isEmpty(oldItem.getImageUrl())) {
+                        newItem.setImageUrl(oldItem.getImageUrl());
+                    }
+                }
             }
         }
     }

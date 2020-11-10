@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PmzConfiguration implements Parcelable {
+public class PmzConfiguration extends PmzModel implements Parcelable {
 
     private Long id;
     private String annotations;
@@ -60,10 +60,10 @@ public class PmzConfiguration implements Parcelable {
                     configuration.setConfigurationId(json.getLong("id_configuration"));
                 }
                 if(json.has("annotations")) {
-                    configuration.setAnnotations(json.getString("annotations"));
+                    configuration.setAnnotations(decode(json.getString("annotations")));
                 }
                 if(json.has("description")) {
-                    configuration.setDescription(json.getString("description"));
+                    configuration.setDescription(decode(json.getString("description")));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

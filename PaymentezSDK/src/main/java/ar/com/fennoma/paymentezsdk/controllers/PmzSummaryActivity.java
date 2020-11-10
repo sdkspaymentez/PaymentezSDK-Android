@@ -1,5 +1,6 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -16,18 +17,23 @@ import java.util.List;
 import ar.com.fennoma.paymentezsdk.R;
 import ar.com.fennoma.paymentezsdk.adapters.PmzSummaryAdapter;
 import ar.com.fennoma.paymentezsdk.adapters.SwiperAdapter;
+import ar.com.fennoma.paymentezsdk.models.PmzErrorMessage;
 import ar.com.fennoma.paymentezsdk.models.PmzItem;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
+import ar.com.fennoma.paymentezsdk.services.API;
 import ar.com.fennoma.paymentezsdk.styles.PmzStyle;
 import ar.com.fennoma.paymentezsdk.utils.ColorHelper;
+import ar.com.fennoma.paymentezsdk.utils.DialogUtils;
 import ar.com.fennoma.paymentezsdk.utils.ImageUtils;
 import ar.com.fennoma.paymentezsdk.utils.PmzCurrencyUtils;
 
 public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem, PmzSummaryAdapter.PmzSummaryHolder> {
 
     public static final String SHOW_SUMMARY = "show summary";
+    public static final String ORDER_MODIFIED = "order modified";
 
+    private boolean orderModified = false;
     private boolean justSummary = false;
 
     private PmzOrder order;
@@ -132,10 +138,8 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
         adapter = new PmzSummaryAdapter(this, new PmzSummaryAdapter.IPmzSummaryAdapterListener() {
             @Override
             public void onItemRemoved(PmzItem item, int position) {
-                /*itemRemoved = item;
-                positionRemoved = position;
-                order.removeItem(item);*/
                 recalculatePrice();
+                deleteItem(item);
             }
 
             @Override
@@ -154,6 +158,41 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
         recycler.setAdapter(adapter);
         recycler.setNestedScrollingEnabled(false);
         setRecyclerItemTouchHelper(recycler);
+    }
+
+    private void deleteItem(PmzItem item) {
+        showLoading();
+        API.deleteItem(item, new API.ServiceCallback<PmzOrder>() {
+            @Override
+            public void onSuccess(PmzOrder response) {
+                hideLoading();
+                orderModified = true;
+                response.mergeData(order);
+                PmzSummaryActivity.this.order = response;
+                if(order.getItems() == null || order.getItems().size() == 0) {
+                    DialogUtils.toast(PmzSummaryActivity.this, getString(R.string.summary_no_items_to_show));
+                    onBackPressed();
+                }
+            }
+
+            @Override
+            public void onError(PmzErrorMessage error) {
+                hideLoading();
+                DialogUtils.toast(PmzSummaryActivity.this, error.getErrorMessage());
+            }
+
+            @Override
+            public void onFailure() {
+                hideLoading();
+                DialogUtils.genericError(PmzSummaryActivity.this);
+            }
+
+            @Override
+            public void sessionExpired() {
+                hideLoading();
+                onSessionExpired();
+            }
+        });
     }
 
     private void recalculatePrice() {
@@ -192,11 +231,23 @@ public class PmzSummaryActivity extends AbstractSwiperContainerActivity<PmzItem,
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         if(justSummary) {
+            super.onBackPressed();
             PmzData.getInstance().onSearchCancel();
+        } else if(orderModified) {
+            sendBackOrder();
+            super.onBackPressed();
+        } else {
+            super.onBackPressed();
         }
         animActivityLeftToRight();
+    }
+
+    private void sendBackOrder() {
+        Intent intent = new Intent();
+        intent.putExtra(ORDER_MODIFIED, true);
+        intent.putExtra(PMZ_ORDER, order);
+        setResult(RESULT_OK, intent);
     }
 
     @Override

@@ -34,4 +34,9 @@
     <string name="summary_keep_buying_button">Seguir comprando</string>
     <string name="swipe_to_delete_undo_button">DESHACER</string>
     <string name="swipe_to_delete_favorite_warn">Borraste un item</string>
+    <string name="search_menu">Buscar</string>
+    <string name="cart_menu">Carrito</string>
+    <string name="search_hint">Buscar…</string>
+    <string name="no_items_on_cart">Tu carrito está vacío.</string>
+    <string name="summary_no_items_to_show">Tu carrito está vacío.</string>
 </resources>
