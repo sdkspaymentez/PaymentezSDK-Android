@@ -13,7 +13,7 @@ import java.util.List;
 
 import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 
-public class PmzItem implements Parcelable {
+public class PmzItem extends PmzModel implements Parcelable {
 
     private Long id;
     private Long orderId;
@@ -69,7 +69,7 @@ public class PmzItem implements Parcelable {
                     item.setStatus(json.getInt("status"));
                 }
                 if(json.has("annotations")) {
-                    item.setAnnotation(json.getString("annotations"));
+                    item.setAnnotation(decode(json.getString("annotations")));
                 }
                 if(json.has("total_amount")) {
                     item.setTotalAmount(json.getLong("total_amount"));
@@ -89,7 +89,7 @@ public class PmzItem implements Parcelable {
                     item.setQuantity(json.getInt("quantity"));
                 }
                 if(json.has("product_name")) {
-                    item.setProductName(json.getString("product_name"));
+                    item.setProductName(decode(json.getString("product_name")));
                 }
                 if(json.has("discount") && !json.isNull("discount")) {
                     item.setDiscount(json.getDouble("discount"));
@@ -206,10 +206,18 @@ public class PmzItem implements Parcelable {
         params.put("id_order", orderId);
         params.put("id_product", productId);
         params.put("quantity", quantity);
-        params.put("annotations", Uri.encode(annotation, "UTF-8"));
+        params.put("annotations", encode(annotation));
         if(configurations != null) {
             params.put("configurations", PmzConfiguration.getJSONFor(configurations));
         }
+        params.put("session", PaymentezSDK.getInstance().getToken());
+        return params;
+    }
+
+    public JSONObject getJSONForDelete() throws JSONException {
+        JSONObject params = new JSONObject();
+        params.put("id_order", orderId);
+        params.put("id_order_item", id);
         params.put("session", PaymentezSDK.getInstance().getToken());
         return params;
     }

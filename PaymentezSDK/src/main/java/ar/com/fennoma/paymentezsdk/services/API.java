@@ -83,4 +83,13 @@ public class API {
             }
         }).execute();
     }
+
+    public static void deleteItem(final PmzItem item, final ServiceCallback<PmzOrder> callback) {
+        new BaseTask<>(callback, new BaseTask.IServiceCaller<PmzOrder>() {
+            @Override
+            public PmzOrder callService() throws PmzException {
+                return Services.deleteItem(item);
+            }
+        }).execute();
+    }
 }

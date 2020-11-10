@@ -1,8 +1,15 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+
+import androidx.appcompat.widget.SearchView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +30,8 @@ public class PmzStoresActivity extends PmzBaseActivity {
 
     private String storesFilter;
     private PmzStoresAdapter adapter;
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +84,9 @@ public class PmzStoresActivity extends PmzBaseActivity {
             public void onSuccess(List<PmzStore> response) {
                 hideLoading();
                 adapter.setStores(response);
+                if(!TextUtils.isEmpty(storesFilter)) {
+                    adapter.setFilter(storesFilter);
+                }
             }
 
             @Override
@@ -152,5 +164,30 @@ public class PmzStoresActivity extends PmzBaseActivity {
 
                     }
                 });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.stores_menu, menu);
+
+        final MenuItem myActionMenuItem = menu.findItem( R.id.search);
+        searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                myActionMenuItem.collapseActionView();
+                adapter.setFilter(query);
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.setFilter(s);
+                return false;
+            }
+        });
+        EditText editText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        editText.setTextColor(Color.WHITE);
+        editText.setHintTextColor(Color.WHITE);
+        return true;
     }
 }

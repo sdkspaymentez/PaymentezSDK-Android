@@ -161,7 +161,7 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/buttons_container"
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -173,9 +173,8 @@
 
         <TextView
             android:id="@+id/chart_button"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_weight="0.5"
             android:background="@drawable/orange_rounded_button_selector"
             android:gravity="center"
             android:paddingTop="5dp"
@@ -184,6 +183,6 @@
             android:textColor="@android:color/white"
             android:textSize="19dp" />
 
-    </LinearLayout>
+    </FrameLayout>
 
 </RelativeLayout>

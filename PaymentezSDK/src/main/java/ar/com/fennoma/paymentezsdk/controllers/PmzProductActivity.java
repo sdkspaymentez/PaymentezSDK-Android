@@ -182,6 +182,20 @@ public class PmzProductActivity extends PmzBaseActivity {
         });
     }
 
+    private void sendBackOrder(PmzOrder order) {
+        Intent intent = new Intent();
+        intent.putExtra(PMZ_ORDER, order);
+        setResult(RESULT_OK, intent);
+        finish();
+        animActivityLeftToRight();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        animActivityLeftToRight();
+    }
+
     private PmzOrder mergeData(PmzOrder response) {
         if(response != null && response.getItems() != null) {
             for(PmzItem item: response.getItems()) {
@@ -200,19 +214,5 @@ public class PmzProductActivity extends PmzBaseActivity {
             }
         }
         return response;
-    }
-
-    private void sendBackOrder(PmzOrder order) {
-        Intent intent = new Intent();
-        intent.putExtra(PMZ_ORDER, order);
-        setResult(RESULT_OK, intent);
-        finish();
-        animActivityLeftToRight();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        animActivityLeftToRight();
     }
 }

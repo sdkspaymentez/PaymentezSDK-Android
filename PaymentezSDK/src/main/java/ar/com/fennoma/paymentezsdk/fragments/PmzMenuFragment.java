@@ -19,9 +19,11 @@ import ar.com.fennoma.paymentezsdk.controllers.PmzMenuActivity;
 import ar.com.fennoma.paymentezsdk.models.PmzCategory;
 import ar.com.fennoma.paymentezsdk.models.PmzProduct;
 
-public class MenuFragment extends Fragment {
+public class PmzMenuFragment extends Fragment {
 
     private PmzCategory category;
+    private MenuFragmentAdapter adapter;
+    private String filter;
 
     @Nullable
     @Override
@@ -34,6 +36,9 @@ public class MenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setTitle(view);
         setRecycler(view);
+        if(!TextUtils.isEmpty(filter)) {
+            adapter.setFilter(filter);
+        }
     }
 
     private void setTitle(View view) {
@@ -49,7 +54,7 @@ public class MenuFragment extends Fragment {
     private void setRecycler(View view) {
         RecyclerView recycler = view.findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        MenuFragmentAdapter adapter = new MenuFragmentAdapter(getActivity(), category.getProducts(), new MenuFragmentAdapter.PmzMenuProductListener() {
+        adapter = new MenuFragmentAdapter(getActivity(), category.getProducts(), new MenuFragmentAdapter.PmzMenuProductListener() {
             @Override
             public void onProductAdded(PmzProduct product) {
                 if (getActivity() != null && getActivity() instanceof PmzMenuActivity) {
@@ -66,5 +71,30 @@ public class MenuFragment extends Fragment {
         if(getView() != null) {
             setTitle(getView());
         }
+    }
+
+    public PmzCategory getCategory() {
+        return category;
+    }
+
+    public void setFilter(String s) {
+        filter = s;
+        if(s != null && adapter != null) {
+            adapter.setFilter(s);
+        }
+    }
+
+    public boolean hasContent() {
+        if(category != null && category.getProducts() != null) {
+            if(TextUtils.isEmpty(filter)) {
+                return true;
+            }
+            for(PmzProduct product: category.getProducts()) {
+                if(product != null && !TextUtils.isEmpty(product.getName()) && product.getName().toLowerCase().contains(filter.toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
