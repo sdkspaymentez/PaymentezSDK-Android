@@ -67,8 +67,8 @@ class PmzData {
     public void showSummary(Context context, String appOrderReference, PmzOrder order, PaymentezSDK.PmzSearchListener listener) {
         this.searchListener = listener;
         Intent intent = new Intent(context, PmzSummaryActivity.class);
-        intent.putExtra(PmzSummaryActivity.SHOW_SUMMARY, true);
-        intent.putExtra(PmzSummaryActivity.PMZ_ORDER, order);
+        intent.putExtra(PmzSummaryActivity.JUST_SUMMARY, true);
+        intent.putExtra(PmzCartActivity.PMZ_ORDER, order);
         context.startActivity(intent);
     }
 
