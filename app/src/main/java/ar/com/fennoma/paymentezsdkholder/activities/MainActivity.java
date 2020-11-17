@@ -14,6 +14,7 @@ import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
+import ar.com.fennoma.paymentezsdk.styles.PmzFont;
 import ar.com.fennoma.paymentezsdk.styles.PmzStyle;
 import ar.com.fennoma.paymentezsdkholder.R;
 import ar.com.fennoma.paymentezsdkholder.models.Color;
@@ -156,7 +157,8 @@ public class MainActivity extends BaseActivity {
         return new PmzStyle().setBackgroundColor(bgColorSelected.getColorRes())
                 .setButtonBackgroundColor(buttonColorSelected.getColorRes())
                 .setTextColor(textColorSelected.getColorRes())
-                .setButtonTextColor(buttonTextColorSelected.getColorRes());
+                .setButtonTextColor(buttonTextColorSelected.getColorRes())
+                .setFont(PmzFont.ROBOTO);
     }
 
     private void setBgSpinner() {

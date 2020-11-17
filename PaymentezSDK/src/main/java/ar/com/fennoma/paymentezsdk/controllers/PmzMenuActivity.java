@@ -58,6 +58,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pmz_menu);
+        setFont();
         setFullTitleWithBack(getString(R.string.activity_pmz_menu_title));
         setViews();
         handleIntent();
@@ -209,7 +210,9 @@ public class PmzMenuActivity extends PmzBaseActivity {
     }
 
     private void startOrder() {
-        API.startOrder(PmzOrder.hardcodedForOrderStart(), new API.ServiceCallback<PmzOrder>() {
+        PmzOrder pmzOrder = PmzOrder.buildForOrderStart(PmzData.getInstance().getBuyer(), PmzData.getInstance().getAppOrderReference(),
+                storeId);
+        API.startOrder(pmzOrder, new API.ServiceCallback<PmzOrder>() {
             @Override
             public void onSuccess(PmzOrder response) {
                 hideLoading();

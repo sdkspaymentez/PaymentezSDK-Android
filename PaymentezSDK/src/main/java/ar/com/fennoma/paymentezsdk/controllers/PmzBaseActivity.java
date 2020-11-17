@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.styles.PmzFont;
+import ar.com.fennoma.paymentezsdk.utils.TypefaceUtils;
 
 public class PmzBaseActivity extends AppCompatActivity {
 
@@ -26,6 +28,13 @@ public class PmzBaseActivity extends AppCompatActivity {
     public static final String PMZ_ORDER = "order key";
     private Toolbar toolbar;
     private Dialog loadingDialog;
+
+    protected void setFont() {
+        PmzFont font = PmzData.getInstance().getStyle().getFont();
+        if(font != PmzFont.SERIF) {
+            TypefaceUtils.overrideFont(getApplicationContext(), "SERIF", PmzFont.getFont(font));
+        }
+    }
 
     protected void setFullTitleWithBack(String text) {
         setToolbar();

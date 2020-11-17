@@ -178,8 +178,4 @@ public class PaymentezSDK {
     public void setOrderResult(PmzOrder order) {
         PmzData.getInstance().setOrderResult(order);
     }
-
-    public void setOrderResult(List<PmzOrder> orders) {
-        PmzData.getInstance().setOrderResult(orders);
-    }
 }

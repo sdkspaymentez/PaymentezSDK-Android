@@ -35,6 +35,7 @@ public class PmzPayAndPlaceActivity extends PmzBaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pmz_pay_and_place_activity);
+        setFont();
         setFullTitleWOBack(getString(R.string.activity_pmz_pay_and_place_title));
         setViews();
         handleIntent();

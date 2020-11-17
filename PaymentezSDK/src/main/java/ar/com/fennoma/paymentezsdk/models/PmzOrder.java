@@ -52,15 +52,6 @@ public class PmzOrder extends PmzModel implements Parcelable {
         return new PmzOrder();
     }
 
-    public static PmzOrder hardcodedForOrderStart() {
-        try {
-            return fromJSONObject(new JSONObject(orderStarterJson));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new PmzOrder();
-    }
-
     public static PmzOrder fromJSONObject(JSONObject json) {
         PmzOrder order = new PmzOrder();
         if(json != null) {
@@ -629,25 +620,14 @@ public class PmzOrder extends PmzModel implements Parcelable {
             "  }\n" +
             "}";
 
-    private static String orderStarterJson = "{\n" +
-            "    \"address_city\": \"Bogotá\",\n" +
-            "    \"address_country\": \"Colombia\",\n" +
-            "    \"address_latitude\": 4.6568103,\n" +
-            "    \"address_line1\": \"Calle 75 20C-81\",\n" +
-            "    \"address_line2\": \"Calle 75 - 20C-81\",\n" +
-            "    \"address_longitude\": -74.0561968,\n" +
-            "    \"address_state\": \"DC\",\n" +
-            "    \"address_zip\": \"\",\n" +
-            "    \"delivery_instructions\": \"Apto 206\",\n" +
-            "    \"Annotations\": \"\",\n" +
-            "    \"buyer_email\": \"breyes@paymentez.com\",\n" +
-            "    \"buyer_fiscal_number\": \"1054092666\",\n" +
-            "    \"buyer_name\": \"Bruno Reyes\",\n" +
-            "    \"buyer_phone\": \"3212000915\",\n" +
-            "    \"buyer_user_reference\": \"f6dc275d-5e64-4127-bf5c-dbbfac02aacd\",\n" +
-            "    \"app_order_reference\": \"test-1744\",\n" +
-            "    \"id_store\":120,\n" +
-            "    \"session\": \"{{token}}\",\n" +
-            "    \"type_order\": 0\n" +
-            "}";
+    public static PmzOrder buildForOrderStart(PmzBuyer buyer, String appOrderReference, Long storeId) {
+        PmzOrder order = new PmzOrder();
+        order.setBuyer(buyer);
+        order.setAddress(new PmzAddress());
+        order.setAnnotations("");
+        order.setAppOrderReference(appOrderReference);
+        order.setStoreId(storeId);
+        order.setTypeOrder(0);
+        return order;
+    }
 }

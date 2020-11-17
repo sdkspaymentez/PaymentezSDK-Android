@@ -37,7 +37,6 @@ public class PmzCartActivity extends AbstractSwiperContainerActivity<PmzItem, Pm
     private boolean justCart = false;
 
     private PmzOrder order;
-    private List<PmzOrder> orders;
     private PmzStore store;
 
     private RecyclerView recycler;
@@ -58,7 +57,6 @@ public class PmzCartActivity extends AbstractSwiperContainerActivity<PmzItem, Pm
         if(getIntent() != null) {
             justCart = getIntent().getBooleanExtra(SHOW_CART, false);
             order = getIntent().getParcelableExtra(PMZ_ORDER);
-            orders = getIntent().getParcelableArrayListExtra(PMZ_ORDER);
             store = getIntent().getParcelableExtra(PMZ_STORE);
 
             if(order == null) {
@@ -115,8 +113,8 @@ public class PmzCartActivity extends AbstractSwiperContainerActivity<PmzItem, Pm
             if (style.getButtonBackgroundColor() != null) {
                 changeToolbarBackground(style.getButtonBackgroundColor());
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ColorHelper.replaceButtonBackground(findViewById(R.id.next),
-                            style.getButtonBackgroundColor());
+                    ColorHelper.replaceButtonBackground(findViewById(R.id.next), style.getButtonBackgroundColor());
+                    ColorHelper.replaceButtonBackground(findViewById(R.id.keep_buying), style.getButtonBackgroundColor());
                 }
                 changeToolbarBackground(style.getButtonBackgroundColor());
             }
@@ -210,11 +208,12 @@ public class PmzCartActivity extends AbstractSwiperContainerActivity<PmzItem, Pm
                 if(justCart) {
                     if(order != null) {
                         PaymentezSDK.getInstance().setOrderResult(order);
-                    } else if(orders != null) {
-                        PaymentezSDK.getInstance().setOrderResult(orders);
                     }
                     PmzData.getInstance().onSearchSuccess();
                 } else {
+                    if(order != null && store != null) {
+                        order.setStore(store);
+                    }
                     PaymentezSDK.getInstance().setOrderResult(order);
                     setResult(RESULT_OK);
                 }

@@ -29,8 +29,9 @@ class PmzData {
     private PmzStyle style;
 
     private PmzOrder order;
-    private List<PmzOrder> orders;
     private String token;
+    private PmzBuyer buyer;
+    private String appOrderReference;
 
     public static PmzData getInstance() {
         if(instance == null) {
@@ -44,6 +45,8 @@ class PmzData {
 
     public void startSearchWithStoreId(Context context, PmzBuyer buyer, String appOrderReference, Long storeId, PaymentezSDK.PmzSearchListener listener) {
         this.searchListener = listener;
+        this.buyer = buyer;
+        this.appOrderReference = appOrderReference;
         Intent intent;
         if(storeId != null) {
             intent = new Intent(context, PmzMenuActivity.class);
@@ -57,6 +60,8 @@ class PmzData {
 
     public void startSearch(Context context, PmzBuyer buyer, String appOrderReference, String searchStoresFilter, PaymentezSDK.PmzSearchListener listener) {
         this.searchListener = listener;
+        this.buyer = buyer;
+        this.appOrderReference = appOrderReference;
         Intent intent = new Intent(context, PmzStoresActivity.class);
         if(!TextUtils.isEmpty(searchStoresFilter)) {
             intent.putExtra(PmzStoresActivity.SEARCH_STORES_FILTER, searchStoresFilter);
@@ -66,6 +71,7 @@ class PmzData {
 
     public void showSummary(Context context, String appOrderReference, PmzOrder order, PaymentezSDK.PmzSearchListener listener) {
         this.searchListener = listener;
+        this.appOrderReference = appOrderReference;
         Intent intent = new Intent(context, PmzSummaryActivity.class);
         intent.putExtra(PmzSummaryActivity.JUST_SUMMARY, true);
         intent.putExtra(PmzCartActivity.PMZ_ORDER, order);
@@ -112,7 +118,6 @@ class PmzData {
                 listener.onError(new PmzError(PmzError.GENERIC_SERVICE_ERROR));
             }
         });
-        //listener.onFinishedSuccessfully(PmzStore.getHardcoded());
     }
 
     public void onSearchCancel() {
@@ -151,14 +156,6 @@ class PmzData {
         }
     }
 
-    public void setOrderResult(PmzOrder order) {
-        this.order = order;
-    }
-
-    public void setOrderResult(List<PmzOrder> orders) {
-        this.orders = orders;
-    }
-
     public String getToken() {
         return token;
     }
@@ -185,5 +182,25 @@ class PmzData {
 
     public void setStyle(PmzStyle style) {
         this.style = style;
+    }
+
+    public PmzBuyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(PmzBuyer buyer) {
+        this.buyer = buyer;
+    }
+
+    public String getAppOrderReference() {
+        return appOrderReference;
+    }
+
+    public void setAppOrderReference(String appOrderReference) {
+        this.appOrderReference = appOrderReference;
+    }
+
+    public void setOrderResult(PmzOrder order) {
+        this.order = order;
     }
 }

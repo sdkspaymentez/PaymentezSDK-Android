@@ -35,6 +35,7 @@ public class PmzSummaryActivity extends PmzBaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pmz_summary);
+        setFont();
         setFullTitleWithBack(getString(R.string.activity_pmz_summary_title));
         setViews();
         handleIntent();
