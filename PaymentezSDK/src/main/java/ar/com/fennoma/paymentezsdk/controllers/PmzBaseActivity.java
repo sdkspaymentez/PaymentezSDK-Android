@@ -1,6 +1,7 @@
 package ar.com.fennoma.paymentezsdk.controllers;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -17,12 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import ar.com.fennoma.paymentezsdk.R;
+import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.styles.PmzFont;
 import ar.com.fennoma.paymentezsdk.utils.TypefaceUtils;
 
 public class PmzBaseActivity extends AppCompatActivity {
 
     protected static final int MAIN_FLOW_KEY = 1001;
+    public static final String SESSION_EXPIRED_KEY = "session expired key";
     public static final String PMZ_STORE = "store Id";
     public static final String PMZ_ORDER_ID = "order id key";
     public static final String PMZ_ORDER = "order key";
@@ -111,7 +114,9 @@ public class PmzBaseActivity extends AppCompatActivity {
     }
 
     protected void onSessionExpired() {
-
+        Intent intent = new Intent().putExtra(SESSION_EXPIRED_KEY, true);
+        setResult(RESULT_CANCELED, intent);
+        finish();
     }
 
     public void showLoading() {

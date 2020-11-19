@@ -24,7 +24,7 @@ class PmzData {
 
     private PaymentezSDK.PmzSearchListener searchListener;
     private PaymentezSDK.PmzPayAndPlaceListener paymentChecker;
-    private PaymentezSDK.PmzPayAndPlaceMultipleOrderListener paymentMultipleOrdersChecker;
+    private PaymentezSDK.MultiPaymentOrderListener multiplePaymentOrderChecker;
 
     private PmzStyle style;
 
@@ -87,12 +87,12 @@ class PmzData {
         context.startActivity(intent);
     }
 
-    public void startPayAndPlace(Context context, List<PmzOrder> orders, PmzPaymentData paymentData, boolean skipSummary, PaymentezSDK.PmzPayAndPlaceListener listener) {
-        this.paymentChecker = listener;
+    public void startPayAndPlace(Context context, PmzOrder order, List<PmzPaymentData> payments, boolean skipSummary, PaymentezSDK.MultiPaymentOrderListener listener) {
+        this.multiplePaymentOrderChecker = listener;
         Intent intent = new Intent(context, PmzPayAndPlaceActivity.class);
-        intent.putExtra(PmzPayAndPlaceActivity.PMZ_ORDERS, new ArrayList<>(orders));
+        intent.putExtra(PmzPayAndPlaceActivity.PMZ_ORDER, order);
         intent.putExtra(PmzPayAndPlaceActivity.SKIP_SUMMARY, skipSummary);
-        intent.putExtra(PmzPayAndPlaceActivity.PMZ_PAYMENT_DATA, paymentData);
+        intent.putExtra(PmzPayAndPlaceActivity.PMZ_PAYMENTS_DATA, new ArrayList<>(payments));
         context.startActivity(intent);
     }
 
@@ -138,9 +138,9 @@ class PmzData {
         }
     }
 
-    public void onPaymentMultipleOrdersCheckingError(List<PmzOrder> orders, PmzError error) {
-        if(paymentMultipleOrdersChecker != null) {
-            paymentMultipleOrdersChecker.onError(orders, error);
+    public void onMultiplePaymentOrderCheckingError(PmzOrder order, PmzError error) {
+        if(multiplePaymentOrderChecker != null) {
+            multiplePaymentOrderChecker.onError(order, error);
         }
     }
 
@@ -150,9 +150,9 @@ class PmzData {
         }
     }
 
-    public void onPaymentCheckingSuccess(List<PmzOrder> orders) {
-        if(paymentMultipleOrdersChecker != null) {
-            paymentMultipleOrdersChecker.onFinishedSuccessfully(orders);
+    public void onMultiplePaymentCheckingSuccess(PmzOrder order) {
+        if(multiplePaymentOrderChecker != null) {
+            multiplePaymentOrderChecker.onFinishedSuccessfully(order);
         }
     }
 
@@ -202,5 +202,23 @@ class PmzData {
 
     public void setOrderResult(PmzOrder order) {
         this.order = order;
+    }
+
+    public void onSearchSessionExpired() {
+        if(searchListener != null) {
+            searchListener.onError(new PmzError(PmzError.SESSION_EXPIRED));
+        }
+    }
+
+    public void onMultiplePaymentSessionExpired(PmzOrder order) {
+        if(multiplePaymentOrderChecker != null) {
+            multiplePaymentOrderChecker.onError(order, new PmzError(PmzError.SESSION_EXPIRED));
+        }
+    }
+
+    public void onPaymentSessionExpired(PmzOrder order) {
+        if(paymentChecker != null) {
+            paymentChecker.onError(order, new PmzError(PmzError.SESSION_EXPIRED));
+        }
     }
 }

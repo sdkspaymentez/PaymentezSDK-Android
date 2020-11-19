@@ -24,7 +24,7 @@ public class PmzOrder extends PmzModel implements Parcelable {
     private String datePlaced;
     private String dateStarted;
     private Integer orderType;
-    private Long totalAmount;
+    private Double totalAmount;
     private String deliveryInstructions;
     private Double deliveryPrice;
     private String statusDescription;
@@ -93,7 +93,7 @@ public class PmzOrder extends PmzModel implements Parcelable {
                     order.setOrderType(json.getInt("order_type"));
                 }
                 if(json.has("total_amount")) {
-                    order.setTotalAmount(json.getLong("total_amount"));
+                    order.setTotalAmount(json.getDouble("total_amount"));
                 }
                 if(json.has("delivery_instructions")) {
                     order.setDeliveryInstructions(decode(json.getString("delivery_instructions")));
@@ -255,11 +255,11 @@ public class PmzOrder extends PmzModel implements Parcelable {
         this.orderType = orderType;
     }
 
-    public Long getTotalAmount() {
+    public Double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Long totalAmount) {
+    public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
@@ -406,7 +406,7 @@ public class PmzOrder extends PmzModel implements Parcelable {
         }
     }
 
-    public void mergeData(PmzOrder oldOrder) {
+    public PmzOrder mergeData(PmzOrder oldOrder) {
         if(getItems() != null && oldOrder != null && oldOrder.getItems() != null) {
             for(PmzItem oldItem: oldOrder.getItems()) {
                 for(PmzItem newItem: getItems()) {
@@ -416,6 +416,10 @@ public class PmzOrder extends PmzModel implements Parcelable {
                 }
             }
         }
+        if(oldOrder != null && oldOrder.getStore() != null) {
+            setStore(oldOrder.getStore());
+        }
+        return this;
     }
 
     public PmzStore getStore() {
@@ -425,84 +429,6 @@ public class PmzOrder extends PmzModel implements Parcelable {
     public void setStore(PmzStore store) {
         this.store = store;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeValue(this.status);
-        dest.writeValue(this.tax);
-        dest.writeString(this.orderAppReference);
-        dest.writeString(this.confirmationCode);
-        dest.writeString(this.tableReference);
-        dest.writeString(this.deliveryDate);
-        dest.writeString(this.reserveCode);
-        dest.writeString(this.datePlaced);
-        dest.writeString(this.dateStarted);
-        dest.writeValue(this.orderType);
-        dest.writeValue(this.totalAmount);
-        dest.writeString(this.deliveryInstructions);
-        dest.writeValue(this.deliveryPrice);
-        dest.writeString(this.statusDescription);
-        dest.writeString(this.annotations);
-        dest.writeString(this.appOrderReference);
-        dest.writeValue(this.storeId);
-        dest.writeValue(this.typeOrder);
-        dest.writeTypedList(this.items);
-        dest.writeParcelable(this.buyer, flags);
-        dest.writeParcelable(this.address, flags);
-        dest.writeString(this.currency);
-        dest.writeString(this.paymentMethodReference);
-        dest.writeString(this.paymentReference);
-        dest.writeValue(this.service);
-        dest.writeParcelable(this.store, flags);
-    }
-
-    protected PmzOrder(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.status = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.tax = (Double) in.readValue(Double.class.getClassLoader());
-        this.orderAppReference = in.readString();
-        this.confirmationCode = in.readString();
-        this.tableReference = in.readString();
-        this.deliveryDate = in.readString();
-        this.reserveCode = in.readString();
-        this.datePlaced = in.readString();
-        this.dateStarted = in.readString();
-        this.orderType = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.totalAmount = (Long) in.readValue(Long.class.getClassLoader());
-        this.deliveryInstructions = in.readString();
-        this.deliveryPrice = (Double) in.readValue(Double.class.getClassLoader());
-        this.statusDescription = in.readString();
-        this.annotations = in.readString();
-        this.appOrderReference = in.readString();
-        this.storeId = (Long) in.readValue(Long.class.getClassLoader());
-        this.typeOrder = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.items = in.createTypedArrayList(PmzItem.CREATOR);
-        this.buyer = in.readParcelable(PmzBuyer.class.getClassLoader());
-        this.address = in.readParcelable(PmzAddress.class.getClassLoader());
-        this.currency = in.readString();
-        this.paymentMethodReference = in.readString();
-        this.paymentReference = in.readString();
-        this.service = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.store = in.readParcelable(PmzStore.class.getClassLoader());
-    }
-
-    public static final Creator<PmzOrder> CREATOR = new Creator<PmzOrder>() {
-        @Override
-        public PmzOrder createFromParcel(Parcel source) {
-            return new PmzOrder(source);
-        }
-
-        @Override
-        public PmzOrder[] newArray(int size) {
-            return new PmzOrder[size];
-        }
-    };
 
     private static String json = "{\n" +
             "  \"id\": 8493,\n" +
@@ -630,4 +556,82 @@ public class PmzOrder extends PmzModel implements Parcelable {
         order.setTypeOrder(0);
         return order;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeValue(this.status);
+        dest.writeValue(this.tax);
+        dest.writeString(this.orderAppReference);
+        dest.writeString(this.confirmationCode);
+        dest.writeString(this.tableReference);
+        dest.writeString(this.deliveryDate);
+        dest.writeString(this.reserveCode);
+        dest.writeString(this.datePlaced);
+        dest.writeString(this.dateStarted);
+        dest.writeValue(this.orderType);
+        dest.writeValue(this.totalAmount);
+        dest.writeString(this.deliveryInstructions);
+        dest.writeValue(this.deliveryPrice);
+        dest.writeString(this.statusDescription);
+        dest.writeString(this.annotations);
+        dest.writeString(this.appOrderReference);
+        dest.writeValue(this.storeId);
+        dest.writeValue(this.typeOrder);
+        dest.writeTypedList(this.items);
+        dest.writeParcelable(this.buyer, flags);
+        dest.writeParcelable(this.address, flags);
+        dest.writeString(this.currency);
+        dest.writeString(this.paymentMethodReference);
+        dest.writeString(this.paymentReference);
+        dest.writeValue(this.service);
+        dest.writeParcelable(this.store, flags);
+    }
+
+    protected PmzOrder(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.status = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.tax = (Double) in.readValue(Double.class.getClassLoader());
+        this.orderAppReference = in.readString();
+        this.confirmationCode = in.readString();
+        this.tableReference = in.readString();
+        this.deliveryDate = in.readString();
+        this.reserveCode = in.readString();
+        this.datePlaced = in.readString();
+        this.dateStarted = in.readString();
+        this.orderType = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.totalAmount = (Double) in.readValue(Double.class.getClassLoader());
+        this.deliveryInstructions = in.readString();
+        this.deliveryPrice = (Double) in.readValue(Double.class.getClassLoader());
+        this.statusDescription = in.readString();
+        this.annotations = in.readString();
+        this.appOrderReference = in.readString();
+        this.storeId = (Long) in.readValue(Long.class.getClassLoader());
+        this.typeOrder = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.items = in.createTypedArrayList(PmzItem.CREATOR);
+        this.buyer = in.readParcelable(PmzBuyer.class.getClassLoader());
+        this.address = in.readParcelable(PmzAddress.class.getClassLoader());
+        this.currency = in.readString();
+        this.paymentMethodReference = in.readString();
+        this.paymentReference = in.readString();
+        this.service = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.store = in.readParcelable(PmzStore.class.getClassLoader());
+    }
+
+    public static final Creator<PmzOrder> CREATOR = new Creator<PmzOrder>() {
+        @Override
+        public PmzOrder createFromParcel(Parcel source) {
+            return new PmzOrder(source);
+        }
+
+        @Override
+        public PmzOrder[] newArray(int size) {
+            return new PmzOrder[size];
+        }
+    };
 }

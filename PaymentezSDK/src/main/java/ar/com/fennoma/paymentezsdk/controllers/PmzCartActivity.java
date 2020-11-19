@@ -189,6 +189,7 @@ public class PmzCartActivity extends AbstractSwiperContainerActivity<PmzItem, Pm
             public void sessionExpired() {
                 hideLoading();
                 onSessionExpired();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }

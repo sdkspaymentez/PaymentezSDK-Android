@@ -176,6 +176,7 @@ public class PmzProductActivity extends PmzBaseActivity {
                     public void sessionExpired() {
                         hideLoading();
                         onSessionExpired();
+                        PmzData.getInstance().onSearchSessionExpired();
                     }
                 });
             }

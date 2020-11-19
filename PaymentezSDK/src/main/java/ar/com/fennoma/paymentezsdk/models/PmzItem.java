@@ -1,6 +1,5 @@
 package ar.com.fennoma.paymentezsdk.models;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -20,7 +19,7 @@ public class PmzItem extends PmzModel implements Parcelable {
     private Double tax;
     private String annotation;
     private Integer status;
-    private Long totalAmount;
+    private Double totalAmount;
     private Long unitAmount;
     private Integer quantity;
     private Long productId;
@@ -72,7 +71,7 @@ public class PmzItem extends PmzModel implements Parcelable {
                     item.setAnnotation(decode(json.getString("annotations")));
                 }
                 if(json.has("total_amount")) {
-                    item.setTotalAmount(json.getLong("total_amount"));
+                    item.setTotalAmount(json.getDouble("total_amount"));
                 }
                 if(json.has("unit_amount")) {
                     item.setUnitAmount(json.getLong("unit_amount"));
@@ -148,11 +147,11 @@ public class PmzItem extends PmzModel implements Parcelable {
         this.status = status;
     }
 
-    public Long getTotalAmount() {
+    public Double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Long totalAmount) {
+    public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
@@ -253,7 +252,7 @@ public class PmzItem extends PmzModel implements Parcelable {
             "  \"session\": \"{{token}}\"\n" +
             "}\n";
 
-    public Long getPrice() {
+    public Double getPrice() {
         return totalAmount;
     }
 
@@ -297,7 +296,7 @@ public class PmzItem extends PmzModel implements Parcelable {
         this.tax = (Double) in.readValue(Double.class.getClassLoader());
         this.annotation = in.readString();
         this.status = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.totalAmount = (Long) in.readValue(Long.class.getClassLoader());
+        this.totalAmount = (Double) in.readValue(Double.class.getClassLoader());
         this.unitAmount = (Long) in.readValue(Long.class.getClassLoader());
         this.quantity = (Integer) in.readValue(Integer.class.getClassLoader());
         this.productId = (Long) in.readValue(Long.class.getClassLoader());

@@ -135,6 +135,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void sessionExpired() {
                 hideLoading();
                 onSessionExpired();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
@@ -164,6 +165,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void sessionExpired() {
                 hideLoading();
                 onSessionExpired();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
@@ -205,6 +207,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void sessionExpired() {
                 hideLoading();
                 onSessionExpired();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
@@ -235,6 +238,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void sessionExpired() {
                 hideLoading();
                 onSessionExpired();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
@@ -340,7 +344,9 @@ public class PmzMenuActivity extends PmzBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == ADD_PRODUCT_REQUEST && resultCode == RESULT_OK && data != null
+        if(resultCode == RESULT_CANCELED && data != null && data.getBooleanExtra(SESSION_EXPIRED_KEY, false)) {
+            onSessionExpired();
+        } else if(requestCode == ADD_PRODUCT_REQUEST && resultCode == RESULT_OK && data != null
                 && data.getParcelableExtra(PMZ_ORDER) != null) {
             this.order = data.getParcelableExtra(PMZ_ORDER);
             enableCartButton();

@@ -73,7 +73,8 @@ public class PmzStoresActivity extends PmzBaseActivity {
             @Override
             public void sessionExpired() {
                 hideLoading();
-                onSessionExpired();
+                finish();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
@@ -104,7 +105,8 @@ public class PmzStoresActivity extends PmzBaseActivity {
             @Override
             public void sessionExpired() {
                 hideLoading();
-                onSessionExpired();
+                finish();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
@@ -142,7 +144,9 @@ public class PmzStoresActivity extends PmzBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
+        if(resultCode == RESULT_CANCELED && data != null && data.getBooleanExtra(SESSION_EXPIRED_KEY, false)) {
+            finish();
+        } else if(requestCode == MAIN_FLOW_KEY && resultCode == RESULT_OK) {
             PmzData.getInstance().onSearchSuccess();
             finish();
         }

@@ -15,4 +15,13 @@ public class PmzCurrencyUtils {
         return "$ ".concat(new DecimalFormat("#,###,##0", symbols).format(value));
     }
 
+    public static String formatPrice(Double price) {
+        double value = 0;
+        if(price != null) {
+            value = price;
+        }
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("es", "ES"));
+        return "$ ".concat(new DecimalFormat("#,###,##0", symbols).format(value));
+    }
+
 }
