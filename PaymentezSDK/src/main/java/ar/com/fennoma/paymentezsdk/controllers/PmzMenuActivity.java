@@ -58,6 +58,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pmz_menu);
+        setFont();
         setFullTitleWithBack(getString(R.string.activity_pmz_menu_title));
         setViews();
         handleIntent();
@@ -134,6 +135,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void sessionExpired() {
                 hideLoading();
                 onSessionExpired();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
@@ -163,6 +165,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void sessionExpired() {
                 hideLoading();
                 onSessionExpired();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
@@ -204,12 +207,15 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void sessionExpired() {
                 hideLoading();
                 onSessionExpired();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
 
     private void startOrder() {
-        API.startOrder(PmzOrder.hardcodedForOrderStart(), new API.ServiceCallback<PmzOrder>() {
+        PmzOrder pmzOrder = PmzOrder.buildForOrderStart(PmzData.getInstance().getBuyer(), PmzData.getInstance().getAppOrderReference(),
+                storeId);
+        API.startOrder(pmzOrder, new API.ServiceCallback<PmzOrder>() {
             @Override
             public void onSuccess(PmzOrder response) {
                 hideLoading();
@@ -232,6 +238,7 @@ public class PmzMenuActivity extends PmzBaseActivity {
             public void sessionExpired() {
                 hideLoading();
                 onSessionExpired();
+                PmzData.getInstance().onSearchSessionExpired();
             }
         });
     }
@@ -337,7 +344,9 @@ public class PmzMenuActivity extends PmzBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == ADD_PRODUCT_REQUEST && resultCode == RESULT_OK && data != null
+        if(resultCode == RESULT_CANCELED && data != null && data.getBooleanExtra(SESSION_EXPIRED_KEY, false)) {
+            onSessionExpired();
+        } else if(requestCode == ADD_PRODUCT_REQUEST && resultCode == RESULT_OK && data != null
                 && data.getParcelableExtra(PMZ_ORDER) != null) {
             this.order = data.getParcelableExtra(PMZ_ORDER);
             enableCartButton();

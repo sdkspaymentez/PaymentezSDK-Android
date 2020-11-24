@@ -83,8 +83,10 @@ public class PmzSummaryAdapter extends RecyclerView.Adapter<PmzSummaryAdapter.Pm
     }
 
     public void setItems(List<PmzItem> items) {
-        this.items = items;
-        notifyDataSetChanged();
+        if(items != null) {
+            this.items = items;
+            notifyDataSetChanged();
+        }
     }
 
     public static class PmzSummaryHolder extends RecyclerView.ViewHolder {

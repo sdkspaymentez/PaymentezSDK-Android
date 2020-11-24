@@ -22,12 +22,14 @@ import ar.com.fennoma.paymentezsdk.utils.PmzCurrencyUtils;
 public class PmzSummaryActivity extends PmzBaseActivity {
 
     public static final String JUST_SUMMARY = "just summary";
+    public static final String MULTIPLE_PAYMENT = "multiple payment";
 
     private PmzSummaryAdapter adapter;
 
     private boolean justCart;
     private PmzOrder order;
     private PmzStore store;
+    private boolean multiplePayment;
 
     private TextView price;
 
@@ -35,6 +37,7 @@ public class PmzSummaryActivity extends PmzBaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pmz_summary);
+        setFont();
         setFullTitleWithBack(getString(R.string.activity_pmz_summary_title));
         setViews();
         handleIntent();
@@ -43,8 +46,8 @@ public class PmzSummaryActivity extends PmzBaseActivity {
     private void handleIntent() {
         if(getIntent() != null) {
             justCart = getIntent().getBooleanExtra(JUST_SUMMARY, false);
+            multiplePayment = getIntent().getBooleanExtra(MULTIPLE_PAYMENT, false);
             order = getIntent().getParcelableExtra(PMZ_ORDER);
-            //orders = getIntent().getParcelableArrayListExtra(PMZ_ORDER);
             if(order != null) {
                 store = order.getStore();
             }
@@ -114,7 +117,15 @@ public class PmzSummaryActivity extends PmzBaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        PmzData.getInstance().onSearchCancel();
+        if(justCart) {
+            PmzData.getInstance().onSearchCancel();
+        } else {
+            if(multiplePayment) {
+                PmzData.getInstance().onMultiplePaymentCheckingSuccess(order);
+            } else {
+                PmzData.getInstance().onPaymentCheckingSuccess(order);
+            }
+        }
     }
 
     private void calculatePrice() {
@@ -141,7 +152,13 @@ public class PmzSummaryActivity extends PmzBaseActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PmzData.getInstance().onSearchSuccess();
+                if(justCart) {
+                    PmzData.getInstance().onSearchSuccess();
+                } else if(multiplePayment) {
+                    PmzData.getInstance().onMultiplePaymentCheckingSuccess(order);
+                } else {
+                    PmzData.getInstance().onPaymentCheckingSuccess(order);
+                }
                 finish();
 
             }

@@ -13,7 +13,9 @@ import ar.com.fennoma.paymentezsdk.controllers.PaymentezSDK;
 import ar.com.fennoma.paymentezsdk.models.PmzBuyer;
 import ar.com.fennoma.paymentezsdk.models.PmzError;
 import ar.com.fennoma.paymentezsdk.models.PmzOrder;
+import ar.com.fennoma.paymentezsdk.models.PmzPaymentData;
 import ar.com.fennoma.paymentezsdk.models.PmzStore;
+import ar.com.fennoma.paymentezsdk.styles.PmzFont;
 import ar.com.fennoma.paymentezsdk.styles.PmzStyle;
 import ar.com.fennoma.paymentezsdkholder.R;
 import ar.com.fennoma.paymentezsdkholder.models.Color;
@@ -26,6 +28,7 @@ public class MainActivity extends BaseActivity {
     private View withStoreIdButton;
     private View showSummaryButton;
     private View getStoresButton;
+    private View multiPaymentButton;
 
     private TextView bgColor;
     private TextView textColor;
@@ -53,7 +56,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setViews() {
-        setButton();
+        setButtons();
         setRandomizeButton();
         setBgSpinner();
         setTextSpinner();
@@ -69,7 +72,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void setButton() {
+    private void setButtons() {
         final PmzBuyer buyer = new PmzBuyer().setName("Pepe").setPhone("123123123").setFiscalNumber("fiscalNumber")
                 .setUserReference("userReference").setEmail("pepe@test.com.ar");
 
@@ -82,6 +85,15 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onFinishedSuccessfully(PmzOrder order) {
                                 Toast.makeText(MainActivity.this, getString(R.string.home_flow_success), Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onError(PmzError error) {
+                                if(error.getType().equals(PmzError.SESSION_EXPIRED)) {
+                                    Toast.makeText(MainActivity.this, R.string.main_payment_session_expired, Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, R.string.generic_error, Toast.LENGTH_LONG).show();
+                                }
                             }
 
                             @Override
@@ -104,6 +116,15 @@ public class MainActivity extends BaseActivity {
                             }
 
                             @Override
+                            public void onError(PmzError error) {
+                                if(error.getType().equals(PmzError.SESSION_EXPIRED)) {
+                                    Toast.makeText(MainActivity.this, R.string.main_payment_session_expired, Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, R.string.generic_error, Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
                             public void onCancel() {
                                 Toast.makeText(MainActivity.this, getString(R.string.home_flow_cancelled), Toast.LENGTH_LONG).show();
                             }
@@ -120,6 +141,15 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public void onFinishedSuccessfully(PmzOrder order) {
                                 Toast.makeText(MainActivity.this, getString(R.string.home_flow_success), Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onError(PmzError error) {
+                                if(error.getType().equals(PmzError.SESSION_EXPIRED)) {
+                                    Toast.makeText(MainActivity.this, R.string.main_payment_session_expired, Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, R.string.generic_error, Toast.LENGTH_LONG).show();
+                                }
                             }
 
                             @Override
@@ -150,13 +180,48 @@ public class MainActivity extends BaseActivity {
                         });
             }
         });
+
+        multiPaymentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PaymentezSDK.getInstance()
+                        .setStyle(getStyles())
+                        .startPayAndPlace(MainActivity.this, PmzOrder.hardcoded(), PmzPaymentData.hardcodedList(), new PaymentezSDK.MultiPaymentOrderListener() {
+                            @Override
+                            public void onFinishedSuccessfully(PmzOrder order) {
+                                Toast.makeText(MainActivity.this, R.string.main_multi_payment_success, Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onError(PmzOrder order, PmzError error) {
+                                switch (error.getType()) {
+                                    case PmzError.SESSION_EXPIRED:
+                                        Toast.makeText(MainActivity.this, R.string.main_payment_session_expired, Toast.LENGTH_LONG).show();
+                                        break;
+                                    case PmzError.PAYMENT_ERROR:
+                                        Toast.makeText(MainActivity.this, R.string.main_payment_checking_payment_error, Toast.LENGTH_LONG).show();
+                                        break;
+                                    case PmzError.PLACE_ERROR:
+                                        Toast.makeText(MainActivity.this, R.string.main_payment_checking_place_error, Toast.LENGTH_LONG).show();
+                                        break;
+                                    case PmzError.NO_ORDER_SET_ERROR:
+                                        Toast.makeText(MainActivity.this, R.string.main_payment_checking_no_order_found, Toast.LENGTH_LONG).show();
+                                        break;
+                                    default:
+                                        Toast.makeText(MainActivity.this, R.string.generic_error, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     private PmzStyle getStyles() {
         return new PmzStyle().setBackgroundColor(bgColorSelected.getColorRes())
                 .setButtonBackgroundColor(buttonColorSelected.getColorRes())
                 .setTextColor(textColorSelected.getColorRes())
-                .setButtonTextColor(buttonTextColorSelected.getColorRes());
+                .setButtonTextColor(buttonTextColorSelected.getColorRes())
+                .setFont(PmzFont.ROBOTO);
     }
 
     private void setBgSpinner() {
@@ -233,6 +298,7 @@ public class MainActivity extends BaseActivity {
         withStoreIdButton = findViewById(R.id.button_with_store_id);
         showSummaryButton = findViewById(R.id.show_summary_button);
         getStoresButton = findViewById(R.id.get_stores_button);
+        multiPaymentButton = findViewById(R.id.multi_payment_button);
 
         bgColor = findViewById(R.id.bg_color);
         textColor = findViewById(R.id.text_color);
